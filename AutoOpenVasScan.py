@@ -39,13 +39,3 @@ with Gmp(connection, transform=transform) as gmp:
     
     #task start
     gmp.start_task(task_id)
-    
-
-
-
-
-
-
-
-
-
