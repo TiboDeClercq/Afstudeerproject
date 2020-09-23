@@ -13,17 +13,6 @@ transform = EtreeTransform()
 
 user_input=False
 
-<<<<<<< HEAD
-    #task creation
-    task=gmp.create_task('test2', 'daba56c8-73ec-11df-a475-002264764cea', target_id, '08b69003-5fc2-4037-a479-93b440211c73')
-    xmlstr=ElementTree.tostring(task, encoding='utf8', method='xml')
-    task_id=re.findall(r'id=\"[0-9,a-z,-]*', xmlstr.decode('utf8'))
-    task_id=task_id[0][4:]
-    print(task_id)
-    
-    #task start
-    gmp.start_task(task_id)
-=======
 target_ip="172.0.0.1"
 host_name="localhost"
 
@@ -67,4 +56,3 @@ with Gmp(connection, transform=transform) as gmp:
     #task start
     gmp.start_task(task_id)
     print("task started succesfully!")
->>>>>>> 804e36ea48fa79585d8b051cda96be61e2387f14
