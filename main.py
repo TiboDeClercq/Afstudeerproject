@@ -3,7 +3,6 @@ from tkinter import *
 from tkinter import messagebox
 
 from scan import scan
-from tkMessageBox import showerror
 
 ipList = []
 def addIP():
