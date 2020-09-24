@@ -14,7 +14,6 @@ with Gmp(connection, transform=transform) as gmp:
     # Login -> change to default admin password
     gmp.authenticate('sam', 'sam')
 
-    reports=gmp.get_reports()
-    results=gmp.get_results()
+    reports=gmp.get_tasks()
+    
     pretty_print(reports)
-    pretty_print(results)

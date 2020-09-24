@@ -4,6 +4,7 @@ from gvm.transforms import EtreeTransform
 from gvm.xml import pretty_print
 import re
 from xml.etree import ElementTree
+from time import sleep
 
 def scan(target_name, ipList):
     connection = UnixSocketConnection()
@@ -20,6 +21,16 @@ def scan(target_name, ipList):
         xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
         regexid=re.findall(r'<name>[a-z]*</name>',xmlstr.decode('utf8'))
         return regexid
+
+    def get_status(inputxml):
+        xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
+        regexid=re.findall(r'<status>[a-zA-Z]*',xmlstr.decode('utf8'))
+        return regexid[0][8:]
+    
+    def get_progress(inputxml):
+        xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
+        regexid=re.findall(r'<progress>[0-9]*',xmlstr.decode('utf8'))
+        return regexid[0][10:]
 
     with Gmp(connection, transform=transform) as gmp:
         # Login -> change to default admin password
@@ -43,7 +54,15 @@ def scan(target_name, ipList):
         #arguments: target_name, config_id, target_id, scanner_id
         task=gmp.create_task(target_name, 'daba56c8-73ec-11df-a475-002264764cea', target_id, '08b69003-5fc2-4037-a479-93b440211c73')
         task_id = get_id(task)
-        
+
         #task start
         gmp.start_task(task_id)
+        taskxml=gmp.get_task(task_id)
         print("task started succesfully!")
+        while get_status(taskxml)=='Requested' or get_status(taskxml)=='Running':
+            taskxml=gmp.get_task(task_id)
+            print(get_status(taskxml))
+            if(get_status(taskxml)=='Running'):
+                print(get_progress(taskxml))
+            sleep(2)
+        print(get_status(taskxml))
