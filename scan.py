@@ -5,6 +5,7 @@ from gvm.xml import pretty_print
 import re
 from xml.etree import ElementTree
 from time import sleep
+import threading
 
 def scan(target_name, ipList):
     connection = UnixSocketConnection()
@@ -22,6 +23,11 @@ def scan(target_name, ipList):
         regexid=re.findall(r'<name>[a-z]*</name>',xmlstr.decode('utf8'))
         return regexid
 
+    def get_name_without(inputxml):
+        xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
+        regexid=re.findall(r'<name>[a-z]*',xmlstr.decode('utf8'))
+        return regexid[1][6:]
+
     def get_status(inputxml):
         xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
         regexid=re.findall(r'<status>[a-zA-Z]*',xmlstr.decode('utf8'))
@@ -31,6 +37,17 @@ def scan(target_name, ipList):
         xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
         regexid=re.findall(r'<progress>[0-9]*',xmlstr.decode('utf8'))
         return regexid[0][10:]
+
+    def progressbar():
+            taskxml=gmp.get_task(task_id)
+            while get_status(taskxml)=='Requested' or get_status(taskxml)=='Running':
+                taskxml=gmp.get_task(task_id)
+                print(get_name_without(taskxml),": ", get_status(taskxml))
+                if(get_status(taskxml)=='Running'):
+                    print(get_name_without(taskxml),": ", get_progress(taskxml)," %")
+                sleep(2)
+            print(get_status(taskxml))
+
 
     with Gmp(connection, transform=transform) as gmp:
         # Login -> change to default admin password
@@ -58,12 +75,10 @@ def scan(target_name, ipList):
 
         #task start
         gmp.start_task(task_id)
-        taskxml=gmp.get_task(task_id)
+        
         print("task started succesfully!")
-        while get_status(taskxml)=='Requested' or get_status(taskxml)=='Running':
-            taskxml=gmp.get_task(task_id)
-            print(get_status(taskxml))
-            if(get_status(taskxml)=='Running'):
-                print(get_progress(taskxml)," %")
-            sleep(2)
-        print(get_status(taskxml))
+
+        
+        t1=threading.Thread(target=progressbar)
+        t1.start()
+            
