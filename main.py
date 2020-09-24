@@ -31,8 +31,10 @@ def valid_ip(address):
 def sendscan():
     if not deviceEntry.get():
         warningPopUp("You haven't entered a device name.")
+    if not ipList:
+        warningPopUp("You haven't entered any IP address.")
     else:
-
+        succesPopUp
         scan(deviceEntry.get(), ipList)
 
 #function to show warning message
@@ -47,7 +49,7 @@ def warningPopUp(msg):
     warningPopUp.mainloop()
 
 #function to show waiting message
-def succesPopUp(msg):
+def succesPopUp():
     succesPopUp = Tk()
     succesPopUp.wm_title("Succes message")
     succesPopUp.geometry("320x150")
@@ -56,6 +58,28 @@ def succesPopUp(msg):
     B1 = Button(succesPopUp, text="Okay", command = succesPopUp.destroy )
     B1.pack()
     succesPopUp.mainloop()
+#Full and  fast              daba56c8-73ec-11df-a475-002264764cea
+#Full and Fast Ultimate      698f691e-7489-11df-9d8c-002264764cea
+#Full and very Deep          708f25c4-7489-11df-8094-002264764cea
+#Full and very Deep Ultimate 74db13d6-7489-11df-91b9-002264764cea
+def change_dropdown(*args):
+    selectedType = tkvar.get() 
+    scanCode = ""
+    type
+    if selectedType == 'Full and Fast':
+        scanCode = "daba56c8-73ec-11df-a475-002264764cea"
+        print(scanCode)
+    elif selectedType == 'Full and Fast Ultimate':
+        scanCode = "698f691e-7489-11df-9d8c-002264764cea"
+        print(scanCode)
+    elif selectedType == 'Full and very Deep':
+        scanCode = "708f25c4-7489-11df-8094-002264764cea"
+        print(scanCode)
+    elif selectedType == 'Full and very Deep Ultimate':
+        scanCode = "74db13d6-7489-11df-91b9-002264764cea"
+        print(scanCode) 
+    else:
+        print("niks")
 
 #layout
 root = Tk()
@@ -78,17 +102,21 @@ Label (root, text="Device name", fg="black", font="12").grid(row=3,column=0, sti
 deviceEntry = Entry(root, width= 20, bg="white")
 deviceEntry.grid(row=4,column=0,sticky=W)
 
-#Radiobuttons to choose deep scan or normal scan
+#Radiobuttons to choose deep scan or Full and Fast Ultimate
 Label (root, text="Type of scan",  fg="black", font="none 12").grid(row=5,column=0, sticky=W)
-selected = IntVar()
+tkvar = StringVar(root)
+# Dictionary with options
+choices = { 'Full and Fast','Full and Fast Ultimate','Full and very Deep','Full and very Deep Ultimate'}
+tkvar.set('Full and Fast Ultimate') # set the default option
 
-rad1 = Radiobutton(root,text='Normal scan', value=1, variable=selected, width=20)
-rad2 = Radiobutton(root,text='Hard scan', value=2, variable=selected, width=20)
-
-rad1.grid(column=0, row=6)
-rad2.grid(column=0, row=7)
-    
+popupMenu = OptionMenu(root, tkvar, *choices)
+popupMenu.grid(row = 6, column =0)
+# link function to change dropdown
+tkvar.trace('w', change_dropdown)
 #button to start the scan
 Button(root, text="Scan", width=6, command=sendscan).grid(row=8, column=0, sticky=W)
-Button(root, text="Pop", width=6, command=succesPopUp).grid(row=9, column=0, sticky=W)
+#button for testing succesfull popup 
+#Button(root, text="Pop", width=6, command=succesPopUp).grid(row=9, column=0, sticky=W)
+
+
 root.mainloop()

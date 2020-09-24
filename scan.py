@@ -34,8 +34,9 @@ def scan(target_name, ipList):
 
     with Gmp(connection, transform=transform) as gmp:
         # Login -> change to default admin password
-        gmp.authenticate('sam', 'sam')
-        
+#        gmp.authenticate('sam', 'sam')
+        gmp.authenticate('ruben', 'ruben')
+
         #check if scanner user already exists
         if any("<name>scanner</name>" in s for s in get_name(gmp.get_users())):
             print("no new user created")
@@ -57,6 +58,7 @@ def scan(target_name, ipList):
 
         #task start
         gmp.start_task(task_id)
+<<<<<<< HEAD
         taskxml=gmp.get_task(task_id)
         print("task started succesfully!")
         while get_status(taskxml)=='Requested' or get_status(taskxml)=='Running':
@@ -66,3 +68,6 @@ def scan(target_name, ipList):
                 print(get_progress(taskxml))
             sleep(2)
         print(get_status(taskxml))
+=======
+        print("task started succesfully!")
+>>>>>>> 9939dc254a0f06f85932cc36ec5163869a2ac037
