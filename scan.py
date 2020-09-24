@@ -64,6 +64,6 @@ def scan(target_name, ipList):
             taskxml=gmp.get_task(task_id)
             print(get_status(taskxml))
             if(get_status(taskxml)=='Running'):
-                print(get_progress(taskxml))
+                print(get_progress(taskxml)," %")
             sleep(2)
         print(get_status(taskxml))
