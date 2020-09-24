@@ -1,6 +1,7 @@
 import socket
 from tkinter import *
 from scan import scan
+from tkMessageBox import showerror
 
 ipList = []
 def addIP():
@@ -24,7 +25,12 @@ def valid_ip(address):
 
 #function to start the scan
 def sendscan():
-    scan(deviceEntry.get(), ipList)
+    if deviceEntry.get():
+        Tk().withdraw()
+        showerror(title = "Error", message = "Something bad happened")
+    else:
+        scan(deviceEntry.get(), ipList)
+    
 
 #layout
 window = Tk()
