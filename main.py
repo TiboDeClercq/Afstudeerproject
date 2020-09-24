@@ -65,7 +65,6 @@ def scan():
             user_id = get_id(user)
             print(user_id)
 
-
         #target creation
         #waarde uit de box halen
         target_name = deviceEntry.get()
@@ -84,9 +83,9 @@ def scan():
 
 #layout
 window = Tk()
-window.title('Hallo')
+window.title('Make a new scan')
 
-Label (window, text="Ip address", bg="black", fg="white", font="none 12 bold").grid(row=0,column=0, sticky=W)
+Label (window, text="Ip address", fg="black", font="none 12").grid(row=0,column=0, sticky=W)
 textentry = Entry(window, width= 20, bg="white")
 textentry.grid(row=1,column=0,sticky=W)
 
@@ -99,9 +98,19 @@ output.grid(row=0, column=4, sticky=W, rowspan=3)
 
 Button(window, text="Add addres", width=6, command=addIP).grid(row=2, column=0, sticky=W)
 
-Label (window, text="Device name", bg="black", fg="white", font="none 12 bold").grid(row=3,column=0, sticky=W)
+Label (window, text="Device name",  fg="black", font="none 12").grid(row=3,column=0, sticky=W)
 deviceEntry = Entry(window, width= 20, bg="white")
 deviceEntry.grid(row=4,column=0,sticky=W)
+
+#Radiobuttons
+Label (window, text="Type of scan",  fg="black", font="none 12").grid(row=5,column=0, sticky=W)
+selected = IntVar()
+
+rad1 = Radiobutton(window,text='Normal scan', value=1, variable=selected, width=20)
+rad2 = Radiobutton(window,text='Hard scan', value=2, variable=selected, width=20)
+
+rad1.grid(column=0, row=6)
+rad2.grid(column=0, row=7)
 
 Button(window, text="Scan", width=6, command=scan).grid(row=8, column=0, sticky=W)
 window.mainloop()
