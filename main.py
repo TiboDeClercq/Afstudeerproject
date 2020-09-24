@@ -26,7 +26,6 @@ def valid_ip(address):
 def sendscan():
     scan(deviceEntry.get(), ipList)
 
-
 #layout
 window = Tk()
 window.title('OpenVAS automated scanner')
@@ -47,6 +46,18 @@ Button(window, text="Add address", width=7, command=addIP).grid(row=2, column=0,
 Label (window, text="Device name", bg="black", fg="white", font="none 12 bold").grid(row=3,column=0, sticky=W)
 deviceEntry = Entry(window, width= 20, bg="white")
 deviceEntry.grid(row=4,column=0,sticky=W)
+
+
+
+#Radiobuttons to choose deep scan or normal scan
+Label (window, text="Type of scan",  fg="black", font="none 12").grid(row=5,column=0, sticky=W)
+selected = IntVar()
+
+rad1 = Radiobutton(window,text='Normal scan', value=1, variable=selected, width=20)
+rad2 = Radiobutton(window,text='Hard scan', value=2, variable=selected, width=20)
+
+rad1.grid(column=0, row=6)
+rad2.grid(column=0, row=7)
 
 #button to start the scan
 Button(window, text="Scan", width=6, command=sendscan).grid(row=8, column=0, sticky=W)
