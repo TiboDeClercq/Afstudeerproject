@@ -1,30 +1,18 @@
-from tkinter import *
 import socket
-
-from gvm.connections import UnixSocketConnection
-from gvm.protocols.gmp import Gmp
-from gvm.transforms import EtreeTransform
-from gvm.xml import pretty_print
-from gvm.protocols.gmpv9 import CredentialType
-from gvm.protocols.gmpv9 import ScannerType
-from gvm.protocols.gmpv9 import FilterType
-import re
-from xml.etree import ElementTree
-
-#TODO
-#deze code een beetje opkuisen
+from tkinter import *
+from scan import scan
 
 ipList = []
 def addIP():
     entered_text=textentry.get()
-
-    # if valid_ip(entered_text):
-    #     print(entered_text)
     return valid_ip(entered_text)
-#geen gebruik van regex voor het controleren van ip addres
+
+#function to check if entered IP address is valid
 def valid_ip(address):
     try: 
         socket.inet_aton(address)
+
+        #if the entered IP address is not in the list -> add to list
         if address in ipList:
             print('Ip already in list')
         else:
@@ -34,74 +22,48 @@ def valid_ip(address):
     except:
         return False
 
-def scan():
-    # if len(ipList) = 0:
-    #     print('Geen ip addressen')
-    # else:
-    connection = UnixSocketConnection()
-    transform = EtreeTransform()
-
-    user_input=False
-
-    def get_id(inputxml):
-        xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
-        regexid=re.findall(r'id=\"[0-9,a-z,-]*',xmlstr.decode('utf8'))
-        return regexid[0][4:]
-
-    def get_name(inputxml):
-        xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
-        regexid=re.findall(r'<name>[a-z]*</name>',xmlstr.decode('utf8'))
-        return regexid
-
-    with Gmp(connection, transform=transform) as gmp:
-        # Login -> change to default admin password
-        gmp.authenticate('tibo', 'tibo')
-        
-        if any("<name>scanner</name>" in s for s in get_name(gmp.get_users())):
-            print("no new user created")
-        else:
-            #user creation
-            user=gmp.create_user('scanner', password='scanner', role_ids=['7a8cb5b4-b74d-11e2-8187-406186ea4fc5'])
-            user_id = get_id(user)
-            print(user_id)
-
-
-        #target creation
-        #waarde uit de box halen
-        target_name = deviceEntry.get()
-        #entered_text=textentry.get()
-        target=gmp.create_target(target_name, hosts=ipList)
-        target_id = get_id(target)
-
-        #task creation
-        task=gmp.create_task(target_name, 'daba56c8-73ec-11df-a475-002264764cea', target_id, '08b69003-5fc2-4037-a479-93b440211c73')
-        task_id = get_id(task)
-        
-        #task start
-        gmp.start_task(task_id)
-        print("task started succesfully!")
-
+#function to start the scan
+def sendscan():
+    scan(deviceEntry.get(), ipList)
 
 #layout
 window = Tk()
-window.title('Hallo')
+window.title('OpenVAS automated scanner')
 
+#label and input for IP address
 Label (window, text="Ip address", bg="black", fg="white", font="none 12 bold").grid(row=0,column=0, sticky=W)
 textentry = Entry(window, width= 20, bg="white")
 textentry.grid(row=1,column=0,sticky=W)
 
+#list of IP addresses
 output = Listbox(window, width=20, height=6,  background="white")
 output.grid(row=0, column=4, sticky=W, rowspan=3)
 
-# Label (window, text="Task name", bg="black", fg="white", font="none 12 bold").grid(row=5,column=0, sticky=W)
-# textentry = Entry(window, width= 20, bg="white")
-# textentry.grid(row=6,column=0,sticky=W)
+#button to add IP address to list
+Button(window, text="Add address", width=7, command=addIP).grid(row=2, column=0, sticky=W)
 
-Button(window, text="Add addres", width=6, command=addIP).grid(row=2, column=0, sticky=W)
-
+#label and input for target name
 Label (window, text="Device name", bg="black", fg="white", font="none 12 bold").grid(row=3,column=0, sticky=W)
 deviceEntry = Entry(window, width= 20, bg="white")
 deviceEntry.grid(row=4,column=0,sticky=W)
 
+<<<<<<< HEAD
 Button(window, text="Scan", width=6, command=scan).grid(row=8, column=0, sticky=W)
 window.mainloop()
+=======
+
+
+#Radiobuttons to choose deep scan or normal scan
+Label (window, text="Type of scan",  fg="black", font="none 12").grid(row=5,column=0, sticky=W)
+selected = IntVar()
+
+rad1 = Radiobutton(window,text='Normal scan', value=1, variable=selected, width=20)
+rad2 = Radiobutton(window,text='Hard scan', value=2, variable=selected, width=20)
+
+rad1.grid(column=0, row=6)
+rad2.grid(column=0, row=7)
+
+#button to start the scan
+Button(window, text="Scan", width=6, command=sendscan).grid(row=8, column=0, sticky=W)
+window.mainloop()
+>>>>>>> 2f1b0c331422c3c828b8906e08be3b8f27e71e58
