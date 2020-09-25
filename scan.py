@@ -5,8 +5,10 @@ from gvm.xml import pretty_print
 import re
 from xml.etree import ElementTree
 from time import sleep
+import threading
 
 def scan(target_name, ipList):
+    thread_list=[]
     connection = UnixSocketConnection()
     transform = EtreeTransform()
 
@@ -19,8 +21,13 @@ def scan(target_name, ipList):
     #function to get name out of output string when new user/asset is created
     def get_name(inputxml):
         xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
-        regexid=re.findall(r'<name>[a-z]*</name>',xmlstr.decode('utf8'))
+        regexid=re.findall(r'<name>[a-zA-Z]*</name>',xmlstr.decode('utf8'))
         return regexid
+
+    def get_name_without(inputxml):
+        xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
+        regexid=re.findall(r'<name>[a-zA-Z0-9]*',xmlstr.decode('utf8'))
+        return regexid[1][6:]
 
     def get_status(inputxml):
         xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
@@ -31,6 +38,21 @@ def scan(target_name, ipList):
         xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
         regexid=re.findall(r'<progress>[0-9]*',xmlstr.decode('utf8'))
         return regexid[0][10:]
+
+    def progressbar(taskid):
+            print("thread started")
+            taskxml=gmp.get_task(taskid)
+            print(get_name_without(taskxml),": ", get_status(taskxml))
+            print(get_name_without(taskxml),": ", "0 %")
+            progr = 0
+            while get_status(taskxml)=='Requested' or get_status(taskxml)=='Running':
+                taskxml=gmp.get_task(taskid)
+                #print(get_name_without(taskxml),": ", get_status(taskxml))
+                if(get_status(taskxml)=='Running' and progr < int(get_progress(taskxml))):
+                    print(get_name_without(taskxml),": ", get_progress(taskxml),"%")
+                progr = int(get_progress(taskxml))
+            print(get_status(taskxml))
+
 
     with Gmp(connection, transform=transform) as gmp:
         # Login -> change to default admin password
@@ -46,7 +68,7 @@ def scan(target_name, ipList):
             user_id = get_id(user)
             print(user_id)
 
-
+        gmp.authenticate('scanner', 'scanner')
         #target creation
         target=gmp.create_target(target_name, hosts=ipList)
         target_id = get_id(target)
@@ -58,12 +80,10 @@ def scan(target_name, ipList):
 
         #task start
         gmp.start_task(task_id)
-        taskxml=gmp.get_task(task_id)
+        
         print("task started succesfully!")
-        while get_status(taskxml)=='Requested' or get_status(taskxml)=='Running':
-            taskxml=gmp.get_task(task_id)
-            print(get_status(taskxml))
-            if(get_status(taskxml)=='Running'):
-                print(get_progress(taskxml)," %")
-            sleep(2)
-        print(get_status(taskxml))
+        t1=threading.Thread(target=progressbar, args=(task_id,))
+        thread_list.append(t1)
+        t1.start()
+        
+            

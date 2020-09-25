@@ -36,6 +36,12 @@ def sendscan():
     else:
         succesPopUp
         scan(deviceEntry.get(), ipList)
+        ipList[:]=[]
+        textentry.delete(0,'end')
+        output.delete(0,'end')
+        deviceEntry.delete(0,'end')
+        
+
 
 #function to show warning message
 def warningPopUp(msg):
@@ -115,8 +121,5 @@ popupMenu.grid(row = 6, column =0)
 tkvar.trace('w', change_dropdown)
 #button to start the scan
 Button(root, text="Scan", width=6, command=sendscan).grid(row=8, column=0, sticky=W)
-#button for testing succesfull popup 
-#Button(root, text="Pop", width=6, command=succesPopUp).grid(row=9, column=0, sticky=W)
-
 
 root.mainloop()
