@@ -72,8 +72,8 @@ def scan(target_name, ipList):
 
     with Gmp(connection, transform=transform) as gmp:
         # Login -> change to default admin password
-#        gmp.authenticate('sam', 'sam')
-        gmp.authenticate('ruben', 'ruben')
+        gmp.authenticate('sam', 'sam')
+#        gmp.authenticate('ruben', 'ruben')
 
         #check if scanner user already exists
         if any("<name>scanner</name>" in s for s in get_name(gmp.get_users())):
