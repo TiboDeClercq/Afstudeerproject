@@ -6,6 +6,11 @@ import re
 from xml.etree import ElementTree
 from time import sleep
 import threading
+import sys
+from tempfile import mkstemp
+from shutil import move, copymode
+from os import fdopen, remove
+import os
 
 def scan(target_name, ipList):
     thread_list=[]
@@ -53,11 +58,33 @@ def scan(target_name, ipList):
                 progr = int(get_progress(taskxml))
             print(get_status(taskxml))
 
+    def custome_port_table():
+        #Scanning all ports
+        print("Scanning open ports...")
+        os.system('nmap -p-  127.0.0.1 | grep open | cut -d" " -f1 > nmap_test/ports.txt')
+        
+        with open("nmap_test/ports.txt", "r") as f:
+            inhoud = f.read()
+            #Create temp file
+            fh, abs_path = mkstemp()
+            with fdopen(fh,'w') as new_file:
+                new_file.write("T:")
+                for match in re.findall(r'.*\/tcp', inhoud):
+                    new_file.write(match[:4]+ ", ")
+                new_file.write("\nU:")
+                for match in re.findall(r'.*\/udp', inhoud):
+                    new_file.write(match[:4]+ ", ")
+            #Copy the file permissions from the old file to the new file
+            copymode("nmap_test/ports.txt", abs_path)
+            #Remove original file
+            remove("nmap_test/ports.txt")
+            #Move new file
+            move(abs_path, "nmap_test/ports.txt")
 
     with Gmp(connection, transform=transform) as gmp:
         # Login -> change to default admin password
 #        gmp.authenticate('sam', 'sam')
-        gmp.authenticate('ruben', 'ruben')
+        gmp.authenticate('scanner', 'scanner')
 
         #check if scanner user already exists
         if any("<name>scanner</name>" in s for s in get_name(gmp.get_users())):
@@ -69,8 +96,18 @@ def scan(target_name, ipList):
             print(user_id)
 
         gmp.authenticate('scanner', 'scanner')
-        #target creation
-        target=gmp.create_target(target_name, hosts=ipList)
+        # #target creation
+        # target=gmp.create_target(target_name, hosts=ipList)
+        # target_id = get_id(target)
+
+        #target creation with custome port list
+        with open("nmap_test/ports.txt", "r") as f:
+            inhoud2 = f.read()
+        #Creating a new portlist
+        superCooleLijst = gmp.create_port_list('Custome ports123', inhoud2)
+        superCooleLijstID = get_id(superCooleLijst)
+
+        target=gmp.create_target(target_name, hosts=ipList, port_list_id=superCooleLijstID)
         target_id = get_id(target)
 
         #task creation
