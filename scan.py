@@ -26,7 +26,7 @@ def scan(target_name, ipList):
 
     def get_name_without(inputxml):
         xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
-        regexid=re.findall(r'<name>[a-zA-Z]*',xmlstr.decode('utf8'))
+        regexid=re.findall(r'<name>[a-zA-Z0-9]*',xmlstr.decode('utf8'))
         return regexid[1][6:]
 
     def get_status(inputxml):
@@ -43,19 +43,21 @@ def scan(target_name, ipList):
             print("thread started")
             taskxml=gmp.get_task(taskid)
             print(get_name_without(taskxml),": ", get_status(taskxml))
+            print(get_name_without(taskxml),": ", "0 %")
+            progr = 0
             while get_status(taskxml)=='Requested' or get_status(taskxml)=='Running':
                 taskxml=gmp.get_task(taskid)
                 #print(get_name_without(taskxml),": ", get_status(taskxml))
-                if(get_status(taskxml)=='Running'):
-                    print(get_name_without(taskxml),": ", get_progress(taskxml)," %")
-                sleep(5)
+                if(get_status(taskxml)=='Running' and progr < int(get_progress(taskxml))):
+                    print(get_name_without(taskxml),": ", get_progress(taskxml),"%")
+                progr = int(get_progress(taskxml))
             print(get_status(taskxml))
 
 
     with Gmp(connection, transform=transform) as gmp:
         # Login -> change to default admin password
-        gmp.authenticate('sam', 'sam')
-#        gmp.authenticate('ruben', 'ruben')
+#        gmp.authenticate('sam', 'sam')
+        gmp.authenticate('ruben', 'ruben')
 
         #check if scanner user already exists
         if any("<name>scanner</name>" in s for s in get_name(gmp.get_users())):
