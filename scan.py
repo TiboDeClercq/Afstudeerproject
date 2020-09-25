@@ -6,11 +6,21 @@ import re
 from xml.etree import ElementTree
 from time import sleep
 import threading
+
+import sys
+from tempfile import mkstemp
+from shutil import move, copymode
+from os import fdopen, remove
+from datetime import datetime
+import os
+
 import time
 from console_progressbar import ProgressBar
 from tqdm import tqdm
 
-def scan(target_name, ipList):
+import questions
+
+def scan(target_name, ipList, config_id):
     thread_list=[]
     connection = UnixSocketConnection()
     transform = EtreeTransform()
@@ -69,11 +79,36 @@ def scan(target_name, ipList):
             #         progr = int(get_progress(taskxml))
             print(get_status(taskxml))
 
+    def custome_port_table():
+        #Scanning all ports
+        print("Scanning open ports...")
+        # os.system('nmap -p-  127.0.0.1 | grep open | cut -d" " -f1 > nmap_test/ports.txt')
+        #Commando dat de scan gaat uitvoeren voor al de ip addressen 
+        cmd = "nmap -p-  " + ' '.join(map(str, ipList)) + " | grep open | cut -d' ' -f1 > nmap_test/ports.txt"
+        os.system(cmd)
+
+        with open("nmap_test/ports.txt", "r") as f:
+            inhoud = f.read()
+            #Create temp file
+            fh, abs_path = mkstemp()
+            with fdopen(fh,'w') as new_file:
+                new_file.write("T:")
+                for match in re.findall(r'.*\/tcp', inhoud):
+                    new_file.write(match[:4]+ ", ")
+                new_file.write("\nU:")
+                for match in re.findall(r'.*\/udp', inhoud):
+                    new_file.write(match[:4]+ ", ")
+            #Copy the file permissions from the old file to the new file
+            copymode("nmap_test/ports.txt", abs_path)
+            #Remove original file
+            remove("nmap_test/ports.txt")
+            #Move new file
+            move(abs_path, "nmap_test/ports.txt")
 
     with Gmp(connection, transform=transform) as gmp:
         # Login -> change to default admin password
-        gmp.authenticate('sam', 'sam')
-#        gmp.authenticate('ruben', 'ruben')
+        #gmp.authenticate('sam', 'sam')
+        gmp.authenticate('scanner', 'scanner')
 
         #check if scanner user already exists
         if any("<name>scanner</name>" in s for s in get_name(gmp.get_users())):
@@ -85,21 +120,34 @@ def scan(target_name, ipList):
             print(user_id)
 
         gmp.authenticate('scanner', 'scanner')
-        #target creation
-        target=gmp.create_target(target_name, hosts=ipList)
+        # #target creation
+        # target=gmp.create_target(target_name, hosts=ipList)
+        # target_id = get_id(target)
+
+
+        #target creation with custome port list
+        with open("nmap_test/ports.txt", "r") as f:
+            inhoud2 = f.read()
+        #Creating a new portlist
+        portListName = target_name.replace(' ', '-').lower() + "_" + datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
+        superCooleLijst = gmp.create_port_list(portListName, inhoud2)
+        superCooleLijstID = get_id(superCooleLijst)
+
+        target=gmp.create_target(target_name, hosts=ipList, port_list_id=superCooleLijstID)
         target_id = get_id(target)
 
-        #task creation
-        #arguments: target_name, config_id, target_id, scanner_id
-        task=gmp.create_task(target_name, 'daba56c8-73ec-11df-a475-002264764cea', target_id, '08b69003-5fc2-4037-a479-93b440211c73')
+        # task creation
+        # arguments: target_name, config_id, target_id, scanner_id
+        task=gmp.create_task(target_name, config_id, target_id, '08b69003-5fc2-4037-a479-93b440211c73')
         task_id = get_id(task)
 
         #task start
-        gmp.start_task(task_id)
+        gmp.start_task(task_id)        
         
         print("task started succesfully!")
         t1=threading.Thread(target=progressbar, args=(task_id,))
         thread_list.append(t1)
         t1.start()
+        
         
             
