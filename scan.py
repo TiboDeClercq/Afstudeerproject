@@ -8,6 +8,7 @@ from time import sleep
 import threading
 
 def scan(target_name, ipList):
+    thread_list=[]
     connection = UnixSocketConnection()
     transform = EtreeTransform()
 
@@ -38,22 +39,23 @@ def scan(target_name, ipList):
         regexid=re.findall(r'<progress>[0-9]*',xmlstr.decode('utf8'))
         return regexid[0][10:]
 
-    def progressbar():
-            taskxml=gmp.get_task(task_id)
+    def progressbar(taskid):
+            print("thread started")
+            taskxml=gmp.get_task(taskid)
             print(get_name_without(taskxml),": ", get_status(taskxml))
             while get_status(taskxml)=='Requested' or get_status(taskxml)=='Running':
-                taskxml=gmp.get_task(task_id)
+                taskxml=gmp.get_task(taskid)
                 #print(get_name_without(taskxml),": ", get_status(taskxml))
                 if(get_status(taskxml)=='Running'):
                     print(get_name_without(taskxml),": ", get_progress(taskxml)," %")
-                sleep(8)
+                sleep(5)
             print(get_status(taskxml))
 
 
     with Gmp(connection, transform=transform) as gmp:
         # Login -> change to default admin password
-#        gmp.authenticate('sam', 'sam')
-        gmp.authenticate('ruben', 'ruben')
+        gmp.authenticate('sam', 'sam')
+#        gmp.authenticate('ruben', 'ruben')
 
         #check if scanner user already exists
         if any("<name>scanner</name>" in s for s in get_name(gmp.get_users())):
@@ -64,7 +66,7 @@ def scan(target_name, ipList):
             user_id = get_id(user)
             print(user_id)
 
-
+        gmp.authenticate('scanner', 'scanner')
         #target creation
         target=gmp.create_target(target_name, hosts=ipList)
         target_id = get_id(target)
@@ -78,8 +80,8 @@ def scan(target_name, ipList):
         gmp.start_task(task_id)
         
         print("task started succesfully!")
-
-        
-        t1=threading.Thread(target=progressbar)
+        t1=threading.Thread(target=progressbar, args=(task_id,))
+        thread_list.append(t1)
         t1.start()
+        
             
