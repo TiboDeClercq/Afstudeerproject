@@ -1,8 +1,0 @@
-Alle hosts scannen van een subnet
-nmap -sn -oA nmap-subnet-86 127.0.0.0/24
-
-resultaat in een file zetten
-grep Up nmap-subnet-86.gnmap | cut -d " " -f 2 > live-hosts.txt
-
-Alle open ports binnehalen met nmap
-nmap -p- -oA nmap-ports 127.0.0.1 | open nmap-ports.nmap | cut -d" " -f1 > ports.txt

@@ -1,9 +1,0 @@
-# Nmap 7.80 scan initiated Fri Sep 25 12:16:53 2020 as: nmap -p- -oA nmap_test/nmap-ports 127.0.0.1
-Nmap scan report for localhost (127.0.0.1)
-Host is up (0.000062s latency).
-Not shown: 65533 closed ports
-PORT     STATE SERVICE
-5432/tcp open  postgresql
-9392/tcp open  unknown
-
-# Nmap done at Fri Sep 25 12:16:55 2020 -- 1 IP address (1 host up) scanned in 1.76 seconds
