@@ -55,7 +55,8 @@ def scan(target_name, ipList):
                     print("\n", get_name_without(taskxml),": ")
                     pb.print_progress_bar(int(get_progress(taskxml)))
                     #print(get_name_without(taskxml),": ", get_progress(taskxml),"%")
-                progr = int(get_progress(taskxml))
+                if(get_progress(taskxml) != ''):
+                    progr = int(get_progress(taskxml))
             print(get_status(taskxml))
 
 
