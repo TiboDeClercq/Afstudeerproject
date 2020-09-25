@@ -23,8 +23,14 @@ transform = EtreeTransform()
 print("Scanning open ports...")
 os.system('nmap -p-  127.0.0.1 | grep open | cut -d" " -f1 > nmap_test/ports.txt')
 
-with open("nmap_test/ports.txt", "r") as f:
+with open("ports.txt", "r") as f:
     inhoud = f.read()
+<<<<<<< HEAD
+    # m = re.match('[0-9]+(/tcp)', inhoud)
+    # print(m.group(0))
+    # for match in re.findall(r'.*(\/tcp)', inhoud):
+    print(re.findall(r'.*\/tcp', inhoud))
+=======
     #Create temp file
     fh, abs_path = mkstemp()
     with fdopen(fh,'w') as new_file:
@@ -52,3 +58,4 @@ with Gmp(connection, transform=transform) as gmp:
     
     gmp.create_port_list('Custome ports123', 'T:5432, 9392,  U:')
     
+>>>>>>> 25ec56bc0a17a7106894d9317de4f5d8263c9f8f
