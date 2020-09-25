@@ -6,6 +6,8 @@ import re
 from xml.etree import ElementTree
 from time import sleep
 import threading
+import time
+from console_progressbar import ProgressBar
 
 def scan(target_name, ipList):
     thread_list=[]
@@ -45,11 +47,14 @@ def scan(target_name, ipList):
             print(get_name_without(taskxml),": ", get_status(taskxml))
             print(get_name_without(taskxml),": ", "0 %")
             progr = 0
+            pb = ProgressBar(total = 100, decimals=0, length=50, fill='=', zfill=' ')
             while get_status(taskxml)=='Requested' or get_status(taskxml)=='Running':
                 taskxml=gmp.get_task(taskid)
                 #print(get_name_without(taskxml),": ", get_status(taskxml))
                 if(get_status(taskxml)=='Running' and progr < int(get_progress(taskxml))):
-                    print(get_name_without(taskxml),": ", get_progress(taskxml),"%")
+                    print("\n", get_name_without(taskxml),": ")
+                    pb.print_progress_bar(int(get_progress(taskxml)))
+                    #print(get_name_without(taskxml),": ", get_progress(taskxml),"%")
                 progr = int(get_progress(taskxml))
             print(get_status(taskxml))
 
