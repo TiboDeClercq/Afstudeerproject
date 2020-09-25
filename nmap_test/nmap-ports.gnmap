@@ -1,0 +1,4 @@
+# Nmap 7.80 scan initiated Fri Sep 25 12:16:53 2020 as: nmap -p- -oA nmap_test/nmap-ports 127.0.0.1
+Host: 127.0.0.1 (localhost)	Status: Up
+Host: 127.0.0.1 (localhost)	Ports: 5432/open/tcp//postgresql///, 9392/open/tcp/////	Ignored State: closed (65533)
+# Nmap done at Fri Sep 25 12:16:55 2020 -- 1 IP address (1 host up) scanned in 1.76 seconds

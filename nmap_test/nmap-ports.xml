@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///usr/bin/../share/nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.80 scan initiated Fri Sep 25 12:16:53 2020 as: nmap -p- -oA nmap_test/nmap-ports 127.0.0.1 -->
+<nmaprun scanner="nmap" args="nmap -p- -oA nmap_test/nmap-ports 127.0.0.1" start="1601029013" startstr="Fri Sep 25 12:16:53 2020" version="7.80" xmloutputversion="1.04">
+<scaninfo type="connect" protocol="tcp" numservices="65535" services="1-65535"/>
+<verbose level="0"/>
+<debugging level="0"/>
+<host starttime="1601029013" endtime="1601029015"><status state="up" reason="conn-refused" reason_ttl="0"/>
+<address addr="127.0.0.1" addrtype="ipv4"/>
+<hostnames>
+<hostname name="localhost" type="PTR"/>
+</hostnames>
+<ports><extraports state="closed" count="65533">
+<extrareasons reason="conn-refused" count="65533"/>
+</extraports>
+<port protocol="tcp" portid="5432"><state state="open" reason="syn-ack" reason_ttl="0"/><service name="postgresql" method="table" conf="3"/></port>
+<port protocol="tcp" portid="9392"><state state="open" reason="syn-ack" reason_ttl="0"/></port>
+</ports>
+<times srtt="62" rttvar="54" to="100000"/>
+</host>
+<runstats><finished time="1601029015" timestr="Fri Sep 25 12:16:55 2020" elapsed="1.76" summary="Nmap done at Fri Sep 25 12:16:55 2020; 1 IP address (1 host up) scanned in 1.76 seconds" exit="success"/><hosts up="1" down="0" total="1"/>
+</runstats>
+</nmaprun>
