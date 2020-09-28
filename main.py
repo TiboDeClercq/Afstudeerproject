@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter import messagebox
 
 from scan import scan
+from setup import set_static_ip, set_dhcp
 
 ipList = []
 def addIP():
@@ -43,6 +44,8 @@ def sendscan():
         deviceEntry.delete(0,'end')
         
 
+def sendIP():
+    set_static_ip(ipEntry.get(), netmaskEntry.get())
 
 #function to show warning message
 def warningPopUp(msg):
@@ -122,5 +125,16 @@ popupMenu.grid(row = 6, column =0)
 tkvar.trace('w', change_dropdown)
 #button to start the scan
 Button(root, text="Scan", width=6, command=sendscan).grid(row=8, column=0, sticky=W)
+
+Label (root, text="ip address", fg="black", font="none 12").grid(row=10,column=0, sticky=W)
+ipEntry=Entry(root, width= 20, bg="white")
+ipEntry.grid(row=10, column=5, sticky=W)
+
+Label (root, text="netmask", fg="black", font="none 12").grid(row=11,column=0, sticky=W)
+netmaskEntry=Entry(root, width= 20, bg="white")
+netmaskEntry.grid(row=11, column=5, sticky=W)
+
+Button(root, text="set static ip address", width=10, command=sendIP).grid(row=12, column=0, sticky=W)
+Button(root, text="set dhcp", width=6, command=set_dhcp).grid(row=14, column=0, sticky=W)
 
 root.mainloop()

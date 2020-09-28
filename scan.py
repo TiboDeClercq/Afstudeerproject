@@ -6,12 +6,18 @@ import re
 from xml.etree import ElementTree
 from time import sleep
 import threading
+<<<<<<< HEAD
 import sys
 from tempfile import mkstemp
 from shutil import move, copymode
 from os import fdopen, remove
 from datetime import datetime
 import os
+=======
+import time
+from console_progressbar import ProgressBar
+from tqdm import tqdm
+>>>>>>> 73f80429d23e8dea7e17bc348aff937ce0275a08
 
 def scan(target_name, ipList):
     thread_list=[]
@@ -49,14 +55,27 @@ def scan(target_name, ipList):
             print("thread started")
             taskxml=gmp.get_task(taskid)
             print(get_name_without(taskxml),": ", get_status(taskxml))
-            print(get_name_without(taskxml),": ", "0 %")
-            progr = 0
-            while get_status(taskxml)=='Requested' or get_status(taskxml)=='Running':
+            #print(get_name_without(taskxml),": ", "0 %")
+            #progr = 0
+            #pb = ProgressBar(total = 100, decimals=0, length=50, fill='=', zfill=' ')
+            i = 0
+            pbar = tqdm(total = 100, initial = i)
+            while (get_status(taskxml)=='Requested' or get_status(taskxml)=='Running'):
                 taskxml=gmp.get_task(taskid)
-                #print(get_name_without(taskxml),": ", get_status(taskxml))
-                if(get_status(taskxml)=='Running' and progr < int(get_progress(taskxml))):
-                    print(get_name_without(taskxml),": ", get_progress(taskxml),"%")
-                progr = int(get_progress(taskxml))
+                #if(get_status(taskxml)=='Running'):
+                    #for i in tqdm (range (100), desc=get_name_without(taskxml)):
+                while(get_status(taskxml)=='Running' and i < int(get_progress(taskxml))):
+                    if(get_progress(taskxml) != ''):
+                        oldi = i
+                        i = int(get_progress(taskxml))
+                        pbar.update(i - oldi)
+            # while get_status(taskxml)=='Requested' or get_status(taskxml)=='Running':
+            #     taskxml=gmp.get_task(taskid)
+            #     if(get_status(taskxml)=='Running' and progr < int(get_progress(taskxml))):
+            #         print("\n", get_name_without(taskxml),": ")
+            #         pb.print_progress_bar(int(get_progress(taskxml)))
+            #     if(get_progress(taskxml) != ''):
+            #         progr = int(get_progress(taskxml))
             print(get_status(taskxml))
 
     def custome_port_table():

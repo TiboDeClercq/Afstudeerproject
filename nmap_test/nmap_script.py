@@ -31,6 +31,10 @@ print(name.replace(' ', '-').lower() + "_" + datetime.now().strftime("%d/%m/%Y_%
 # #Scanning all ports
 # print("Scanning open ports...")
 # ipList = ['127.0.0.1', '127.0.0.2', '127.0.0.3', '127.0.0.4']
+    # m = re.match('[0-9]+(/tcp)', inhoud)
+    # print(m.group(0))
+    # for match in re.findall(r'.*(\/tcp)', inhoud):
+    print(re.findall(r'.*\/tcp', inhoud))
 
 # cmd = "nmap -p-  " + ' '.join(map(str, ipList)) + " | grep open | cut -d' ' -f1"
 # os.system(cmd)
@@ -68,3 +72,4 @@ print(name.replace(' ', '-').lower() + "_" + datetime.now().strftime("%d/%m/%Y_%
 
 #     # target=gmp.create_target(target_name, hosts=ipList, port_list_id=)
 #     # target_id = get_id(target)
+
