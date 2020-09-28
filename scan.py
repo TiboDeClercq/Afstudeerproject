@@ -6,18 +6,18 @@ import re
 from xml.etree import ElementTree
 from time import sleep
 import threading
-<<<<<<< HEAD
+
 import sys
 from tempfile import mkstemp
 from shutil import move, copymode
 from os import fdopen, remove
 from datetime import datetime
 import os
-=======
+
 import time
 from console_progressbar import ProgressBar
 from tqdm import tqdm
->>>>>>> 73f80429d23e8dea7e17bc348aff937ce0275a08
+
 
 def scan(target_name, ipList):
     thread_list=[]
