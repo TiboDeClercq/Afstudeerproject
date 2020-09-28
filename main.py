@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter import messagebox
 
 from scan import scan
+from questions import questions
 from setup import set_static_ip, set_dhcp
 
 ipList = []
@@ -38,6 +39,7 @@ def sendscan():
     else:
         succesPopUp
         scan(deviceEntry.get(), ipList)
+        questions()
         ipList[:]=[]
         textentry.delete(0,'end')
         output.delete(0,'end')
