@@ -10,6 +10,7 @@ import sys
 from tempfile import mkstemp
 from shutil import move, copymode
 from os import fdopen, remove
+from datetime import datetime
 import os
 
 def scan(target_name, ipList):
@@ -61,8 +62,11 @@ def scan(target_name, ipList):
     def custome_port_table():
         #Scanning all ports
         print("Scanning open ports...")
-        os.system('nmap -p-  127.0.0.1 | grep open | cut -d" " -f1 > nmap_test/ports.txt')
-        
+        # os.system('nmap -p-  127.0.0.1 | grep open | cut -d" " -f1 > nmap_test/ports.txt')
+        #Commando dat de scan gaat uitvoeren voor al de ip addressen 
+        cmd = "nmap -p-  " + ' '.join(map(str, ipList)) + " | grep open | cut -d' ' -f1 > nmap_test/ports.txt"
+        os.system(cmd)
+
         with open("nmap_test/ports.txt", "r") as f:
             inhoud = f.read()
             #Create temp file
@@ -100,18 +104,20 @@ def scan(target_name, ipList):
         # target=gmp.create_target(target_name, hosts=ipList)
         # target_id = get_id(target)
 
+
         #target creation with custome port list
         with open("nmap_test/ports.txt", "r") as f:
             inhoud2 = f.read()
         #Creating a new portlist
-        superCooleLijst = gmp.create_port_list('Custome ports123', inhoud2)
+        portListName = target_name.replace(' ', '-').lower() + "_" + datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
+        superCooleLijst = gmp.create_port_list(portListName, inhoud2)
         superCooleLijstID = get_id(superCooleLijst)
 
         target=gmp.create_target(target_name, hosts=ipList, port_list_id=superCooleLijstID)
         target_id = get_id(target)
 
-        #task creation
-        #arguments: target_name, config_id, target_id, scanner_id
+        # task creation
+        # arguments: target_name, config_id, target_id, scanner_id
         task=gmp.create_task(target_name, 'daba56c8-73ec-11df-a475-002264764cea', target_id, '08b69003-5fc2-4037-a479-93b440211c73')
         task_id = get_id(task)
 
