@@ -7,6 +7,8 @@ from questions import questions
 from setup import set_static_ip, set_dhcp
 
 ipList = []
+#Full and Fast Ultimate is default configuration
+config_id = "698f691e-7489-11df-9d8c-002264764cea" 
 def addIP():
     entered_text=textentry.get()
     if not entered_text:
@@ -38,7 +40,7 @@ def sendscan():
         warningPopUp("You haven't entered any IP address.")
     else:
         succesPopUp
-        scan(deviceEntry.get(), ipList)
+        scan(deviceEntry.get(), ipList, config_id)
         questions()
         ipList[:]=[]
         textentry.delete(0,'end')
@@ -74,22 +76,22 @@ def succesPopUp():
 #Full and Fast Ultimate      698f691e-7489-11df-9d8c-002264764cea
 #Full and very Deep          708f25c4-7489-11df-8094-002264764cea
 #Full and very Deep Ultimate 74db13d6-7489-11df-91b9-002264764cea
-def change_dropdown(*args):
+def change_config_id(*args):
     selectedType = tkvar.get() 
-    scanCode = ""
+    
     type
     if selectedType == 'Full and Fast':
-        scanCode = "daba56c8-73ec-11df-a475-002264764cea"
-        print(scanCode)
+        config_id = "daba56c8-73ec-11df-a475-002264764cea"
+        print(config_id)
     elif selectedType == 'Full and Fast Ultimate':
-        scanCode = "698f691e-7489-11df-9d8c-002264764cea"
-        print(scanCode)
+        config_id = "698f691e-7489-11df-9d8c-002264764cea"
+        print(config_id)
     elif selectedType == 'Full and very Deep':
-        scanCode = "708f25c4-7489-11df-8094-002264764cea"
-        print(scanCode)
+        config_id = "708f25c4-7489-11df-8094-002264764cea"
+        print(config_id)
     elif selectedType == 'Full and very Deep Ultimate':
-        scanCode = "74db13d6-7489-11df-91b9-002264764cea"
-        print(scanCode) 
+        config_id = "74db13d6-7489-11df-91b9-002264764cea"
+        print(config_id) 
     else:
         print("niks")
 
@@ -124,7 +126,7 @@ tkvar.set('Full and Fast Ultimate') # set the default option
 popupMenu = OptionMenu(root, tkvar, *choices)
 popupMenu.grid(row = 6, column =0)
 # link function to change dropdown
-tkvar.trace('w', change_dropdown)
+tkvar.trace('w', change_config_id)
 #button to start the scan
 Button(root, text="Scan", width=6, command=sendscan).grid(row=8, column=0, sticky=W)
 
