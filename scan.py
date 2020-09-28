@@ -19,7 +19,7 @@ from console_progressbar import ProgressBar
 from tqdm import tqdm
 
 
-def scan(target_name, ipList):
+def scan(target_name, ipList, config_id):
     thread_list=[]
     connection = UnixSocketConnection()
     transform = EtreeTransform()
@@ -106,7 +106,7 @@ def scan(target_name, ipList):
 
     with Gmp(connection, transform=transform) as gmp:
         # Login -> change to default admin password
-#        gmp.authenticate('sam', 'sam')
+        #gmp.authenticate('sam', 'sam')
         gmp.authenticate('scanner', 'scanner')
 
         #check if scanner user already exists
@@ -137,7 +137,7 @@ def scan(target_name, ipList):
 
         # task creation
         # arguments: target_name, config_id, target_id, scanner_id
-        task=gmp.create_task(target_name, 'daba56c8-73ec-11df-a475-002264764cea', target_id, '08b69003-5fc2-4037-a479-93b440211c73')
+        task=gmp.create_task(target_name, config_id, target_id, '08b69003-5fc2-4037-a479-93b440211c73')
         task_id = get_id(task)
 
         #task start
