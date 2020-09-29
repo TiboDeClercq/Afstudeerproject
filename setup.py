@@ -11,7 +11,7 @@ def get_interface():
         return interface
 
 def set_static_ip(address, netmask):
-    if address =="":
+    if address =="" or netmask=="":
         print("niks aanwezig")
     else:      
         interface = get_interface()
