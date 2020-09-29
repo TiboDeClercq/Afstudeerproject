@@ -19,7 +19,7 @@
 {% block body %}
 <h2>Start a new scan</h2>
 
-<h3>Add ip address to the list:</h3>
+<p>Add ip address to the list:</p>
 <div class="form">
     <form action="/addIP" method="POST">
         <label><b>Ip address :</b></label> <br> 
@@ -31,7 +31,7 @@
 <br>
 <br>
 <div class="list">
-    <p>toegevoegde ip adressen:</p>
+    <p>Added ip adresses:</p>
     <br>
     {% for ip in IpAdressen %}
     <tr>
