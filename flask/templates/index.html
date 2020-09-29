@@ -2,37 +2,46 @@
 
 {% block head %}
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script type=text/javascript>
+<script type="text/python" src="../app.py"></script>
+<!-- <script type=text/javascript>
     $(function() {
-        $('a#test').bind('click', function() {
-            $.getJSON('/printTesten',
+        $('a#send').bind('click', function() {
+            $.getJSON('/addIp',
                 function(data) {
         
             });
             return false;
         });
     });
-</script>
+</script> -->
 {% endblock %}
 
 {% block body %}
 <h2>Start a new scan</h2>
 
+<h3>Add ip address to the list:</h3>
 <div class="form">
-    <form action="/" >
-        <!-- Ip addres label -->
-        <label><b>Ip addres :</b></label> <br> 
-        <input type="text" name="inputIpAddress" id="inputIP">       
-
-    {% for i in range(2): %}
-        <p>bla s</p>
-    {% endfor %}
-    </form>
-    
+    <form action="/addIP" method="POST">
+        <label><b>Ip address :</b></label> <br> 
+        <input type="text" name="inputIP" id="inputIP" placeholder="192.168.0.1"> 
+        <button type="submit" class="addIP" id="addIP">Add ip address</button>
+    </form>    
 </div>
-<form>
-<a href=# id=test><button class='btn btn-default'>Test123</button></a>
-</form>
 
+<br>
+<br>
+<div class="list">
+    <p>toegevoegde ip adressen:</p>
+    <br>
+    {% for ip in IpAdressen %}
+    <tr>
+        <form action="/delIP" method="POST">
+            <td><input type="text" value={{ip}} name="delIP" readonly></input></td>
+            <td><button type="submit" class="delIP" id="delIP">Delete ip address</button></td></form>
+        <br>
+        <br>
+    </tr>
+    {% endfor %}
+</div>
 
 {% endblock %}
