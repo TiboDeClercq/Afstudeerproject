@@ -17,21 +17,25 @@
 {% endblock %}
 
 {% block body %}
-<h2>Start a new scan</h2>
-
-<p>Add ip address to the list:</p>
+<h1>Start a new scan</h1>
+<br>
+<br>
+<h3>Add an ip address to the list:</h3>
+<br>
 <div class="form">
     <form action="/addIP" method="POST">
-        <label><b>Ip address :</b></label> <br> 
+        <label>Ip address :</label>
+        <br>
+        <br>
         <input type="text" name="inputIP" id="inputIP" placeholder="192.168.0.1"> 
         <button type="submit" class="addIP" id="addIP">Add ip address</button>
     </form>    
 </div>
-
+<br>
 <br>
 <br>
 <div class="list">
-    <p>Added ip adresses:</p>
+    <h3>Added ip adresses:</h3>
     <br>
     {% for ip in IpAdressen %}
     <tr>
