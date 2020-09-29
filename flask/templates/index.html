@@ -20,32 +20,45 @@
 <h1>Start a new scan</h1>
 <br>
 <br>
-<h3>Add an ip address to the list:</h3>
-<br>
-<div class="form">
-    <form action="/addIP" method="POST">
-        <label>Ip address :</label>
-        <br>
-        <br>
-        <input type="text" name="inputIP" id="inputIP" placeholder="192.168.0.1"> 
-        <button type="submit" class="addIP" id="addIP">Add ip address</button>
-    </form>    
-</div>
-<br>
-<br>
-<br>
-<div class="list">
-    <h3>Added ip adresses:</h3>
+    <h4>Add an ip address to the list:</h4>
+    <div class="listform">
+        <form action="/addIP" method="POST">
+            <label>Ip address :</label>
+            <br>
+            <input type="text" name="inputIP" id="inputIP" placeholder="192.168.0.1"> 
+            <button type="submit" class="addIP" id="addIP">Add ip address</button>
+        </form>    
+    </div>
     <br>
-    {% for ip in IpAdressen %}
-    <tr>
-        <form action="/delIP" method="POST">
-            <td><input type="text" value={{ip}} name="delIP" readonly></input></td>
-            <td><button type="submit" class="delIP" id="delIP">Delete ip address</button></td></form>
+    <br>
+    <br>
+    <div class="list">
+        <h3>IP address list</h3>
         <br>
-        <br>
-    </tr>
-    {% endfor %}
-</div>
+        {% for ip in IpAdressen %}
+        <tr>
+            <div class="listform">
+                <form action="/delIP" method="POST">
+                    <td><input type="text" value={{ip}} name="delIP" readonly></input></td>
+                    <td><button type="submit" class="delIP" id="delIP">Delete ip address</button></td></form>
+            </div>
+            <br>
+            <br>
+        </tr>
+        {% endfor %}
+    </div>
+    <br>
+    <br>
+    <div class="scanform"></div>
+        <form action="/sendScan" method="POST">
+            <h3>Give your scan a devicename:</h3>
+            <input type="text" name="inputName" id="inputName" placeholder="type your name here">
+            <br>
+            <br>
+            <br>
+            <br>
+            <button type="submit" class="btnSendScan" id="btnSendScan">send scan</button>
+        </form>
+    </div>
 
 {% endblock %}

@@ -1,13 +1,18 @@
 from flask import Flask, render_template, request
 import socket, threading
-#from .. import scan, questions
+import sys, os
+currentdir = os.path.dirname(os.path.realpath(__file__))
+parentdir = os.path.dirname(currentdir)
+sys.path.append(parentdir)
+from scan import scan
+from questions import questions
 #from .. from setup import set_static_ip, set_dhcp
 
 
 
 app = Flask(__name__)
 
-IpAddressen = ["192.168.0.1"]
+IpAddressen = []
 
 conf_id = "698f691e-7489-11df-9d8c-002264764cea"
 
@@ -23,27 +28,28 @@ def addIP():
 def delIP():
     entered_text=request.form.get("delIP")
     IpAddressen.remove(entered_text)
-    return render_template('index.html', IpAdressen=IpAddressen)
+    return render_template('index.html', IpAdressen=IpAddressen)     
+
+@app.route('/sendScan', methods=["POST"])
+def sendScan():
+    deviceName= request.form.get("inputName")
+    if not deviceName:
+        print("You haven't entered a device name.")
+    if not IpAddressen:
+        print("You haven't entered any IP address.")
+    else:
+        print("Success")
+        scan(deviceName, IpAddressen, conf_id)
+        questions()
+        ipList[:]=[]
+        return render_template('success.html')
 
 @app.route('/')
 def index():
     return render_template('index.html', IpAdressen=IpAddressen)
 
 if __name__ == "__main__":
-    app.run(debug=True)        
-
-#@app.route('/sendScan')
-# def sendScan():
-#     if not deviceEntry.get():
-#         print("You haven't entered a device name.")
-#     if not ipList:
-#         print("You haven't entered any IP address.")
-#     else:
-#         print("Success")
-#         scan(deviceEntry.get(), ipList, config_id)
-#         questions()
-#         ipList[:]=[]
-
+    app.run(debug=True)   
 
 #function to check if entered IP address is valid
 # def valid_ip(address):
