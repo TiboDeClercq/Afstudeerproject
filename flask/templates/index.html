@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type=text/javascript>
+    $(function() {
+        $('a#test').bind('click', function() {
+            $.getJSON('/printTesten',
+                function(data) {
+        
+            });
+            return false;
+        });
+    });
+</script>
+{% endblock %}
+
+{% block body %}
+<h2>Start a new scan</h2>
+
+<div class="form">
+    <form action="/" >
+        <!-- Ip addres label -->
+        <label><b>Ip addres :</b></label> <br> 
+        <input type="text" name="inputIpAddress" id="inputIP">       
+
+    {% for i in range(2): %}
+        <p>bla s</p>
+    {% endfor %}
+    </form>
+    
+</div>
+<form>
+<a href=# id=test><button class='btn btn-default'>Test123</button></a>
+</form>
+
+
+{% endblock %}
