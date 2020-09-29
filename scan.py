@@ -123,7 +123,6 @@ def scan(target_name, ipList, config_id):
         # #target creation
         target=gmp.create_target(target_name, hosts=ipList)
         target_id = get_id(target)
-
         custome_port_table()
         #target creation with custome port list
         # with open("ports.txt", "r") as f:

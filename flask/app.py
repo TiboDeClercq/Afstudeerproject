@@ -8,12 +8,11 @@ from scan import scan
 from questions import questions
 from setup import set_dhcp, set_static_ip
 #from .. from setup import set_static_ip, set_dhcp
-
-
-
+import re
 app = Flask(__name__)
 
 IpAddressen = []
+errorList = []
 report_list=[]
 
 conf_id = "698f691e-7489-11df-9d8c-002264764cea"
@@ -24,22 +23,24 @@ def valid_ip(address):
         socket.inet_aton(address)
         #if the entered IP address is not in the list -> add to list
         if address in IpAddressen:
-            print("This IP address is already in the list.")
-        else:
+            errorList.append('This IP address is already in the list.')
+        elif re.match(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", address):
             IpAddressen.append(address)
             return True
     except:
-        print("This IP address is not valid.")
+        #print("This IP address is not valid.")
+        errorList.append('This IP address is not valid.')
         return False
 
 @app.route("/addIP", methods=["POST"])
 def addIP():
     entered_text=request.form.get("inputIP")
+    errorList.clear()
     if not entered_text:
         print("You haven't entered an IP address")
     elif valid_ip(entered_text):
         print('Addres succesfully added')
-    return render_template('index.html', IpAdressen=IpAddressen)
+    return render_template('index.html', IpAdressen=IpAddressen, errorList=errorList)
 
 @app.route("/delIP", methods=["POST"])
 def delIP():
