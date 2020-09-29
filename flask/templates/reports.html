@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+{% endblock %}
+
+{% block body %}
+<h1>reports</h1>
+    {% for report in reports %}
+        <tr>
+            <div class="listform">
+                <form action="/downloadReport" method="POST">
+                    <td><input type="text" value={{report.name}} name="{{report.id}}" readonly></input></td>
+                    <td><button type="submit" class="reportform" id="downloadReport">Download report</button></td>
+                </form>
+            </div>
+            <br>
+            <br>
+        </tr>
+    {% endfor %}
+{% endblock %}
+    

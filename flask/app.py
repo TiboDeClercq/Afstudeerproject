@@ -13,6 +13,7 @@ from questions import questions
 app = Flask(__name__)
 
 IpAddressen = []
+report_list=[]
 
 conf_id = "698f691e-7489-11df-9d8c-002264764cea"
 
@@ -59,6 +60,10 @@ def sendScan():
         questions()
         IpAddressen[:]=[]
         return render_template('success.html')
+
+@app.route('/reports', methods=["POST"])
+def reports():
+    return render_template('reports.html', reports=report_list)
 
 @app.route('/')
 def index():
