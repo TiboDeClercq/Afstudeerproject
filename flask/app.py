@@ -47,6 +47,7 @@ def delIP():
 
 @app.route('/sendScan', methods=["POST"])
 def sendScan():
+    conf_id=request.form.get("conf")
     deviceName= request.form.get("inputName")
     if not deviceName:
         print("You haven't entered a device name.")
