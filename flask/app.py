@@ -41,7 +41,7 @@ def sendScan():
         print("Success")
         scan(deviceName, IpAddressen, conf_id)
         questions()
-        ipList[:]=[]
+        IpAddressen[:]=[]
         return render_template('success.html')
 
 @app.route('/')
