@@ -70,6 +70,17 @@
             <button type="submit" class="btnSendScan" id="btnSendScan">send scan</button>
         </form>
     </div>
+    <br>
+    <br>
+    <h3>change IP adress</h3>
+    <form action="/staticip" method=POST>
+        <input type="text" name="ip" id="ip"placeholder="type your ip address here">
+        <input type="text" name="subnet" id="subnet" placeholder="type your subnetmask here">
+        <button type="submit">Set static IP address</button>
+    </form>
+    <form action="/dhcp" method="POST">
+        <button type="submit">Use DHCP to set your IP address</button>
+    </form>
     <form action="/reports" method="POST">
         <button type="submit">Click here to go to your reports</button>
     </form>

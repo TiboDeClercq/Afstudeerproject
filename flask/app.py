@@ -6,6 +6,7 @@ parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
 from scan import scan
 from questions import questions
+from setup import set_dhcp, set_static_ip
 #from .. from setup import set_static_ip, set_dhcp
 
 
@@ -64,6 +65,18 @@ def sendScan():
 @app.route('/reports', methods=["POST"])
 def reports():
     return render_template('reports.html', reports=report_list)
+
+@app.route('/staticip', methods=["POST"])
+def staticip():
+    ip= request.form.get("ip")
+    subnet=request.form.get("subnet")
+    set_static_ip(ip, subnet)
+    return render_template('index.html')
+
+@app.route('/dhcp', methods=["POST"])
+def dhcp():
+    set_dhcp()
+    return render_template('index.html')
 
 @app.route('/')
 def index():
