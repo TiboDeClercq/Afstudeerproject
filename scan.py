@@ -148,6 +148,4 @@ def scan(target_name, ipList, config_id):
         t1=threading.Thread(target=progressbar, args=(task_id,))
         thread_list.append(t1)
         t1.start()
-        
-        
-            
+    

@@ -16,12 +16,27 @@ IpAddressen = []
 
 conf_id = "698f691e-7489-11df-9d8c-002264764cea"
 
+#function to check if entered IP address is valid
+def valid_ip(address):
+    try: 
+        socket.inet_aton(address)
+        #if the entered IP address is not in the list -> add to list
+        if address in IpAddressen:
+            print("This IP address is already in the list.")
+        else:
+            IpAddressen.append(address)
+            return True
+    except:
+        print("This IP address is not valid.")
+        return False
+
 @app.route("/addIP", methods=["POST"])
 def addIP():
     entered_text=request.form.get("inputIP")
-    IpAddressen.append(entered_text)
     if not entered_text:
         print("You haven't entered an IP address")
+    elif valid_ip(entered_text):
+        print('Addres succesfully added')
     return render_template('index.html', IpAdressen=IpAddressen)
 
 @app.route("/delIP", methods=["POST"])
@@ -50,20 +65,6 @@ def index():
 
 if __name__ == "__main__":
     app.run(debug=True)   
-
-#function to check if entered IP address is valid
-# def valid_ip(address):
-#     try: 
-#         socket.inet_aton(address)
-#         #if the entered IP address is not in the list -> add to list
-#         if address in ipList:
-#             print("This IP address is already in the list.")
-#         else:
-#             ipList.append(address)
-#             return True
-#     except:
-#         print("This IP address is not valid.")
-#         return False
 
 # def printIPList():
 #     threading.Timer(5.0, printIPList).start()
