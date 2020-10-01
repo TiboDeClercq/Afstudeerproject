@@ -118,6 +118,7 @@ def portQuestions():
             port_list=re.findall(r'[\d]*[^,\sTU:]', port_list)
             print(port_list)
     return render_template('questions.html', ports=port_list)
+
 @app.route('/')
 def index():
     return render_template('index.html', IpAdressen=IpAddressen)
