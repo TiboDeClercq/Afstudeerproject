@@ -15,6 +15,7 @@ app = Flask(__name__)
 IpAddressen = []
 errorList = []
 report_list=[]
+scprogress=0
 
 
 conf_id = "698f691e-7489-11df-9d8c-002264764cea"
@@ -33,11 +34,6 @@ def valid_ip(address):
         #print("This IP address is not valid.")
         errorList.append('This IP address is not valid.')
         return False
-
-#create scan methods - index.html
-# @app.route('/')
-# def index():
-#     return render_template('index.html', IpAdressen=IpAddressen)
 
 @app.route('/createScan', methods=["GET"])
 def createScan():
@@ -82,7 +78,7 @@ def sendScan():
         scan(targetUniqueName, IpAddressen, conf_id)
         questions()
         IpAddressen[:]=[]
-        return portQuestions()
+        return render_template('success.html')
 
 
 #Report methods - reports.html
@@ -112,11 +108,7 @@ def dhcp():
     set_dhcp()
     return render_template('config.html')
 
-# @app.route('/portQuestions', methods=["POST"])
-# def portQuestions_POST():
-
-
-@app.route('/portQuestions', methods=["GET"])
+@app.route('/portQuestions', methods=["POST"])
 def portQuestions():
     with open("ports.txt", "r") as f:
             port_list = f.read()
