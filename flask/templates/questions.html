@@ -1,22 +1,45 @@
 {% extends 'base.html' %}
 
-{% block head %}
+<!-- {% block head %}
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+{% endblock %} -->
+{% block nav %}
+<a class="nav-link " href="/createScan">Scan device</a>
+<a class="nav-link" href="/configuration">Confgiuration</a>
+<a class="nav-link active" href="/reports">Reports</a>
 {% endblock %}
 
 {% block body %}
-<h1>reports</h1>  
-        <tr></tr>
-            <div class="listform">
-                <form action="/portQuestions" method="POST">
-                    {% for port in ports %}
-                        <td><label>Open port: </label></td>
-                        <td></td><input type="text" value={{port}} readonly></input></td>
-                        <td></td><input type="radio" id={{port}} name={{port}} value={{port}}></td>
-                        <td></td><label for={{port}}>{{port}}</label></td>            
-                    {% endfor %}
-                    <td><button type="submit" class="portform" id="portbutton">Submit answers</button></td>
-                </div>
-        </tr>
-    
+<div class="row">
+    <h1>Questions</h1>
+</div>
+<br>
+<div class="row">
+    <form action="/portQuestions" method="POST">
+
+        {% for port in ports %}
+        <div class="form-group">
+            <label for="inputIP">Did you know that port <b>{{port}}</b> was open?</label><br>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input " type="radio" name="inlineRadioOptions{{port}}" id="radio1{{port}}"
+                    value="Yes" required>
+                <label class="form-check-label" for="radio1{{port}}">Yes</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input " type="radio" name="inlineRadioOptions{{port}}" id="radio2{{port}}"
+                    value="No" required>
+                <label class="form-check-label" for="radio2{{port}}">No</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="textArea{{port}}">What is the purpuse of this port?</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+        </div>
+
+        {% endfor %}
+        <td><button type="submit" class="portform btn btn-primary" id="portbutton">Submit answers</button></td>
+    </form>
+</div>
+</tr>
+
 {% endblock %}

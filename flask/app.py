@@ -112,7 +112,11 @@ def dhcp():
     set_dhcp()
     return render_template('config.html')
 
-@app.route('/portQuestions')
+# @app.route('/portQuestions', methods=["POST"])
+# def portQuestions_POST():
+
+
+@app.route('/portQuestions', methods=["GET"])
 def portQuestions():
     with open("ports.txt", "r") as f:
             port_list = f.read()
@@ -120,6 +124,7 @@ def portQuestions():
             port_list=re.findall(r'[\d]*[^,\sTU:]', port_list)
             print(port_list)
     return render_template('questions.html', ports=port_list)
+
 @app.route('/')
 def index():
     return render_template('index.html', IpAdressen=IpAddressen)
