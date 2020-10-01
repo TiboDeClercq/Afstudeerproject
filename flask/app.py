@@ -16,8 +16,7 @@ IpAddressen = []
 errorList = []
 report_list=[]
 scprogress=0
-while scprogress != 100:
-    scprogress=get_progresshtml
+
 
 
 conf_id = "698f691e-7489-11df-9d8c-002264764cea"
@@ -78,9 +77,14 @@ def sendScan():
         #Target has to be unique. Date and time will be added to the devicename.
         targetUniqueName = deviceName.replace(' ', '-').lower() + "_" + datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
         scan(targetUniqueName, IpAddressen, conf_id)
+        scprogress=get_progresshtml
         questions()
         IpAddressen[:]=[]
-        return render_template('success.html')
+        while scprogress != 100:
+            oldscprogress = scprogress
+            while scprogress =< oldscprogress:
+                scprogress=get_progresshtml
+                return render_template('success.html', progrb=scprogress)
 
 
 #Report methods - reports.html
