@@ -61,7 +61,7 @@ def sendScan():
         scan(deviceName, IpAddressen, conf_id)
         questions()
         IpAddressen[:]=[]
-        return render_template('success.html')
+        return portQuestions()
 
 @app.route('/reports', methods=["POST"])
 def reports():
@@ -79,6 +79,14 @@ def dhcp():
     set_dhcp()
     return render_template('index.html')
 
+@app.route('/portQuestions')
+def portQuestions():
+    with open("ports.txt", "r") as f:
+            port_list = f.read()
+            
+            port_list=re.findall(r'[\d]*[^,\sTU:]', port_list)
+            print(port_list)
+    return render_template('questions.html', ports=port_list)
 @app.route('/')
 def index():
     return render_template('index.html', IpAdressen=IpAddressen)
