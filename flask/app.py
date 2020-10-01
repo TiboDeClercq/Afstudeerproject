@@ -105,12 +105,12 @@ def staticip():
     ip= request.form.get("ip")
     subnet=request.form.get("subnet")
     set_static_ip(ip, subnet)
-    return render_template('index.html')
+    return render_template('config.html')
 
 @app.route('/dhcp', methods=["POST"])
 def dhcp():
     set_dhcp()
-    return render_template('index.html')
+    return render_template('config.html')
 
 @app.route('/portQuestions')
 def portQuestions():
