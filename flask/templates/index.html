@@ -5,71 +5,124 @@
 {% endblock %}
 
 {% block body %}
-<!-- <div class="container">
-    <div class="row"> -->
-        <h1>Start a new scan</h1>
-        <h5>Add an ip address to the list:</h5>
-        <form action="/addIP" method="POST">
-            <div class="form-group">
-                <label for inputIP>IP address</label>
-                <input type="text" name="inputIP" id="inputIP" placeholder="Enter IP addres" required>
-                <button type="submit" class="addIP" id="addIP">Add IP address</button>
-                <small id="ipHelp" class="form-text text-muted">Example of a valid IP address: 192.168.0.2</small>
-            </div>
-        </form>
-        {% for i in errorList%}
-        <div class="alert alert-danger" role="alert">
-            <!-- This is a danger alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like. -->
-            {{i}}
-        </div>
-        {% endfor %}
-        <div class="list">
-            <h3>IP address list</h3>
-            {% for ip in IpAdressen %}
-            <tr>
-                <div class="listform">
-                    <form action="/delIP" method="POST">
-                        <td><input type="text" value={{ip}} name="delIP" readonly></input></td>
-                        <td><button type="submit" class="delIP" id="delIP">Remove ip address</button></td>
-                    </form>
+<div class="container">
+    <br>
+    <div class="row">
+        <h2>Start a new scan</h2>
+    </div>
+
+    <div class="row">
+        <div class="column">
+
+            <form action="/addIP" method="POST">
+                <div class="form-group">
+                    <label for="inputIP"><b>Enter IP address</b></label>
+                    <input class="form-control" type="text" name="inputIP" id="inputIP" placeholder="IP addres"
+                        required>
+                    <small id="ipHelp" class="form-text text-muted">Example of a valid IP address: 192.168.0.2</small>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="addIP btn btn-primary " id="addIP">Add IP address</button>
                 </div>
 
-            </tr>
-            {% endfor %}
+
+            </form>
         </div>
-        <br>
-        <br>
+    </div>
 
-        <form action="/sendScan" method="POST">
-            <div class="scanform"></div>
-            <label for="selectScanType">Select the type of scan</label>
-            <select name="conf" id="conf" class="form-control" id="selectScanType">
-                <option value="daba56c8-73ec-11df-a475-002264764cea">Full and Fast</option>
-                <option value="698f691e-7489-11df-9d8c-002264764cea">Full and Fast Ultimate</option>
-                <option value="708f25c4-7489-11df-8094-002264764cea">Full and very Deep</option>
-                <option value="74db13d6-7489-11df-91b9-002264764cea">Full and very Deep Ultimate</option>
-            </select>
-            <br>
-            <br>
-            <h3>Give your scan a devicename:</h3>
-            <input type="text" name="inputName" id="inputName" placeholder="type your name here" required>
-            <br>
+    <div class="row">
+        <div class="column">
+            {% for i in errorList%}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
 
-            <button type="submit" class="btnSendScan" id="btnSendScan">send scan</button>
+                <!-- <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div> -->
+                {{i}}
+                <button type="button btn-sm" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endfor %}
+            <div class="list">
+                <!-- <h5>IP address list</h5> -->
+                <caption><i>List of IP addresses</i></caption>
+                <table class="table table-borderless table-sm">
+                    {% for ip in IpAdressen %}
+                    <tr>
+
+                        <form action="/delIP" method="POST">
+                            <td><input type="text" value={{ip}} name="delIP" readonly></input></td>
+                            <td><button class="btn btn-outline-danger btn-sm" type="submit" class="delIP"
+                                    id="delIP">Delete
+                                    IP</button></td>
+                        </form>
+
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="column">
+            <form action="/sendScan" method="POST">
+                <!-- <div class="scanform"></div> -->
+
+                <div class="form-group">
+                    <label for="inputName"><b>Enter devicename</b></label>
+                    <input class="form-control" type="text" name="inputName" id="inputName" placeholder="Devicename"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label for="selectScanType"><b>Select the type of scan</b></label>
+                    <select name="conf" id="conf" class="form-control" id="selectScanType">
+                        <option value="daba56c8-73ec-11df-a475-002264764cea">Full and Fast</option>
+                        <option value="698f691e-7489-11df-9d8c-002264764cea">Full and Fast Ultimate</option>
+                        <option value="708f25c4-7489-11df-8094-002264764cea">Full and very Deep</option>
+                        <option value="74db13d6-7489-11df-91b9-002264764cea">Full and very Deep Ultimate</option>
+                    </select>
+                </div>
+                <button type="submit" class="btnSendScan btn btn-primary" id="btnSendScan">Send scan</button>
+            </form>
+
+        </div>
     </div>
     <br>
+    <div class="row">
+        <h4>Configure IP adress</h4>
+    </div>
+    <div class="row">
+        <form action="/staticip" method=POST>
+            <div class="form-group">
+                <label for="ip">Enter IP address</label>
+                <input class="form-control" type="text" name="ip" id="ip" placeholder="IP address">
+                <small id="ipHelp2" class="form-text text-muted">Example of a valid IP address: 192.168.0.2</small>
+            </div>
+            <div class="form-group">
+                <label for="subnet">Configure subnet</label>
+                <input class="form-control" type="text" name="subnet" id="subnet" placeholder="Subnetmask">
+                <small id="subnetHelp" class="form-text text-muted">Example of a valid subnetmask: 255.255.0.0</small>
+            </div>
+            <button class="btn btn-primary " type="submit">Configure IP</button>
+        </form>
+    </div>
     <br>
-    <h3>change IP adress</h3>
-    <form action="/staticip" method=POST>
-        <input type="text" name="ip" id="ip"placeholder="type your ip address here">
-        <input type="text" name="subnet" id="subnet" placeholder="type your subnetmask here">
-        <button type="submit">Set static IP address</button>
-    </form>
-    <form action="/dhcp" method="POST">
-        <button type="submit">Use DHCP to set your IP address</button>
-    </form>
-    <form action="/reports" method="POST">
-        <button type="submit">Click here to go to your reports</button>
-    </form>
+    <div class="row">
+        <form action="/dhcp" method="POST">
+            <label></label>
+            <button class="btn btn-primary" type="submit">Use DHCP</button>
+        </form>
+    </div>
+    <br>
+    <div class="row">
+        <form action="/reports" method="POST">
+            <button  class="btn btn-primary" type="submit">Click here to go to your reports</button>
+        </form>
+    </div>
+</div>
 
 {% endblock %}
