@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block nav %}
+<a class="nav-link " href="/scan">Scan device</a>
+<a class="nav-link active" href="/configuration">Confgiuration</a>
+<a class="nav-link" href="/reports">Reports</a>
+{% endblock %}
+
+
+{% block body %}
+
+<!-- <div class="row">
+    <h2>IP configuration</h2>
+</div> -->
+<div class="row">
+    <h3>Static configuration</h3>
+</div>
+<div class="row">
+    <p><i>Enter a valid IP address and a subnetmask to configure your own address staticly</i></p>
+</div>
+<div class="row">
+    <form action="/staticip" method=POST>
+        <div class="form-group">
+            <label for="ip"><b>Enter IP address</b></label>
+            <input class="form-control" type="text" name="ip" id="ip" placeholder="IP address">
+            <small id="ipHelp2" class="form-text text-muted">Example of a valid IP address: 192.168.0.2</small>
+        </div>
+        <div class="form-group">
+            <label for="subnet"><b>Configure subnet</b></label>
+            <input class="form-control" type="text" name="subnet" id="subnet" placeholder="Subnetmask">
+            <small id="subnetHelp" class="form-text text-muted">Example of a valid subnetmask: 255.255.0.0</small>
+        </div>
+        <button class="btn btn-primary " type="submit">Configure IP</button>
+    </form>
+</div>
+<br>
+<div class="row">
+    <h3>Dynamic configuration</h3>
+</div>
+<div class="row">
+    <p><i>By pressing the button, you configure your own IP addres dynamicly with DHCP. </i></p>
+</div>
+
+<div class="row">
+    <form action="/dhcp" method="POST">
+        <label></label>
+        <button class="btn btn-primary" type="submit">Use DHCP</button>
+    </form>
+</div>
+
+{% endblock %}

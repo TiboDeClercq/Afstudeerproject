@@ -1,12 +1,16 @@
 {% extends 'base.html' %}
-
 {% block head %}
 <script type="text/python" src="../app.py"></script>
 {% endblock %}
 
+{% block nav %}
+<a class="nav-link active" href="/scan">Scan device</a>
+<a class="nav-link" href="/configuration">Confgiuration</a>
+<a class="nav-link" href="/reports">Reports</a>
+{% endblock %}
+
 {% block body %}
-<div class="container">
-    <br>
+
     <div class="row">
         <h2>Start a new scan</h2>
     </div>
@@ -34,13 +38,6 @@
         <div class="column">
             {% for i in errorList%}
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-
-                <!-- <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>Holy guacamole!</strong> You should check in on some of those fields below.
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div> -->
                 {{i}}
                 <button type="button btn-sm" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -58,7 +55,7 @@
                             <td><input type="text" value={{ip}} name="delIP" readonly></input></td>
                             <td><button class="btn btn-outline-danger btn-sm" type="submit" class="delIP"
                                     id="delIP">Delete
-                                    IP</button></td>
+                                </button></td>
                         </form>
 
                     </tr>
@@ -91,38 +88,16 @@
 
         </div>
     </div>
+    
     <br>
-    <div class="row">
-        <h4>Configure IP adress</h4>
-    </div>
-    <div class="row">
-        <form action="/staticip" method=POST>
-            <div class="form-group">
-                <label for="ip">Enter IP address</label>
-                <input class="form-control" type="text" name="ip" id="ip" placeholder="IP address">
-                <small id="ipHelp2" class="form-text text-muted">Example of a valid IP address: 192.168.0.2</small>
-            </div>
-            <div class="form-group">
-                <label for="subnet">Configure subnet</label>
-                <input class="form-control" type="text" name="subnet" id="subnet" placeholder="Subnetmask">
-                <small id="subnetHelp" class="form-text text-muted">Example of a valid subnetmask: 255.255.0.0</small>
-            </div>
-            <button class="btn btn-primary " type="submit">Configure IP</button>
-        </form>
-    </div>
-    <br>
-    <div class="row">
-        <form action="/dhcp" method="POST">
-            <label></label>
-            <button class="btn btn-primary" type="submit">Use DHCP</button>
-        </form>
-    </div>
-    <br>
+     <!-- Raar, waarom zou hier een POST moeten komen?
     <div class="row">
         <form action="/reports" method="POST">
-            <button  class="btn btn-primary" type="submit">Click here to go to your reports</button>
+            <button class="btn btn-primary" type="submit">Click here to go to your reports</button>
         </form>
-    </div>
-</div>
+    </div> -->
+    <br>
+    <br>
+
 
 {% endblock %}

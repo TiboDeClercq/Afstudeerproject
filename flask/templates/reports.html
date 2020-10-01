@@ -4,6 +4,12 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 {% endblock %}
 
+{% block nav %}
+<a class="nav-link" href="/scan">Scan device</a>
+<a class="nav-link" href="/configuration">Confgiuration</a>
+<a class="nav-link active" href="/reports">Reports</a>
+{% endblock %}
+
 {% block body %}
 <h1>reports</h1>
     {% for report in reports %}
