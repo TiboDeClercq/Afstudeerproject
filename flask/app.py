@@ -107,7 +107,7 @@ def dhcp():
     set_dhcp()
     return render_template('config.html')
 
-@app.route('/portQuestions')
+@app.route('/portQuestions', methods=["POST"])
 def portQuestions():
     with open("ports.txt", "r") as f:
             port_list = f.read()
