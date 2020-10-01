@@ -1,12 +1,15 @@
 {% extends 'base.html' %}
 
-{% block head %}
-<!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> -->
+{% block nav %}
+<a class="nav-link " href="/createScan">Scan device</a>
+<a class="nav-link" href="/configuration">Confgiuration</a>
+<a class="nav-link" href="/reports">Reports</a>
 {% endblock %}
 
 {% block body %}
 <h1>Success, your scan has started</h1>
+
 <form action="/reports" method="POST">
-    <button type="submit">Click here to go to your reports</button>
+    <button type="submit" class="btnSendScan btn btn-primary">Click here to go to your reports</button>
 </form>
 {% endblock %}

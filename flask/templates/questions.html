@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+{% endblock %}
+
+{% block body %}
+<h1>reports</h1>  
+        <tr></tr>
+            <div class="listform">
+                <form action="/portQuestions" method="POST">
+                    {% for port in ports %}
+                        <td><label>Open port: </label></td>
+                        <td></td><input type="text" value={{port}} readonly></input></td>
+                        <td></td><input type="radio" id={{port}} name={{port}} value={{port}}></td>
+                        <td></td><label for={{port}}>{{port}}</label></td>            
+                    {% endfor %}
+                    <td><button type="submit" class="portform" id="portbutton">Submit answers</button></td>
+                </div>
+        </tr>
+    
+{% endblock %}
