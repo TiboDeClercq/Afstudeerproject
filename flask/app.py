@@ -5,7 +5,7 @@ from datetime import datetime
 currentdir = os.path.dirname(os.path.realpath(__file__))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
-from scan import scan
+from scan import scan, get_progresshtml
 from questions import questions
 from setup import set_dhcp, set_static_ip
 #from .. from setup import set_static_ip, set_dhcp
@@ -16,6 +16,8 @@ IpAddressen = []
 errorList = []
 report_list=[]
 scprogress=0
+while scprogress != 100:
+    scprogress=get_progresshtml
 
 
 conf_id = "698f691e-7489-11df-9d8c-002264764cea"

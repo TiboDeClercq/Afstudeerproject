@@ -46,6 +46,19 @@ def get_progress(inputxml):
     regexid=re.findall(r'<progress>[0-9]*',xmlstr.decode('utf8'))
     return regexid[0][10:]
 
+def get_progresshtml(taskid):
+        taskxml=gmp.get_task(taskid)
+        print(get_name_without(taskxml),": ", get_status(taskxml))
+        i=0
+        while (get_status(taskxml)=='Requested' or get_status(taskxml)=='Running'):
+            taskxml=gmp.get_task(taskid)
+            while(get_status(taskxml)=='Running' and i < int(get_progress(taskxml))):
+                if(get_progress(taskxml) != ''):
+                    oldi = i
+                    i = int(get_progress(taskxml))
+                    return i
+        print(get_status(taskxml))
+
 def progressbar(taskid):
         print("thread started")
         taskxml=gmp.get_task(taskid)
