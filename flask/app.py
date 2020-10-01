@@ -39,8 +39,8 @@ def valid_ip(address):
 def index():
     return render_template('index.html', IpAdressen=IpAddressen)
 
-@app.route('/scan', methods=["GET"])
-def scan():
+@app.route('/createScan', methods=["GET"])
+def createScan():
     return render_template('index.html', IpAdressen=IpAddressen)
 
 @app.route("/addIP", methods=["POST"])
