@@ -50,14 +50,15 @@ def get_progresshtml(taskid):
         taskxml=gmp.get_task(taskid)
         print(get_name_without(taskxml),": ", get_status(taskxml))
         i=0
+        ilist=[]
         while (get_status(taskxml)=='Requested' or get_status(taskxml)=='Running'):
             taskxml=gmp.get_task(taskid)
             while(get_status(taskxml)=='Running' and i < int(get_progress(taskxml))):
                 if(get_progress(taskxml) != ''):
-                    oldi = i
                     i = int(get_progress(taskxml))
-                    return i
-        print(get_status(taskxml))
+                    ilist.append(i)
+        return ilist
+        #print(get_status(taskxml))
 
 def progressbar(taskid):
         print("thread started")
