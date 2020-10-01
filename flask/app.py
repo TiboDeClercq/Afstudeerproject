@@ -82,7 +82,7 @@ def sendScan():
         IpAddressen[:]=[]
         while scprogress != 100:
             oldscprogress = scprogress
-            while scprogress =< oldscprogress:
+            while scprogress <= oldscprogress:
                 scprogress=get_progresshtml
                 return render_template('success.html', progrb=scprogress)
 
