@@ -120,21 +120,21 @@ def scan(target_name, ipList, config_id):
             print(user_id)
 
         gmp.authenticate('scanner', 'scanner')
-        # #target creation
-        # target=gmp.create_target(target_name, hosts=ipList)
-        # target_id = get_id(target)
-
-
-        #target creation with custome port list
-        with open("nmap_test/ports.txt", "r") as f:
-            inhoud2 = f.read()
-        #Creating a new portlist
-        portListName = target_name.replace(' ', '-').lower() + "_" + datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
-        superCooleLijst = gmp.create_port_list(portListName, inhoud2)
-        superCooleLijstID = get_id(superCooleLijst)
-
-        target=gmp.create_target(target_name, hosts=ipList, port_list_id=superCooleLijstID)
+        #target creation
+        target=gmp.create_target(target_name, hosts=ipList)
         target_id = get_id(target)
+
+        # custome_port_table()
+        # #target creation with custome port list
+        # with open("nmap_test/ports.txt", "r") as f:
+        #     inhoud2 = f.read()
+        # #Creating a new portlist
+        # portListName = target_name.replace(' ', '-').lower() + "_" + datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
+        # superCooleLijst = gmp.create_port_list(portListName, inhoud2)
+        # superCooleLijstID = get_id(superCooleLijst)
+
+        # target=gmp.create_target(target_name, hosts=ipList, port_list_id=superCooleLijstID)
+        # target_id = get_id(target)
 
         # task creation
         # arguments: target_name, config_id, target_id, scanner_id

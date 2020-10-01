@@ -1,59 +1,49 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> -->
 <script type="text/python" src="../app.py"></script>
-<!-- <script type=text/javascript>
-    $(function() {
-        $('a#send').bind('click', function() {
-            $.getJSON('/addIp',
-                function(data) {
-        
-            });
-            return false;
-        });
-    });
-</script> -->
 {% endblock %}
 
 {% block body %}
-<h1>Start a new scan</h1>
-<br>
-<br>
-    <h4>Add an ip address to the list:</h4>
-    <div class="listform">
+<!-- <div class="container">
+    <div class="row"> -->
+        <h1>Start a new scan</h1>
+        <h5>Add an ip address to the list:</h5>
         <form action="/addIP" method="POST">
-            <label>Ip address :</label>
-            <br>
-            <input type="text" name="inputIP" id="inputIP" placeholder="192.168.0.1"> 
-            <button type="submit" class="addIP" id="addIP">Add ip address</button>
-        </form>    
-    </div>
-    <br>
-    <br>
-    <br>
-    <div class="list">
-        <h3>IP address list</h3>
-        <br>
-        {% for ip in IpAdressen %}
-        <tr>
-            <div class="listform">
-                <form action="/delIP" method="POST">
-                    <td><input type="text" value={{ip}} name="delIP" readonly></input></td>
-                    <td><button type="submit" class="delIP" id="delIP">Delete ip address</button></td></form>
+            <div class="form-group">
+                <label for inputIP>IP address</label>
+                <input type="text" name="inputIP" id="inputIP" placeholder="Enter IP addres" required>
+                <button type="submit" class="addIP" id="addIP">Add IP address</button>
+                <small id="ipHelp" class="form-text text-muted">Example of a valid IP address: 192.168.0.2</small>
             </div>
-            <br>
-            <br>
-        </tr>
+        </form>
+        {% for i in errorList%}
+        <div class="alert alert-danger" role="alert">
+            <!-- This is a danger alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like. -->
+            {{i}}
+        </div>
         {% endfor %}
-    </div>
-    <br>
-    <br>
-    <div class="scanform"></div>
+        <div class="list">
+            <h3>IP address list</h3>
+            {% for ip in IpAdressen %}
+            <tr>
+                <div class="listform">
+                    <form action="/delIP" method="POST">
+                        <td><input type="text" value={{ip}} name="delIP" readonly></input></td>
+                        <td><button type="submit" class="delIP" id="delIP">Remove ip address</button></td>
+                    </form>
+                </div>
+
+            </tr>
+            {% endfor %}
+        </div>
+        <br>
+        <br>
+
         <form action="/sendScan" method="POST">
-            <h3>Select your type of scan</h3>
-            <br>
-            <select name="conf" id="conf">
+            <div class="scanform"></div>
+            <label for="selectScanType">Select the type of scan</label>
+            <select name="conf" id="conf" class="form-control" id="selectScanType">
                 <option value="daba56c8-73ec-11df-a475-002264764cea">Full and Fast</option>
                 <option value="698f691e-7489-11df-9d8c-002264764cea">Full and Fast Ultimate</option>
                 <option value="708f25c4-7489-11df-8094-002264764cea">Full and very Deep</option>
@@ -62,13 +52,12 @@
             <br>
             <br>
             <h3>Give your scan a devicename:</h3>
-            <input type="text" name="inputName" id="inputName" placeholder="type your name here">
+            <input type="text" name="inputName" id="inputName" placeholder="type your name here" required>
             <br>
-            <br>
-            <br>
-            <br>
+
             <button type="submit" class="btnSendScan" id="btnSendScan">send scan</button>
-        </form>
     </div>
+    </form>
+<!-- </div> -->
 
 {% endblock %}
