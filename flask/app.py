@@ -34,11 +34,6 @@ def valid_ip(address):
         errorList.append('This IP address is not valid.')
         return False
 
-#create scan methods - index.html
-@app.route('/')
-def index():
-    return render_template('index.html', IpAdressen=IpAddressen)
-
 @app.route('/createScan', methods=["GET"])
 def createScan():
     return render_template('index.html', IpAdressen=IpAddressen)
