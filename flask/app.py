@@ -82,7 +82,7 @@ def sendScan():
         scan(targetUniqueName, IpAddressen, conf_id)
         questions()
         IpAddressen[:]=[]
-        return render_template('success.html')
+        return portQuestions()
 
 
 #Report methods - reports.html
@@ -112,6 +112,17 @@ def dhcp():
     set_dhcp()
     return render_template('index.html')
 
+@app.route('/portQuestions')
+def portQuestions():
+    with open("ports.txt", "r") as f:
+            port_list = f.read()
+            
+            port_list=re.findall(r'[\d]*[^,\sTU:]', port_list)
+            print(port_list)
+    return render_template('questions.html', ports=port_list)
+@app.route('/')
+def index():
+    return render_template('index.html', IpAdressen=IpAddressen)
 
 if __name__ == "__main__":
     app.run(debug=True)   
