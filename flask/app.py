@@ -77,7 +77,7 @@ def sendScan():
         scan(targetUniqueName, IpAddressen, conf_id)
         questions()
         IpAddressen[:]=[]
-        return portQuestions()
+        return render_template('success.html')
 
 
 #Report methods - reports.html
