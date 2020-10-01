@@ -12,6 +12,7 @@ app = Flask(__name__)
 
 IpAddressen = []
 errorList = []
+report_list=[]
 
 conf_id = "698f691e-7489-11df-9d8c-002264764cea"
 
@@ -48,22 +49,23 @@ def delIP():
 
 @app.route('/sendScan', methods=["POST"])
 def sendScan():
-    try:
-        conf_id=request.form.get("conf")
-        deviceName= request.form.get("inputName")
-        if not deviceName:
-            print("You haven't entered a device name.")
-        if not IpAddressen:
-            print("You haven't entered any IP address.")
-        else:
-            print("Success")
-            scan(deviceName, IpAddressen, conf_id)
-            questions()
-            IpAddressen[:]=[]
-            return render_template('success.html')
-    except:
-        errorList.append('kapooooot')
-        print('Da werkt niet he')
+    conf_id=request.form.get("conf")
+    deviceName= request.form.get("inputName")
+    if not deviceName:
+        print("You haven't entered a device name.")
+    if not IpAddressen:
+        print("You haven't entered any IP address.")
+    else:
+        print("Success")
+        scan(deviceName, IpAddressen, conf_id)
+        questions()
+        IpAddressen[:]=[]
+        return render_template('success.html')
+
+@app.route('/reports', methods=["POST"])
+def reports():
+    return render_template('reports.html', reports=report_list)
+
 @app.route('/')
 def index():
     return render_template('index.html', IpAdressen=IpAddressen)
