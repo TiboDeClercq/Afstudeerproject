@@ -15,6 +15,7 @@ app = Flask(__name__)
 IpAddressen = []
 errorList = []
 report_list=[]
+scprogress=0
 
 
 conf_id = "698f691e-7489-11df-9d8c-002264764cea"
