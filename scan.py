@@ -21,7 +21,7 @@ from tqdm import tqdm
 import questions
 
 
-global progressval=0
+progressval = 0
 
 #function to get ID out of output string when new user/asset is created
 def get_id(inputxml):

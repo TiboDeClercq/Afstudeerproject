@@ -1,3 +1,6 @@
 *.pyc
 nmap_test/ports.txt
 txtfiles/
+zipfiles/
+flask/ports.txt
+flask/interfaces.txt

@@ -14,6 +14,8 @@ import subprocess
 import re
 import asyncio
 import websockets
+import shutil
+from zipfile import ZipFile
 
 app = Flask(__name__)
 
@@ -137,6 +139,19 @@ def portQuestions():
     print(targetname)
     return render_template('questions.html', ports=port_list, targetname=targetname)
 
+def zip_files(targetname):
+    path="txtfiles/answers_target_"+targetname
+    
+    try:
+        os.system("mkdir zipfiles")
+    except:
+        print("directory exists")
+    zipObj=ZipFile("zipfiles/"+targetname+'.zip', 'w')
+
+    zipObj.write(path)
+    zipObj.close
+    print("successfull zipped")
+
 @app.route('/portAnswers', methods=["POST"])
 def portAnswers():
     AnswerList=dict()
@@ -160,7 +175,9 @@ def portAnswers():
 
     with open("txtfiles/answers_target_" + targetname, "w") as a:
         for port in port_list:
-            a.write("port: " + port + " yes/no: " + AnswerList[port][0] + ", explanation: " + AnswerList[port][1] + "\n") 
+            a.write("port: " + port + " yes/no: " + AnswerList[port][0] + ", explanation: " + AnswerList[port][1] + "\n")
+
+    zip_files(targetname)
     return index()
 @app.route('/')
 def index():
@@ -169,6 +186,9 @@ def index():
 @app.route('/scan')
 def scann():
     return render_template('index.html', IpAdressen=IpAddressen)
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)   
