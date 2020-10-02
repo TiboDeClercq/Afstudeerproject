@@ -47,6 +47,8 @@ def get_progress(inputxml):
     return regexid[0][10:]
 
 def get_progresshtml(taskid):
+        taskk = gmp.get_task()
+        task_id = get_id(taskk)
         taskxml=gmp.get_task(taskid)
         print(get_name_without(taskxml),": ", get_status(taskxml))
         i=0
@@ -160,10 +162,10 @@ def scan(target_name, ipList, config_id):
         task_id = get_id(task)
 
         #task start
-        gmp.start_task(task_id)        
+        gmp.start_task(task_id)
         
         print("task started succesfully!")
-        t1=threading.Thread(target=progressbar, args=(task_id,))
-        thread_list.append(t1)
-        t1.start()
+        # t1=threading.Thread(target=progressbar, args=(task_id,))
+        # thread_list.append(t1)
+        # t1.start()
     
