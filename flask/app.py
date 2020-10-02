@@ -13,6 +13,7 @@ from setup import set_dhcp, set_static_ip
 import re
 import asyncio
 import websockets
+from zipfile import ZipFile
 
 app = Flask(__name__)
 
@@ -39,6 +40,19 @@ def valid_ip(address):
         #print("This IP address is not valid.")
         errorList.append('This IP address is not valid.')
         return False
+
+def zip_files(targetname):
+    path="txtfiles/answers_target_"+targetname
+
+    try:
+        os.system("mkdir zipfiles")
+    except:
+        print("directory exists")
+    zipObj=ZipFile("zipfiles/"+targetname+'.zip', 'w')
+
+    zipObj.write(path)
+    zipObj.close
+    print("successfull zipped")
 
 @app.route('/createScan', methods=["GET"])
 def createScan():
@@ -167,7 +181,8 @@ def portAnswers():
 
     with open("txtfiles/answers_target_" + targetname, "w") as a:
         for port in port_list:
-            a.write("port: " + port + " yes/no: " + AnswerList[port][0] + ", explanation: " + AnswerList[port][1] + "\n") 
+            a.write("port: " + port + " yes/no: " + AnswerList[port][0] + ", explanation: " + AnswerList[port][1] + "\n")
+    zip_files(targetname)
     return index()
 @app.route('/')
 def index():
