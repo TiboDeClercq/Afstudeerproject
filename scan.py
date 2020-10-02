@@ -52,21 +52,44 @@ def get_progresshtml(taskid):
     with Gmp(connection, transform=transform) as gmp:
         # Login -> change to default admin password
         gmp.authenticate('scanner', 'scanner')
-        task_id = taskid
         taskxml=gmp.get_task(taskid)
         print(get_name_without(taskxml),": ", get_status(taskxml))
         i=0
         ilist=[]
+        ilist.append(0)
         while (get_status(taskxml)=='Requested' or get_status(taskxml)=='Running'):
             taskxml=gmp.get_task(taskid)
-            print("gethtml ---------------- in eerste while")
+            print("--------------------------- requested")
+            yield i
             while(get_status(taskxml)=='Running' and i < int(get_progress(taskxml))):
                 if(get_progress(taskxml) != ''):
-                    print("gethtml ---------------- in tweede while")
                     i = int(get_progress(taskxml))
+                    yield i
+                    print("--------------------- percentage: ", i)
                     ilist.append(i)
-        return ilist            
         print(get_status(taskxml))
+
+def is_requested(taskid):
+    connection = UnixSocketConnection()
+    transform = EtreeTransform()
+    with Gmp(connection, transform=transform) as gmp:
+        # Login -> change to default admin password
+        gmp.authenticate('scanner', 'scanner')
+        taskxml=gmp.get_task(taskid)
+        if get_status(taskxml)=='Requested':
+            return True
+        return False
+
+def is_running(taskid):
+    connection = UnixSocketConnection()
+    transform = EtreeTransform()
+    with Gmp(connection, transform=transform) as gmp:
+        # Login -> change to default admin password
+        gmp.authenticate('scanner', 'scanner')
+        taskxml=gmp.get_task(taskid)
+        if get_status(taskxml)=='Running':
+            return True
+        return False
 
 def progressbar(taskid):
         print("thread started")

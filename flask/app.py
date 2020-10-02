@@ -1,13 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for
 import socket, threading
-import sys, os
+from queue import *
+import sys, os, io
 from datetime import datetime
 currentdir = os.path.dirname(os.path.realpath(__file__))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
-from scan import scan, get_progresshtml
+from scan import scan, get_progresshtml, is_requested, is_running
 from questions import questions
 from setup import set_dhcp, set_static_ip
+import asyncio
 #from .. from setup import set_static_ip, set_dhcp
 import re
 app = Flask(__name__)
@@ -16,6 +18,7 @@ IpAddressen = []
 errorList = []
 report_list=[]
 thread_list=[]
+asyncloop=asyncio.get_event_loop()
 
 conf_id = "698f691e-7489-11df-9d8c-002264764cea"
 
@@ -85,8 +88,8 @@ def success(task_id, deviceName):
         # while scprogress[-1] != 100:
         #     scprogress=get_progresshtml
         #     print("---------------------------------   ", scprogress)
-    return render_template('success.html', targetname=deviceName, progressval=get_progresshtml(task_id))
-
+    return render_template('success.html', targetname=deviceName, progrb=get_progresshtml(task_id))
+    #return render_template('success.html', targetname=deviceName)
 
 #Report methods - reports.html
 @app.route('/reports', methods=["GET"])
