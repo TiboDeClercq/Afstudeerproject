@@ -37,7 +37,11 @@ def get_name(inputxml):
 		substr.append(y[:-7])
 	return substr
 	
+<<<<<<< HEAD
+def get_task_id_list():
+=======
 def get_task_list():
+>>>>>>> bcedc4b478dd074e4f82cb275445a36744f71519
 	with Gmp(connection, transform=transform) as gmp:
 		gmp.authenticate(user, password)
 		xml = gmp.get_tasks()
@@ -63,5 +67,13 @@ def get_task(task_id):
 		report_id = get_id(task,"report")[0]
 		return Task(task_id, report_id, task_name)
 
+<<<<<<< HEAD
+def get_task_list(task_id_list):
+	tasks = []
+	for x in task_id_list:
+		tasks.append(get_task(x))
+	return tasks
+=======
 
 print(get_task(get_task_list()[0]).report_id)
+>>>>>>> bcedc4b478dd074e4f82cb275445a36744f71519
