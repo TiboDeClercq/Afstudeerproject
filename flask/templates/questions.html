@@ -16,7 +16,7 @@
 </div>
 <br>
 <div class="row">
-    <form action="/portQuestions" method="POST">
+    <form action="/portAnswers" method="POST">
 
         {% for port in ports %}
         <div class="form-group">
@@ -34,10 +34,12 @@
         </div>
         <div class="form-group">
             <label for="textArea{{port}}">What is the purpuse of this port?</label>
-            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+            <textarea class="form-control" id="textArea{{port}}" name = "textArea{{port}}" rows="3"></textarea>
+            
         </div>
 
         {% endfor %}
+        <input type="hidden" name="targetname" value="{{targetname}}">
         <td><button type="submit" class="portform btn btn-primary" id="portbutton">Submit answers</button></td>
     </form>
 </div>
