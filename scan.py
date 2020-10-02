@@ -97,7 +97,6 @@ def custome_port_table(ipList):
 
     with open("ports.txt", "r") as f:
         inhoud = f.read()
-        print(inhoud)
         #Create temp file
         fh, abs_path = mkstemp()
         with fdopen(fh,'w') as new_file:

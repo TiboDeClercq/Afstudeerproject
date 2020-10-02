@@ -80,8 +80,8 @@ def sendScan():
         scprogress=get_progresshtml
         questions()
         IpAddressen[:]=[]
-        while not scprogress or scprogress[-1] < 100:
-            return render_template('success.html', progrb=scprogress[-1])
+        #while not scprogress or scprogress[-1] < 100:
+        return render_template('success.html', targetname=deviceName)
 
 
 #Report methods - reports.html
@@ -114,14 +114,38 @@ def dhcp():
 @app.route('/portQuestions', methods=["POST"])
 def portQuestions():
     with open("ports.txt", "r") as f:
-            port_list = f.read()
-            
+            port_list = f.read()            
             port_list=re.findall(r'[\d]*[^,\sTU:]', port_list)
             print(port_list)
-    return render_template('questions.html', ports=port_list)
+    targetname=request.form.get("targetname")
+    print(targetname)
+    return render_template('questions.html', ports=port_list, targetname=targetname)
 
+@app.route('/portAnswers', methods=["POST"])
+def portAnswers():
+    AnswerList=dict()
+    targetname=request.form.get("targetname")
+    print(targetname)
+    with open("ports.txt", "r") as f:
+            port_list = f.read()           
+            port_list=re.findall(r'[\d]*[^,\sTU:]', port_list)
+    for port in port_list:
+        yesno=request.form.get("inlineRadioOptions"+port)
+        explanation=""
+        explanation=request.form.get("textArea"+port)
+        AnswerList[port]=[yesno, explanation]
+    print(AnswerList)
+    os.system("touch answers_target_" + targetname)
+    with open("touch answers_target_" + targetname, "w") as a:
+        for port in port_list:
+            a.write("port: " + port + " yes/no: " + AnswerList[port][0] + ", explanation: " + AnswerList[port][1] + "\n") 
+    return index()
 @app.route('/')
 def index():
+    return render_template('index.html', IpAdressen=IpAddressen)
+
+@app.route('/scan')
+def scann():
     return render_template('index.html', IpAdressen=IpAddressen)
 
 if __name__ == "__main__":
