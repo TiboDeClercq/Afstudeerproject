@@ -76,11 +76,10 @@ def sendScan():
         scan(targetUniqueName, IpAddressen, conf_id)
         questions()
         scprogress=get_progresshtml
-        while scprogress[-1] != 100:
-            scprogress=get_progresshtml
-            print("---------------------------------   ", scprogress)
+        # while scprogress[-1] != 100:
+        #     scprogress=get_progresshtml
+        #     print("---------------------------------   ", scprogress)
         IpAddressen[:]=[]
-        #while not scprogress or scprogress[-1] < 100:
         return render_template('success.html', targetname=deviceName)
 
 
@@ -135,8 +134,14 @@ def portAnswers():
         explanation=request.form.get("textArea"+port)
         AnswerList[port]=[yesno, explanation]
     print(AnswerList)
-    os.system("touch answers_target_" + targetname)
-    with open("touch answers_target_" + targetname, "w") as a:
+    try:
+        os.system("mkdir txtfiles")
+    except:
+        print("directory exists")
+
+    os.system("touch txtfiles/answers_target_" + targetname)
+
+    with open("txtfiles/answers_target_" + targetname, "w") as a:
         for port in port_list:
             a.write("port: " + port + " yes/no: " + AnswerList[port][0] + ", explanation: " + AnswerList[port][1] + "\n") 
     return index()
