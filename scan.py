@@ -47,20 +47,26 @@ def get_progress(inputxml):
     return regexid[0][10:]
 
 def get_progresshtml(taskid):
-        taskk = gmp.get_task()
-        task_id = get_id(taskk)
+    connection = UnixSocketConnection()
+    transform = EtreeTransform()
+    with Gmp(connection, transform=transform) as gmp:
+        # Login -> change to default admin password
+        gmp.authenticate('scanner', 'scanner')
+        task_id = taskid
         taskxml=gmp.get_task(taskid)
         print(get_name_without(taskxml),": ", get_status(taskxml))
         i=0
         ilist=[]
         while (get_status(taskxml)=='Requested' or get_status(taskxml)=='Running'):
             taskxml=gmp.get_task(taskid)
+            print("gethtml ---------------- in eerste while")
             while(get_status(taskxml)=='Running' and i < int(get_progress(taskxml))):
                 if(get_progress(taskxml) != ''):
+                    print("gethtml ---------------- in tweede while")
                     i = int(get_progress(taskxml))
                     ilist.append(i)
-        return ilist
-        #print(get_status(taskxml))
+        return ilist            
+        print(get_status(taskxml))
 
 def progressbar(taskid):
         print("thread started")
@@ -162,6 +168,7 @@ def scan(target_name, ipList, config_id):
 
         #task start
         gmp.start_task(task_id)
+        return task_id
         
         print("task started succesfully!")
         # t1=threading.Thread(target=progressbar, args=(task_id,))

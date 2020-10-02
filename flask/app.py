@@ -15,6 +15,7 @@ app = Flask(__name__)
 IpAddressen = []
 errorList = []
 report_list=[]
+thread_list=[]
 
 conf_id = "698f691e-7489-11df-9d8c-002264764cea"
 
@@ -73,14 +74,18 @@ def sendScan():
         print("Success")
         #Target has to be unique. Date and time will be added to the devicename.
         targetUniqueName = deviceName.replace(' ', '-').lower() + "_" + datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
-        scan(targetUniqueName, IpAddressen, conf_id)
+        task_id= scan(targetUniqueName, IpAddressen, conf_id)
         questions()
-        scprogress=get_progresshtml
+        IpAddressen[:]=[]
+        return success(task_id, deviceName)
+
+def success(task_id, deviceName):
+    #scprogress=get_progresshtml(task_id)
+    #print(scprogress)
         # while scprogress[-1] != 100:
         #     scprogress=get_progresshtml
         #     print("---------------------------------   ", scprogress)
-        IpAddressen[:]=[]
-        return render_template('success.html', targetname=deviceName)
+    return render_template('success.html', targetname=deviceName, progressval=get_progresshtml(task_id))
 
 
 #Report methods - reports.html
