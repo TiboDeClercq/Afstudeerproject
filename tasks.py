@@ -10,29 +10,58 @@ from base64 import b64decode
 connection = UnixSocketConnection()
 transform = EtreeTransform()
 
+user = "thomas"
+password = "Hello!*"
+
+class Task:
+	def __init__(self, task_id, report_id, task_name):
+		self.task_id = task_id
+		self.report_id = report_id
+		self.task_name = task_name
+
 #function to get ID out of output string when new user/asset is created
 def get_id(inputxml, pre):
     xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
     regexid=re.findall(r'<'+ pre + ' id=\"[0-9,a-z,-]*\"',xmlstr.decode('utf8'))
     parsed = []
-    [parsed.append(i[5+len(pre):]) for i in regexid] 
+    [parsed.append(i[6+len(pre):-1]) for i in regexid] 
     return parsed
 
 #function to get name out of output string when new user/asset is created
 def get_name(inputxml):
-    xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
-    regexid=re.findall(r'<name>[a-z]*</name>',xmlstr.decode('utf8'))
-    return regexid
-
+	xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
+	regexid=re.findall(r'<name>[A-Za-z ]*</name>',xmlstr.decode('utf8'))
+	substr = []
+	for x in regexid:
+		y = x[6:]
+		substr.append(y[:-7])
+	return substr
+	
 def get_task_list():
 	with Gmp(connection, transform=transform) as gmp:
-		gmp.authenticate('thomas', 'Hello!*')
+		gmp.authenticate(user, password)
 		xml = gmp.get_tasks()
 		task_ids = get_id(xml, "task")
-		report_ids = get_id(xml, "report")
+		return task_ids
+
+def get_report_formats():
+	with Gmp(connection, transform=transform) as gmp:
+		gmp.authenticate(user, password)
+		xml = gmp.get_report_formats()
+		ids = get_id(xml, "report_format")
+		names = get_name(xml)
 		map = {}
-		for x,y in task_ids,report_ids:
-			map[x] = y
+		for i in range(len(ids)):
+			map[ids[i]] = names[i]
 		return map
 
-print(get_task_list())
+def get_task(task_id):
+	with Gmp(connection, transform=transform) as gmp:
+		gmp.authenticate(user, password)
+		task = gmp.get_task(task_id)
+		task_name = get_name(task)[1]
+		report_id = get_id(task,"report")[0]
+		return Task(task_id, report_id, task_name)
+
+
+print(get_task(get_task_list()[0]).report_id)
