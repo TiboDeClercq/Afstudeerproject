@@ -12,7 +12,6 @@ from setup import set_dhcp, set_static_ip
 import subprocess
 #from .. from setup import set_static_ip, set_dhcp
 import re
-import TqdmSpy
 
 app = Flask(__name__)
 
@@ -92,16 +91,26 @@ def sendScan():
 #         progr=subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[x]
 #         x=x+1
 
+def readcli():
+    pnumber = int(input("prompt"))
+    if(pnumber >= 0) or (pnumber <= 100):
+        progr=pnumber
+
 def success(task_id, deviceName):
     t1=threading.Thread(target=get_progresshtml, args=(task_id,))
     thread_list.append(t1)
     t1.start()
 
+    # while progr != 100:
+    #     readcli()
+        #yield throws errors
+        #yield render_template('success.html', targetname=deviceName, progr=progr)
+
     # t2=threading.Thread(target=progrchange, args=(task_id,))
     # thread_list.append(t2)
     # t2.start()
     
-    return render_template('success.html', targetname=deviceName, progr=t1.__getattribute__)
+    return render_template('success.html', targetname=deviceName, progr=progr)
 
 #Report methods - reports.html
 @app.route('/reports', methods=["GET"])
