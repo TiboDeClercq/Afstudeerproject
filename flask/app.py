@@ -9,16 +9,18 @@ sys.path.append(parentdir)
 from scan import scan, get_progresshtml, is_requested, is_running
 from questions import questions
 from setup import set_dhcp, set_static_ip
-import asyncio
+import subprocess
 #from .. from setup import set_static_ip, set_dhcp
 import re
+import TqdmSpy
+
 app = Flask(__name__)
 
 IpAddressen = []
 errorList = []
 report_list=[]
 thread_list=[]
-asyncloop=asyncio.get_event_loop()
+progr=0
 
 conf_id = "698f691e-7489-11df-9d8c-002264764cea"
 
@@ -82,14 +84,24 @@ def sendScan():
         IpAddressen[:]=[]
         return success(task_id, deviceName)
 
+#attempt to read print(progress) and store in progr (failed)
+# def progrchange(task_id):
+#     holder= Object
+#     x=0
+#     while is_running(task_id):
+#         progr=subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[x]
+#         x=x+1
+
 def success(task_id, deviceName):
-    #scprogress=get_progresshtml(task_id)
-    #print(scprogress)
-        # while scprogress[-1] != 100:
-        #     scprogress=get_progresshtml
-        #     print("---------------------------------   ", scprogress)
-    return render_template('success.html', targetname=deviceName, progrb=get_progresshtml(task_id))
-    #return render_template('success.html', targetname=deviceName)
+    t1=threading.Thread(target=get_progresshtml, args=(task_id,))
+    thread_list.append(t1)
+    t1.start()
+
+    # t2=threading.Thread(target=progrchange, args=(task_id,))
+    # thread_list.append(t2)
+    # t2.start()
+    
+    return render_template('success.html', targetname=deviceName, progr=t1.__getattribute__)
 
 #Report methods - reports.html
 @app.route('/reports', methods=["GET"])

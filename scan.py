@@ -19,6 +19,7 @@ from console_progressbar import ProgressBar
 from tqdm import tqdm
 
 import questions
+
 #function to get ID out of output string when new user/asset is created
 def get_id(inputxml):
     xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
@@ -53,21 +54,19 @@ def get_progresshtml(taskid):
         # Login -> change to default admin password
         gmp.authenticate('scanner', 'scanner')
         taskxml=gmp.get_task(taskid)
-        print(get_name_without(taskxml),": ", get_status(taskxml))
-        i=0
-        ilist=[]
-        ilist.append(0)
+        # gave message in cli "x : <status>"
+        # print(get_name_without(taskxml),": ", get_status(taskxml))
+        progr=0
+        #print(i)
+        pbar = tqdm(total = 100, initial = progr)
         while (get_status(taskxml)=='Requested' or get_status(taskxml)=='Running'):
             taskxml=gmp.get_task(taskid)
-            print("--------------------------- requested")
-            yield i
-            while(get_status(taskxml)=='Running' and i < int(get_progress(taskxml))):
+            while(get_status(taskxml)=='Running' and progr < int(get_progress(taskxml))):
                 if(get_progress(taskxml) != ''):
-                    i = int(get_progress(taskxml))
-                    yield i
-                    print("--------------------- percentage: ", i)
-                    ilist.append(i)
-        print(get_status(taskxml))
+                    oldprogr = progr
+                    progr = int(get_progress(taskxml))
+                    pbar.update(progr - oldprogr)                    
+                    #print(i)
 
 def is_requested(taskid):
     connection = UnixSocketConnection()

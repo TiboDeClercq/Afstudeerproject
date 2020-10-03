@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
-<script type="text/python" src="../../scan.py"></script>
+{% block head %}
+<script type="text/python" src="../app.py"></script>
+{% endblock %}
 
 {% block nav %}
 <a class="nav-link " href="/createScan">Scan device</a>
@@ -14,7 +16,7 @@
 <h3>Progress:</h3>
 <br>
 <br>
-<div class="progress" role="progressbar" tabindex="0" aria-valuenow={{progrb}} aria-valuemin="0" aria-valuetext="{{progrb}} percent" aria-valuemax="100">
+<div class="progress" role="progressbar" tabindex="0" aria-valuenow={{progr}} aria-valuemin="0" aria-valuetext="{{progr}} percent" aria-valuemax="100">
     <div class="progress-meter" style="width: 50%"></div>
 </div>
 <br>
