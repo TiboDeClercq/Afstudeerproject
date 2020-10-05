@@ -20,12 +20,8 @@ from tqdm import tqdm
 
 import questions
 
-<<<<<<< HEAD
+global progressval
 
-#progressval = 0
-
-=======
->>>>>>> parent of 82146dc... another failed attempt
 #function to get ID out of output string when new user/asset is created
 def get_id(inputxml):
     xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
@@ -53,6 +49,12 @@ def get_progress(inputxml):
     regexid=re.findall(r'<progress>[0-9]*',xmlstr.decode('utf8'))
     return regexid[0][10:]
 
+def getprgrs():
+    return progressval
+
+def setprgrs(prgrs):
+    progressval=prgrs
+
 def get_progresshtml(taskid):
     connection = UnixSocketConnection()
     transform = EtreeTransform()
@@ -71,7 +73,8 @@ def get_progresshtml(taskid):
                 if(get_progress(taskxml) != ''):
                     oldprogr = progr
                     progr = int(get_progress(taskxml))
-                    pbar.update(progr - oldprogr)                    
+                    pbar.update(progr - oldprogr)
+                    setprgrs(progr)                    
                     #print(i)
 
 def is_requested(taskid):
