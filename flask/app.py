@@ -5,18 +5,24 @@ from datetime import datetime
 currentdir = os.path.dirname(os.path.realpath(__file__))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
-from scan import scan, get_progresshtml
+from scan import scan, get_progresshtml, is_requested, is_running, getprgrs
 from questions import questions
 import tasks
 from setup import set_dhcp, set_static_ip
 #from .. from setup import set_static_ip, set_dhcp
 import re
+import asyncio
+import websockets
+
 app = Flask(__name__)
 
 IpAddressen = []
 task_list=tasks.get_task_list(tasks.get_task_id_list())
 report_format_list = tasks.get_report_formats()
 errorList = []
+progr=0
+thread_list=[]
+
 conf_id = "698f691e-7489-11df-9d8c-002264764cea"
 
 #function to check if entered IP address is valid
@@ -74,15 +80,25 @@ def sendScan():
         print("Success")
         #Target has to be unique. Date and time will be added to the devicename.
         targetUniqueName = deviceName.replace(' ', '-').lower() + "_" + datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
-        scan(targetUniqueName, IpAddressen, conf_id)
+        task_id= scan(targetUniqueName, IpAddressen, conf_id)
         questions()
-        scprogress=get_progresshtml
-        # while scprogress[-1] != 100:
-        #     scprogress=get_progresshtml
-        #     print("---------------------------------   ", scprogress)
         IpAddressen[:]=[]
-        return render_template('success.html', targetname=deviceName)
+        return success(task_id, deviceName)
 
+#attempt to read print(progress) and store in progr (failed)
+# def progrchange(task_id):
+#     holder= Object
+#     x=0
+#     while is_running(task_id):
+#         progr=subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[x]
+#         x=x+1
+
+def success(task_id, deviceName):
+    t1=threading.Thread(target=get_progresshtml, args=(task_id,))
+    thread_list.append(t1)
+    t1.start()
+    
+    return render_template('success.html', targetname=deviceName, progr=progr)
 
 #Report methods - reports.html
 @app.route('/reports', methods=["GET"])

@@ -20,8 +20,7 @@ from tqdm import tqdm
 
 import questions
 
-
-progressval = 0
+global progressval
 
 #function to get ID out of output string when new user/asset is created
 def get_id(inputxml):
@@ -75,7 +74,7 @@ def get_progresshtml(taskid):
                     oldprogr = progr
                     progr = int(get_progress(taskxml))
                     pbar.update(progr - oldprogr)
-                    setprgrs(progr)                 
+                    setprgrs(progr)                    
                     #print(i)
 
 def is_requested(taskid):
