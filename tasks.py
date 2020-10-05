@@ -5,7 +5,7 @@ from gvm.xml import pretty_print
 import re
 from xml.etree import ElementTree
 from base64 import b64decode
-
+import os
 
 connection = UnixSocketConnection()
 transform = EtreeTransform()
@@ -85,12 +85,17 @@ def get_data(inputxml):
     return before.encode('utf8')
 	
 def download_report(report_id, report_format_id):
+	try:
+		os.system("mkdir reportdownload")
+	except:
+		print("directory exists")
 	with Gmp(connection, transform=transform) as gmp:
 		# Login -> change to default admin password
 		gmp.authenticate(user, password)   
 
 		base64 = get_data(gmp.get_report(report_id=report_id, report_format_id=report_format_id, details=1))
 
-		f = open(report_id + '.csv', 'wb')
+		
+		f = open("reportdownload/" + report_id + '.csv', 'wb')
 		f.write(b64decode(base64))
 		f.close()
