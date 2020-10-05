@@ -5,7 +5,7 @@ from datetime import datetime
 currentdir = os.path.dirname(os.path.realpath(__file__))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
-from scan import scan, get_progresshtml, is_requested, is_running, getprgrs
+from scan import scan, is_requested, is_running, get_newprogress
 from questions import questions
 import tasks
 from setup import set_dhcp, set_static_ip
@@ -14,7 +14,6 @@ import re
 import asyncio
 import websockets
 from zipfile import ZipFile
-import queue
 
 app = Flask(__name__)
 
@@ -24,7 +23,6 @@ report_format_list = tasks.get_report_formats()
 errorList = []
 progr=0
 thread_list=[]
-q = queue.Queue()
 
 conf_id = "698f691e-7489-11df-9d8c-002264764cea"
 
@@ -109,17 +107,25 @@ def sendScan():
 #         progr=subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[x]
 #         x=x+1
 
+def set_progress(newprogr):
+    global progr 
+    progr = newprogr
+
+def get_progress():
+    global progr
+    return progr
+
+def progress_check(task_id):
+    while(progr != 100):
+        set_progress(get_newprogress(task_id))
+        print(progr)  
+
 def success(task_id, deviceName):
-    t1=threading.Thread(target=get_progresshtml, args=(task_id,), Queue=q)
+    t1=threading.Thread(target=progress_check, args=(task_id,))
     thread_list.append(t1)
     t1.start()
 
-    progr=q.get()
-
-    progr=next(get_progresshtml(task_id))
-
-    
-    return render_template('success.html', targetname=deviceName, progr=progr)
+    return render_template('success.html', targetname=deviceName)
 
 #Report methods - reports.html
 @app.route('/reports', methods=["GET"])

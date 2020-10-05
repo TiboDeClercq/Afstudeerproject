@@ -20,8 +20,6 @@ from tqdm import tqdm
 
 import questions
 
-global progressval
-
 #function to get ID out of output string when new user/asset is created
 def get_id(inputxml):
     xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
@@ -49,35 +47,42 @@ def get_progress(inputxml):
     regexid=re.findall(r'<progress>[0-9]*',xmlstr.decode('utf8'))
     return regexid[0][10:]
 
-def getprgrs():
-    return progressval
+# def get_progresshtml(taskid):
+#     connection = UnixSocketConnection()
+#     transform = EtreeTransform()
+#     with Gmp(connection, transform=transform) as gmp:
+#         # Login -> change to default admin password
+#         gmp.authenticate('scanner', 'scanner')
+#         taskxml=gmp.get_task(taskid)
+#         # gave message in cli "x : <status>"
+#         # print(get_name_without(taskxml),": ", get_status(taskxml))
+#         progr=0
+#         #print(i)
+#         yield progr
+#         pbar = tqdm(total = 100, initial = progr)
+#         while (get_status(taskxml)=='Requested' or get_status(taskxml)=='Running'):
+#             taskxml=gmp.get_task(taskid)
+#             while(get_status(taskxml)=='Running' and progr < int(get_progress(taskxml))):
+#                 if(get_progress(taskxml) != ''):
+#                     oldprogr = progr
+#                     progr = int(get_progress(taskxml))
+#                     pbar.update(progr - oldprogr)
+#                     yield progr                    
+#                     #print(i)
 
-def setprgrs(prgrs):
-    progressval=prgrs
-
-def get_progresshtml(taskid):
+def get_newprogress(taskid):
     connection = UnixSocketConnection()
     transform = EtreeTransform()
     with Gmp(connection, transform=transform) as gmp:
         # Login -> change to default admin password
         gmp.authenticate('scanner', 'scanner')
         taskxml=gmp.get_task(taskid)
-        # gave message in cli "x : <status>"
-        # print(get_name_without(taskxml),": ", get_status(taskxml))
-        progr=0
-        #print(i)
-        yield progr
-        pbar = tqdm(total = 100, initial = progr)
-        while (get_status(taskxml)=='Requested' or get_status(taskxml)=='Running'):
-            taskxml=gmp.get_task(taskid)
-            while(get_status(taskxml)=='Running' and progr < int(get_progress(taskxml))):
-                if(get_progress(taskxml) != ''):
-                    oldprogr = progr
-                    progr = int(get_progress(taskxml))
-                    pbar.update(progr - oldprogr)
-                    setprgrs(progr)
-                    yield progr                    
-                    #print(i)
+
+        if is_requested(taskid):
+            return 0
+
+        if is_running(taskid):
+            return int(get_progress(taskxml)) 
 
 def is_requested(taskid):
     connection = UnixSocketConnection()
