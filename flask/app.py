@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, Response
 import socket, threading
 import sys, os
 from datetime import datetime
@@ -128,14 +128,17 @@ def progress_bar():
     # while progr != 100:
     #     if progr != oldprogr:
     #         yield progr
-    
-    if progr is None:
-        return render_template('success.html', progr=0)
 
+    if progr is None:
+        data = str(0) + "%"
     # if progr != oldprogr:
     #     return render_template('success.html', progr=progr)
+    else:
+         data = str(progr) + "%"
 
-    return render_template('success.html', progr=progr)
+    return Response(data, mimetype='text/html', headers=None)
+
+    
 
 
 def success(task_id, deviceName):
@@ -150,9 +153,9 @@ def success(task_id, deviceName):
     # t2.start()
 
     if progr is None:
-        return render_template('success.html', targetname=deviceName, progr=0)
+        return render_template('success.html', targetname=deviceName)
 
-    return render_template('success.html', targetname=deviceName, progr=progr)
+    return render_template('success.html', targetname=deviceName)
 
 #Report methods - reports.html
 @app.route('/reports', methods=["GET"])
