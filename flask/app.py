@@ -118,7 +118,6 @@ def get_progress():
 def progress_check(task_id):
     while(progr != 100):
         set_progress(get_newprogress(task_id))
-        print(progr)  
 
 def success(task_id, deviceName):
     t1=threading.Thread(target=progress_check, args=(task_id,))
