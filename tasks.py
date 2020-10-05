@@ -30,7 +30,7 @@ def get_id(inputxml, pre):
 #function to get name out of output string when new user/asset is created
 def get_name(inputxml):
 	xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
-	regexid=re.findall(r'<name>[A-Za-z ]*</name>',xmlstr.decode('utf8'))
+	regexid=re.findall(r'<name>[A-Za-z\-\_\/0-9:]*</name>',xmlstr.decode('utf8'))
 	substr = []
 	for x in regexid:
 		y = x[6:]
@@ -62,7 +62,7 @@ def get_task(task_id):
 		task_name = get_name(task)[1]
 		report_id = get_id(task,"report")[0]
 		return Task(task_id, report_id, task_name)
-		
+
 def get_task_list(task_id_list):
 	tasks = []
 	for x in task_id_list:
@@ -87,3 +87,8 @@ def get_pdf(inputxml):
 # 			f = open('report.pdf', 'wb')
 # 			f.write(base64)
 # 			f.close()
+# 
+
+
+
+
