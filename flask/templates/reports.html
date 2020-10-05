@@ -12,17 +12,32 @@
 
 {% block body %}
 <h1>reports</h1>
-    {% for report in reports %}
+<table>
+    <tr>
+        <th>Select</th>
+        <th>TaskName</th>
+        <th>report format</th>
+        <th>Download</th>
+    </tr>
+    {% for task in tasks %}
         <tr>
-            <div class="listform">
-                <form action="/downloadReport" method="POST">
-                    <td><input type="text" value={{report.name}} name="{{report.id}}" readonly></input></td>
-                    <td><button type="submit" class="reportform" id="downloadReport">Download report</button></td>
-                </form>
-            </div>
-            <br>
-            <br>
+            <form action="/downloadreport" method=POST>
+                <input type="hidden" name="task_id" value="{{task.task_id}}">
+                <td><input type="checkbox" id="select"></td>
+                <td>{{task.task_name}}</td>
+                <td>
+                    <select name="format">
+                        <option  selected>Please choose</option>
+                        {% for k, v in reports.items() %}
+                            <option value="{{k}}">{{v}}</option>
+                        {% endfor%}
+                    </select>
+                </td>
+                <td><input type="submit" value="Download"></td>
+            </form>
         </tr>
     {% endfor %}
+</table>
+    
 {% endblock %}
     

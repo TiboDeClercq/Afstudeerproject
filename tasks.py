@@ -36,12 +36,8 @@ def get_name(inputxml):
 		y = x[6:]
 		substr.append(y[:-7])
 	return substr
-	
-<<<<<<< HEAD
+
 def get_task_id_list():
-=======
-def get_task_list():
->>>>>>> bcedc4b478dd074e4f82cb275445a36744f71519
 	with Gmp(connection, transform=transform) as gmp:
 		gmp.authenticate(user, password)
 		xml = gmp.get_tasks()
@@ -66,14 +62,29 @@ def get_task(task_id):
 		task_name = get_name(task)[1]
 		report_id = get_id(task,"report")[0]
 		return Task(task_id, report_id, task_name)
-
-<<<<<<< HEAD
+		
 def get_task_list(task_id_list):
 	tasks = []
 	for x in task_id_list:
 		tasks.append(get_task(x))
 	return tasks
-=======
 
-print(get_task(get_task_list()[0]).report_id)
->>>>>>> bcedc4b478dd074e4f82cb275445a36744f71519
+def get_pdf(inputxml):
+    xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
+    regexid=re.findall(r'</report_format>[a-zA-Z0-9+/=]*',xmlstr.decode('utf8'))
+    before = regexid[0][16:]
+    return before.encode('utf8')
+	
+def download_report(task_id, report_format):
+	with Gmp(connection, transform=transform) as gmp:
+    # Login -> change to default admin password
+    gmp.authenticate(user, password)
+    
+    #get report as pdf
+    base64 = get_pdf(gmp.get_report("ee818589-db5d-40d2-a1a6-55a7aedfb535", report_format_id="c402cc3e-b531-11e1-9163-406186ea4fc5"))
+
+    bytes = b64decode(base64, validate=True)
+    if bytes:
+        f = open('report.pdf', 'wb')
+        f.write(base64)
+        f.close()

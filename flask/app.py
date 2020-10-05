@@ -1,30 +1,22 @@
 from flask import Flask, render_template, request, redirect, url_for
 import socket, threading
-from queue import *
-import sys, os, io
+import sys, os
 from datetime import datetime
 currentdir = os.path.dirname(os.path.realpath(__file__))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
-from scan import scan, get_progresshtml, is_requested, is_running, getprgrs
+from scan import scan, get_progresshtml
 from questions import questions
+import tasks
 from setup import set_dhcp, set_static_ip
-import subprocess
 #from .. from setup import set_static_ip, set_dhcp
 import re
-import asyncio
-import websockets
-import shutil
-from zipfile import ZipFile
-
 app = Flask(__name__)
 
 IpAddressen = []
+task_list=tasks.get_task_list(tasks.get_task_id_list())
+report_format_list = tasks.get_report_formats()
 errorList = []
-report_list=[]
-thread_list=[]
-progr=0
-
 conf_id = "698f691e-7489-11df-9d8c-002264764cea"
 
 #function to check if entered IP address is valid
@@ -82,35 +74,32 @@ def sendScan():
         print("Success")
         #Target has to be unique. Date and time will be added to the devicename.
         targetUniqueName = deviceName.replace(' ', '-').lower() + "_" + datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
-        task_id= scan(targetUniqueName, IpAddressen, conf_id)
+        scan(targetUniqueName, IpAddressen, conf_id)
         questions()
+        scprogress=get_progresshtml
+        # while scprogress[-1] != 100:
+        #     scprogress=get_progresshtml
+        #     print("---------------------------------   ", scprogress)
         IpAddressen[:]=[]
-        return success(task_id, deviceName)
+        return render_template('success.html', targetname=deviceName)
 
-#attempt to read print(progress) and store in progr (failed)
-# def progrchange(task_id):
-#     holder= Object
-#     x=0
-#     while is_running(task_id):
-#         progr=subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[x]
-#         x=x+1
-
-def success(task_id, deviceName):
-    t1=threading.Thread(target=get_progresshtml, args=(task_id,))
-    thread_list.append(t1)
-    t1.start()
-    
-    return render_template('success.html', targetname=deviceName, progr=progr)
 
 #Report methods - reports.html
 @app.route('/reports', methods=["GET"])
 def reports_GET():
-    return render_template('reports.html', reports=report_list)
+    return render_template('reports.html', tasks=task_list, reports=report_format_list)
 
 @app.route('/reports', methods=["POST"])
 def reports():
-    return render_template('reports.html', reports=report_list)
+    return render_template('reports.html', tasks=task_list)
 
+@app.route('/downloadreport', methods=["POST"])
+def downloadreport():
+    format = request.form.get("format")
+    task_id = request.form.get("task_id")
+    print(format)
+    print(task_id)
+    return reports_GET()
 
 #Configure IP methods - config.html
 @app.route('/configuration', methods=["GET"])
@@ -139,19 +128,6 @@ def portQuestions():
     print(targetname)
     return render_template('questions.html', ports=port_list, targetname=targetname)
 
-def zip_files(targetname):
-    path="txtfiles/answers_target_"+targetname
-    
-    try:
-        os.system("mkdir zipfiles")
-    except:
-        print("directory exists")
-    zipObj=ZipFile("zipfiles/"+targetname+'.zip', 'w')
-
-    zipObj.write(path)
-    zipObj.close
-    print("successfull zipped")
-
 @app.route('/portAnswers', methods=["POST"])
 def portAnswers():
     AnswerList=dict()
@@ -175,9 +151,7 @@ def portAnswers():
 
     with open("txtfiles/answers_target_" + targetname, "w") as a:
         for port in port_list:
-            a.write("port: " + port + " yes/no: " + AnswerList[port][0] + ", explanation: " + AnswerList[port][1] + "\n")
-
-    zip_files(targetname)
+            a.write("port: " + port + " yes/no: " + AnswerList[port][0] + ", explanation: " + AnswerList[port][1] + "\n") 
     return index()
 @app.route('/')
 def index():
@@ -186,9 +160,6 @@ def index():
 @app.route('/scan')
 def scann():
     return render_template('index.html', IpAdressen=IpAddressen)
-
-
-
 
 if __name__ == "__main__":
     app.run(debug=True)   
