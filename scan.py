@@ -66,6 +66,7 @@ def get_progresshtml(taskid):
         # print(get_name_without(taskxml),": ", get_status(taskxml))
         progr=0
         #print(i)
+        yield progr
         pbar = tqdm(total = 100, initial = progr)
         while (get_status(taskxml)=='Requested' or get_status(taskxml)=='Running'):
             taskxml=gmp.get_task(taskid)
@@ -74,7 +75,8 @@ def get_progresshtml(taskid):
                     oldprogr = progr
                     progr = int(get_progress(taskxml))
                     pbar.update(progr - oldprogr)
-                    setprgrs(progr)                    
+                    setprgrs(progr)
+                    yield progr                    
                     #print(i)
 
 def is_requested(taskid):

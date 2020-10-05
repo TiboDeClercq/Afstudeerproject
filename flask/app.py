@@ -14,6 +14,7 @@ import re
 import asyncio
 import websockets
 from zipfile import ZipFile
+import queue
 
 app = Flask(__name__)
 
@@ -23,6 +24,7 @@ report_format_list = tasks.get_report_formats()
 errorList = []
 progr=0
 thread_list=[]
+q = queue.Queue()
 
 conf_id = "698f691e-7489-11df-9d8c-002264764cea"
 
@@ -108,9 +110,14 @@ def sendScan():
 #         x=x+1
 
 def success(task_id, deviceName):
-    t1=threading.Thread(target=get_progresshtml, args=(task_id,))
+    t1=threading.Thread(target=get_progresshtml, args=(task_id,), Queue=q)
     thread_list.append(t1)
     t1.start()
+
+    progr=q.get()
+
+    progr=next(get_progresshtml(task_id))
+
     
     return render_template('success.html', targetname=deviceName, progr=progr)
 
