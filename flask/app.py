@@ -5,12 +5,20 @@ from datetime import datetime
 currentdir = os.path.dirname(os.path.realpath(__file__))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
+<<<<<<< HEAD
 from scan import scan, get_progresshtml
+=======
+from scan import scan, get_progresshtml, is_requested, is_running
+>>>>>>> parent of 82146dc... another failed attempt
 from questions import questions
 import tasks
 from setup import set_dhcp, set_static_ip
 #from .. from setup import set_static_ip, set_dhcp
 import re
+<<<<<<< HEAD
+=======
+
+>>>>>>> parent of 82146dc... another failed attempt
 app = Flask(__name__)
 
 IpAddressen = []
@@ -81,8 +89,41 @@ def sendScan():
         #     scprogress=get_progresshtml
         #     print("---------------------------------   ", scprogress)
         IpAddressen[:]=[]
+<<<<<<< HEAD
         return render_template('success.html', targetname=deviceName)
 
+=======
+        return success(task_id, deviceName)
+
+#attempt to read print(progress) and store in progr (failed)
+# def progrchange(task_id):
+#     holder= Object
+#     x=0
+#     while is_running(task_id):
+#         progr=subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[x]
+#         x=x+1
+
+def readcli():
+    pnumber = int(input("prompt"))
+    if(pnumber >= 0) or (pnumber <= 100):
+        progr=pnumber
+
+def success(task_id, deviceName):
+    t1=threading.Thread(target=get_progresshtml, args=(task_id,))
+    thread_list.append(t1)
+    t1.start()
+
+    # while progr != 100:
+    #     readcli()
+        #yield throws errors
+        #yield render_template('success.html', targetname=deviceName, progr=progr)
+
+    # t2=threading.Thread(target=progrchange, args=(task_id,))
+    # thread_list.append(t2)
+    # t2.start()
+    
+    return render_template('success.html', targetname=deviceName, progr=progr)
+>>>>>>> parent of 82146dc... another failed attempt
 
 #Report methods - reports.html
 @app.route('/reports', methods=["GET"])
