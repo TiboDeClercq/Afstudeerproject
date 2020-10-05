@@ -11,25 +11,11 @@ function getprogress() {
 }
 
 function getProgressData() {
-    // if (getprogressRqst.readyState === 4) {
-    //     if (getprogressRqst.status === 200) {
+    //if (getprogressRqst.readyState === 4) {
+    //    if (getprogressRqst.status === 200) {
             var serverResponse = getprogressRqst.responseText;
-            console.log("---------------------------- serverresponse: " + serverResponse);
-
-
-            //remove tdiv childeren
-            var tdiv = document.getElementById("prgrss");
-
-            while (tdiv.hasChildNodes()) {
-                tdiv.removeChild(tdiv.lastChild);
-            }
-
-            // //update tdiv
-
-            var p = document.createElement("h3");
-            p.innerText = serverResponse;
-
-            tdiv.append(p);
-    //     }
-    // }
+            console.log("---------------------------- serverresponse:-" + serverResponse + "_");
+            document.getElementById("progrss").innerHTML = serverResponse;
+    //    }
+    //}
 }
