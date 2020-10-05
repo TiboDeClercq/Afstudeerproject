@@ -75,15 +75,15 @@ def get_pdf(inputxml):
     before = regexid[0][16:]
     return before.encode('utf8')
 	
-def download_report(task_id, report_format):
-	with Gmp(connection, transform=transform) as gmp:
-		# Login -> change to default admin password
-		gmp.authenticate(user, password)   
-		#get report as pdf
-		base64 = get_pdf(gmp.get_report("ee818589-db5d-40d2-a1a6-55a7aedfb535", report_format_id="c402cc3e-b531-11e1-9163-406186ea4fc5"))
+# def download_report(task_id, report_format):
+# 	with Gmp(connection, transform=transform) as gmp:
+# 		# Login -> change to default admin password
+# 		gmp.authenticate(user, password)   
+# 		#get report as pdf
+# 		base64 = get_pdf(gmp.get_report("ee818589-db5d-40d2-a1a6-55a7aedfb535", report_format_id="c402cc3e-b531-11e1-9163-406186ea4fc5"))
 
-		bytes = b64decode(base64, validate=True)
-		if bytes:
-			f = open('report.pdf', 'wb')
-			f.write(base64)
-			f.close()
+# 		bytes = b64decode(base64, validate=True)
+# 		if bytes:
+# 			f = open('report.pdf', 'wb')
+# 			f.write(base64)
+# 			f.close()
