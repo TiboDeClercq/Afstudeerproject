@@ -20,6 +20,9 @@ IpAddressen = []
 task_list=tasks.get_task_list(tasks.get_task_id_list())
 report_format_list = tasks.get_report_formats()
 errorList = []
+progr=0
+thread_list=[]
+
 conf_id = "698f691e-7489-11df-9d8c-002264764cea"
 
 #function to check if entered IP address is valid
@@ -77,12 +80,8 @@ def sendScan():
         print("Success")
         #Target has to be unique. Date and time will be added to the devicename.
         targetUniqueName = deviceName.replace(' ', '-').lower() + "_" + datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
-        scan(targetUniqueName, IpAddressen, conf_id)
+        task_id= scan(targetUniqueName, IpAddressen, conf_id)
         questions()
-        scprogress=get_progresshtml
-        # while scprogress[-1] != 100:
-        #     scprogress=get_progresshtml
-        #     print("---------------------------------   ", scprogress)
         IpAddressen[:]=[]
         return success(task_id, deviceName)
 
