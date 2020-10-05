@@ -37,6 +37,15 @@ def get_name(inputxml):
 		substr.append(y[:-7])
 	return substr
 
+def get_report_name(inputxml):
+	xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
+	regexid=re.findall(r'<name>[A-Za-z ]*</name>',xmlstr.decode('utf8'))
+	substr = []
+	for x in regexid:
+		y = x[6:]
+		substr.append(y[:-7])
+	return substr
+
 def get_task_id_list():
 	with Gmp(connection, transform=transform) as gmp:
 		gmp.authenticate(user, password)
@@ -49,7 +58,7 @@ def get_report_formats():
 		gmp.authenticate(user, password)
 		xml = gmp.get_report_formats()
 		ids = get_id(xml, "report_format")
-		names = get_name(xml)
+		names = get_report_name(xml)
 		map = {}
 		for i in range(len(ids)):
 			map[ids[i]] = names[i]
@@ -91,4 +100,4 @@ def get_pdf(inputxml):
 
 
 
-
+pretty_print(get_report_formats())
