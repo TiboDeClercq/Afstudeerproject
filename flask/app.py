@@ -149,6 +149,9 @@ def success(task_id, deviceName):
     # thread_list.append(t2)
     # t2.start()
 
+    if progr is None:
+        return render_template('success.html', targetname=deviceName, progr=0)
+
     return render_template('success.html', targetname=deviceName, progr=progr)
 
 #Report methods - reports.html
