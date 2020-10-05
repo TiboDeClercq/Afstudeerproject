@@ -78,26 +78,19 @@ def get_task_list(task_id_list):
 		tasks.append(get_task(x))
 	return tasks
 
-def get_pdf(inputxml):
+def get_data(inputxml):
     xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
     regexid=re.findall(r'</report_format>[a-zA-Z0-9+/=]*',xmlstr.decode('utf8'))
     before = regexid[0][16:]
     return before.encode('utf8')
 	
-# def download_report(task_id, report_format):
-# 	with Gmp(connection, transform=transform) as gmp:
-# 		# Login -> change to default admin password
-# 		gmp.authenticate(user, password)   
-# 		#get report as pdf
-# 		base64 = get_pdf(gmp.get_report("ee818589-db5d-40d2-a1a6-55a7aedfb535", report_format_id="c402cc3e-b531-11e1-9163-406186ea4fc5"))
+def download_report(report_id, report_format_id):
+	with Gmp(connection, transform=transform) as gmp:
+		# Login -> change to default admin password
+		gmp.authenticate(user, password)   
 
-# 		bytes = b64decode(base64, validate=True)
-# 		if bytes:
-# 			f = open('report.pdf', 'wb')
-# 			f.write(base64)
-# 			f.close()
-# 
+		base64 = get_data(gmp.get_report(report_id=report_id, report_format_id=report_format_id, details=1))
 
-
-
-pretty_print(get_report_formats())
+		f = open(report_id + '.csv', 'wb')
+		f.write(b64decode(base64))
+		f.close()

@@ -126,9 +126,8 @@ def reports():
 @app.route('/downloadreport', methods=["POST"])
 def downloadreport():
     format = request.form.get("format")
-    task_id = request.form.get("task_id")
-    print(format)
-    print(task_id)
+    report_id = request.form.get("report_id")
+    tasks.download_report(report_id, format)
     return reports_GET()
 
 #Configure IP methods - config.html

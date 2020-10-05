@@ -22,7 +22,7 @@
     {% for task in tasks %}
         <tr>
             <form action="/downloadreport" method=POST>
-                <input type="hidden" name="task_id" value="{{task.task_id}}">
+                <input type="hidden" name="report_id" value="{{task.report_id}}">
                 <td><input type="checkbox" id="select"></td>
                 <td>{{task.task_name}}</td>
                 <td>
