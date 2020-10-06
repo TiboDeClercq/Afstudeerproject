@@ -37,6 +37,16 @@ def get_name(inputxml):
 		substr.append(y[:-7])
 	return substr
 
+def get_target_name(inputxml):
+	xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
+	regexid=re.findall(r'\<target id="[0-9a-z-]*',xmlstr.decode('utf8'))
+	target_id=regexid[0][:12]
+	with Gmp(connection, transform=transform) as gmp:
+		gmp.authenticate(user, password)
+		result=gmp.get_target(target_id)
+		pretty_print(result)
+	return regexid[0][:12]
+
 def get_report_name(inputxml):
 	xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
 	regexid=re.findall(r'<name>[A-Za-z ]*</name>',xmlstr.decode('utf8'))
@@ -69,6 +79,7 @@ def get_task(task_id):
 		gmp.authenticate(user, password)
 		task = gmp.get_task(task_id)
 		task_name = get_name(task)[1]
+		#get_target_name(task)
 		report_id = get_id(task,"report")[0]
 		return Task(task_id, report_id, task_name)
 
@@ -95,7 +106,6 @@ def download_report(report_id, report_format_id):
 
 		base64 = get_data(gmp.get_report(report_id=report_id, report_format_id=report_format_id, details=1))
 
-		
 		f = open("reportdownload/" + report_id + '.csv', 'wb')
 		f.write(b64decode(base64))
 		f.close()

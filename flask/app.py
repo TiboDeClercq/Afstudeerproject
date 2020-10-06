@@ -192,27 +192,38 @@ def dhcp():
 
 @app.route('/portQuestions', methods=["POST"])
 def portQuestions():
-    with open("ports.txt", "r") as f:
-            port_list = f.read()            
-            port_list=re.findall(r'[\d]*[^,\sTU:]', port_list)
-            print(port_list)
+    port_list=dict()
+    with open("ports/ipList.txt", "r") as i:
+        ipListStr=i.read()
+        ipList=re.findall(r'\b(?:\d{1,3}\.){3}\d{1,3}\b', ipListStr)
+        for ip in ipList:
+            with open("ports/"+ ip + ".txt", "r") as f:
+                    port_list_str = f.read()            
+                    port_list_str=re.findall(r'[\d]*[^,\sTU:]', port_list_str)
+                    port_list[ip]=port_list_str
     targetname=request.form.get("targetname")
-    print(targetname)
-    return render_template('questions.html', ports=port_list, targetname=targetname)
+    return render_template('questions.html', ports=port_list, targetname=targetname, iplist=ipList)
 
 @app.route('/portAnswers', methods=["POST"])
 def portAnswers():
-    AnswerList=dict()
+    
+    AnswerList=dict() 
     targetname=request.form.get("targetname")
-    print(targetname)
-    with open("ports.txt", "r") as f:
-            port_list = f.read()           
-            port_list=re.findall(r'[\d]*[^,\sTU:]', port_list)
-    for port in port_list:
-        yesno=request.form.get("inlineRadioOptions"+port)
-        explanation=""
-        explanation=request.form.get("textArea"+port)
-        AnswerList[port]=[yesno, explanation]
+    with open("ports/ipList.txt", "r") as i:
+        ipListStr=i.read()
+        ipList=re.findall(r'\b(?:\d{1,3}\.){3}\d{1,3}\b', ipListStr)
+        for ip in ipList:
+            with open("ports/"+ ip +".txt", "r") as f:
+                    AnswerListPorts=dict()
+                    port_list = f.read()           
+                    port_list=re.findall(r'[\d]*[^,\sTU:]', port_list)
+                    print(port_list)
+                    for port in port_list:                           
+                        yesno=request.form.get("inlineRadioOptions"+ ip + port)
+                        explanation=""
+                        explanation=request.form.get("textArea"+ ip + port)
+                        AnswerListPorts[port]=[yesno, explanation]
+                        AnswerList[ip]=AnswerListPorts
     print(AnswerList)
     try:
         os.system("mkdir txtfiles")
@@ -222,9 +233,16 @@ def portAnswers():
     os.system("touch txtfiles/answers_target_" + targetname)
 
     with open("txtfiles/answers_target_" + targetname, "w") as a:
-        for port in port_list:
-            a.write("port: " + port + " yes/no: " + AnswerList[port][0] + ", explanation: " + AnswerList[port][1] + "\n")
-    zip_files(targetname)
+        for ip in ipList:
+            a.write("ip: " + ip + "\n")
+            with open("ports/"+ ip +".txt", "r") as f:
+                    port_list = f.read()           
+                    port_list=re.findall(r'[\d]*[^,\sTU:]', port_list)
+                    for port in port_list:
+                        a.write("port: " + port + " yes/no: " + AnswerList[ip][port][0] + ", explanation: " + AnswerList[ip][port][1] + "\n")
+                        print(AnswerList[ip][port][0])
+            a.write("\n")
+        zip_files(targetname)
     return index()
 @app.route('/')
 def index():

@@ -18,26 +18,27 @@
 <div class="row">
     <form action="/portAnswers" method="POST">
 
-        {% for port in ports %}
+        {% for ip in iplist %}
+        {% for port in ports[ip]%}
         <div class="form-group">
-            <label for="inputIP">Did you know that port <b>{{port}}</b> was open?</label><br>
+            <label for="inputIP">Did you know that port <b>{{port}}</b> on host {{ip}} was open?</label><br>
             <div class="form-check form-check-inline">
-                <input class="form-check-input " type="radio" name="inlineRadioOptions{{port}}" id="radio1{{port}}"
+                <input class="form-check-input " type="radio" name="inlineRadioOptions{{ip}}{{port}}" id="radio1{{ip}}{{port}}"
                     value="Yes" required>
-                <label class="form-check-label" for="radio1{{port}}">Yes</label>
+                <label class="form-check-label" for="radio1{{ip}}{{port}}">Yes</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input " type="radio" name="inlineRadioOptions{{port}}" id="radio2{{port}}"
+                <input class="form-check-input " type="radio" name="inlineRadioOptions{{ip}}{{port}}" id="radio2{{ip}}{{port}}"
                     value="No" required>
-                <label class="form-check-label" for="radio2{{port}}">No</label>
+                <label class="form-check-label" for="radio2{{ip}}{{port}}">No</label>
             </div>
         </div>
         <div class="form-group">
-            <label for="textArea{{port}}">What is the purpuse of this port?</label>
-            <textarea class="form-control" id="textArea{{port}}" name = "textArea{{port}}" rows="3"></textarea>
-            
+            <label for="textArea{{ip}}{{port}}">What is the purpuse of this port?</label>
+            <textarea class="form-control" id="textArea{{ip}}{{port}}" name = "textArea{{ip}}{{port}}" rows="3"></textarea>            
         </div>
 
+        {% endfor %}
         {% endfor %}
         <input type="hidden" name="targetname" value="{{targetname}}">
         <td><button type="submit" class="portform btn btn-primary" id="portbutton">Submit answers</button></td>
