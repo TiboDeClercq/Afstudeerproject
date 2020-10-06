@@ -5,7 +5,9 @@ setInterval(getprogress, 2000);
 
 function getprogress() {
     getprogressRqst.open("GET", "/prgrss", true);
-    var serverResponse = getprogressRqst.responseText;
+    //var serverResponse = getprogressRqst.responseText;
+    //var serverResponse = Response.progrss;
+    var serverResponse = JSON.parse(getprogressRqst.responseText);
     console.log("---------------------------- serverresponse:-" + serverResponse + "_");
     document.getElementById("progrss").innerHTML = serverResponse;
     //getprogressRqst.onreadystatechange = getProgressData();
