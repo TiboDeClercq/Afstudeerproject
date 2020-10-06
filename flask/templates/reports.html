@@ -11,33 +11,43 @@
 {% endblock %}
 
 {% block body %}
-<h1>reports</h1>
-<table>
-    <tr>
-        <th>Select</th>
-        <th>TaskName</th>
-        <th>report format</th>
-        <th>Download</th>
-    </tr>
-    {% for task in tasks %}
-        <tr>
-            <form action="/downloadreport" method=POST>
-                <input type="hidden" name="report_id" value="{{task.report_id}}">
-                <td><input type="checkbox" id="select"></td>
-                <td>{{task.task_name}}</td>
-                <td>
-                    <select name="format">
-                        <option  selected>Please choose</option>
-                        {% for k, v in reports.items() %}
-                            <option value="{{k}}">{{v}}</option>
-                        {% endfor%}
-                    </select>
-                </td>
-                <td><input type="submit" value="Download"></td>
-            </form>
-        </tr>
-    {% endfor %}
-</table>
-    
+<div class="row">
+    <h1>Reports</h1>
+</div>
+<br>
+<div class="row">
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Select</th>
+                    <th>Taskname</th>
+                    <th>Report format</th>
+                    <th></th>
+                </tr>
+            </thead>
+            {% for task in tasks %}
+            <tr>
+                <form action="/downloadreport" method=POST>
+                    <input type="hidden" name="report_id" value="{{task.report_id}}">
+                    <td><input type="checkbox" id="select"></td>
+                    <td>{{task.task_name}}</td>
+                    <td>
+                        <div class="dropdown">
+                            <select name="format" class="btn btn-sm btn-secondary dropdown-toggle">
+                                <!-- <option selected>Please choose</option> -->
+                                {% for k, v in reports.items() %}
+                                <option value="{{k}}">{{v}}</option>
+                                {% endfor%}
+                            </select>
+                        </div>
+                    
+                    </td>
+                    <td><input class="btn btn-outline-primary" type="submit" value="Download"></td>
+                </form>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
 {% endblock %}
-    
