@@ -14,6 +14,7 @@ import re
 import asyncio
 import websockets
 from zipfile import ZipFile
+import json
 
 app = Flask(__name__)
 
@@ -135,8 +136,16 @@ def progress_bar():
     #     return render_template('success.html', progr=progr)
     else:
          data = str(progr) + "%"
+    #return Response(data)
 
-    return Response(data, mimetype='text/html', headers=None)
+    jsondata = {
+        "progrss": data
+    }
+
+    j=json.dumps(jsondata)
+
+
+    return Response(j, mimetype='application/json')
 
     
 
