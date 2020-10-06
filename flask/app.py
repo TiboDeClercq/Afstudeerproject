@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, Response
+from flask import Flask, render_template, request, redirect, url_for, Response, send_file
 import socket, threading
 import sys, os
 from datetime import datetime
@@ -180,7 +180,8 @@ def downloadreport():
     format = request.form.get("format")
     report_id = request.form.get("report_id")
     tasks.download_report(report_id, format)
-    return reports_GET()
+    path = "../reportdownload/" + report_id + ".csv"
+    return send_file(path)
 
 #Configure IP methods - config.html
 @app.route('/configuration', methods=["GET"])

@@ -70,7 +70,7 @@ def get_report_formats():
 		ids = get_id(xml, "report_format")
 		names = get_report_name(xml)
 		map = {}
-		for i in 0,4,6,8:
+		for i in 0,4,6:
 			map[ids[i]] = names[i]
 		return map
 
