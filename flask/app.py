@@ -136,12 +136,14 @@ def progress_bar():
     #     return render_template('success.html', progr=progr)
     else:
          data = str(progr) + "%"
+    #return Response(data)
 
     jsondata = {
         "progrss": data
     }
 
     j=json.dumps(jsondata)
+
 
     return Response(j, mimetype='application/json')
 
