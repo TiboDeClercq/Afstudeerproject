@@ -160,7 +160,7 @@ def reports_GET():
 def reports():
     task_list=tasks.get_task_list(tasks.get_task_id_list())
     report_format_list = tasks.get_report_formats()
-    return render_template('reports.html', tasks=task_list)
+    return render_template('reports.html', tasks=task_list, reports=report_format_list)
 
 @app.route('/downloadreport', methods=["POST"])
 def downloadreport():
