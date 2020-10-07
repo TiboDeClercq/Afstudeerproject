@@ -23,6 +23,7 @@ task_list=tasks.get_task_list(tasks.get_task_id_list())
 report_format_list = tasks.get_report_formats()
 errorList = []
 progr=0
+task_id_for_progr = " "
 thread_list=[]
 
 conf_id = "698f691e-7489-11df-9d8c-002264764cea"
@@ -100,14 +101,6 @@ def sendScan():
         IpAddressen[:]=[]
         return success(task_id, deviceName)
 
-#attempt to read print(progress) and store in progr (failed)
-# def progrchange(task_id):
-#     holder= Object
-#     x=0
-#     while is_running(task_id):
-#         progr=subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[x]
-#         x=x+1
-
 def set_progress(newprogr):
     global progr 
     progr = newprogr
@@ -116,8 +109,19 @@ def get_progress():
     global progr
     return progr
 
+def set_task_id_for_progress(newid):
+    global task_id_for_progr 
+    task_id_for_progr = newid
+
+def get_task_id_for_progress():
+    global task_id_for_progr
+    return task_id_for_progr
+
 def progress_check(task_id):
-    #setter zorgt ervoor dat nieuwe progress is opgeslagen
+    #setter zorgt ervoor dat nieuwe progress en id is opgeslagen
+
+    set_task_id_for_progress(task_id)
+
     while(progr != 100):
         set_progress(get_newprogress(task_id))
 
@@ -129,7 +133,8 @@ def progress_bar():
     else:
          data = str(progr) 
     jsondata = {
-        "progrss": data
+        "progrss": data,
+        "taskidforprogrss": task_id_for_progr
     }
 
     j=json.dumps(jsondata)
