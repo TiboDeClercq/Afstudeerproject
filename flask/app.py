@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, Response, send_file
 import socket, threading
-import sys, os
+import sys, os, subprocess
 from datetime import datetime
 currentdir = os.path.dirname(os.path.realpath(__file__))
 parentdir = os.path.dirname(currentdir)
@@ -215,11 +215,15 @@ def downloadzip():
 def config_GET():
     staticSucces = False
     dhcpSucces = False
-    ip=get_ip()
-    subnet=get_subnet()
-    print(ip)
-    print(subnet)
-    return render_template('config.html', ip=ip, subnet=subnet, staticSucces=staticSucces, dhcpSuccess=dhcpSucces)
+    # ip=get_ip()
+    os.system('ip a | grep \'eth0\' | grep \'inet\' | grep -oP \'(?<=inet\s)\d+(\.\d+){3}\' > int/intip.txt')
+    with open("int/intip.txt", "r") as ipfile:
+        ip= ipfile.read()
+    intname= 'eth0'
+    os.system('ip a | grep \'eth0\' | grep \'inet\' | grep -oP \'/[0-9][0-9]\' > int/intsubnet.txt')
+    with open("int/intsubnet.txt", "r") as subnetfile:
+        subnet= subnetfile.read()
+    return render_template('config.html', ip=ip, subnet=subnet, int_name=intname, staticSucces=staticSucces, dhcpSuccess=dhcpSucces)
 
 def config_GET_static(staticSucces):
     ip=get_ip()
