@@ -23,7 +23,6 @@ task_list=tasks.get_task_list(tasks.get_task_id_list())
 report_format_list = tasks.get_report_formats()
 errorList = []
 progr=0
-oldprogr=0
 thread_list=[]
 
 conf_id = "698f691e-7489-11df-9d8c-002264764cea"
@@ -111,8 +110,6 @@ def sendScan():
 
 def set_progress(newprogr):
     global progr 
-    global oldprogr
-    oldprogr = progr
     progr = newprogr
 
 def get_progress():
@@ -126,43 +123,24 @@ def progress_check(task_id):
 
 @app.route('/prgrss', methods=["GET"])
 def progress_bar():
-    # while progr != 100:
-    #     if progr != oldprogr:
-    #         yield progr
 
     if progr is None:
-        data = str(0) #+ "%"
-    # if progr != oldprogr:
-    #     return render_template('success.html', progr=progr)
+        data = str(0) 
     else:
-         data = str(progr) #+ "%"
-    #return Response(data)
-
+         data = str(progr) 
     jsondata = {
         "progrss": data
     }
 
     j=json.dumps(jsondata)
 
-
     return Response(j, mimetype='application/json')
-
-    
-
 
 def success(task_id, deviceName):
     #voert progresschack uit zodat progr wordt veranderd
-    #kijken om een async functie met thread?
     t1=threading.Thread(target=progress_check, args=(task_id,))
     thread_list.append(t1)
     t1.start()
-
-    # t2=threading.Thread(target=progress_bar)
-    # thread_list.append(t2)
-    # t2.start()
-
-    if progr is None:
-        return render_template('success.html', targetname=deviceName)
 
     return render_template('success.html', targetname=deviceName)
 
