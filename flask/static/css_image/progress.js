@@ -1,10 +1,8 @@
 createbar();
 setInterval(withFetch, 2000);
 
-
 function withFetch(){
     fetch('http://127.0.0.1:5000/prgrss').then(response => response.json()).then(data => document.getElementById("progrss").innerHTML = data.progrss + '%');
-
     fetch('http://127.0.0.1:5000/prgrss').then(response => response.json()).then(data => document.getElementById("progrssbar").setAttribute('style', 'width: ' + data.progrss + '%'));
 }
 
