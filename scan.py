@@ -157,10 +157,10 @@ def custome_port_table(ipList):
     with open("ports/ports.txt", "w") as f:
         for ip in ipList:
             try:
-                os.system("touch ports/"+ ip + ".txt")
+                os.system("touch ports/"+ ip  + ".txt")
             except:
                 print("dir already exists")
-            cmd = "nmap "+ ip + " -sS| grep open | cut -d' ' -f1> ports/" + ip + ".txt"
+            cmd = "nmap "+ ip + " -sS -T5| grep open | cut -d' ' -f1> ports/" + ip + ".txt"
             os.system(cmd)           
             with open("ports/" +ip+".txt", "r") as p:
                 print(ip + "read")
