@@ -97,7 +97,8 @@ def sendScan():
         #Target has to be unique. Date and time will be added to the devicename.
         targetUniqueName = deviceName.replace(' ', '-').lower() + "_" + datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
         task_id= scan(targetUniqueName, IpAddressen, conf_id)
-        set_task_id_for_progress(task_id)
+        if task_id_for_progr == " ":
+            set_task_id_for_progress(task_id)
         questions()
         IpAddressen[:]=[]
         return success(task_id, deviceName)
@@ -125,7 +126,6 @@ def progress_check(task_id):
 
 @app.route('/prgrss', methods=["GET"])
 def progress_bar():
-
     if progr is None:
         data = str(0) 
     else:
@@ -141,11 +141,15 @@ def progress_bar():
 
 def success(task_id, deviceName):
     #voert progresschack uit zodat progr wordt veranderd
-    t1=threading.Thread(target=progress_check, args=(task_id,))
-    thread_list.append(t1)
-    t1.start()
+    if task_id == task_id_for_progr:
+        t1=threading.Thread(target=progress_check, args=(task_id,))
+        thread_list.append(t1)
+        t1.start()
+        msg="Success, your scan has started"
+    else:
+        msg="You have a scan running, " + deviceName
 
-    return render_template('success.html', targetname=deviceName)
+    return render_template('success.html', targetname=deviceName, message=msg)
 
 #Report methods - reports.html
 @app.route('/reports', methods=["GET"])
