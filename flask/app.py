@@ -119,9 +119,6 @@ def get_task_id_for_progress():
 
 def progress_check(task_id):
     #setter zorgt ervoor dat nieuwe progress en id is opgeslagen
-
-    set_task_id_for_progress(task_id)
-
     while(progr != 100):
         set_progress(get_newprogress(task_id))
 
@@ -146,6 +143,8 @@ def success(task_id, deviceName):
     t1=threading.Thread(target=progress_check, args=(task_id,))
     thread_list.append(t1)
     t1.start()
+
+    set_task_id_for_progress(task_id)
 
     return render_template('success.html', targetname=deviceName)
 

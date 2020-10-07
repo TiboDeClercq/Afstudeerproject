@@ -1,9 +1,20 @@
 createbar();
+var taskkid="";
+var newtaskkid=""
+fetch('http://127.0.0.1:5000/prgrss').then(response => response.json()).then(data => taskkid = data.taskidforprogrss);
 setInterval(withFetch, 2000);
 
 function withFetch(){
-    fetch('http://127.0.0.1:5000/prgrss').then(response => response.json()).then(data => document.getElementById("progrss").innerHTML = data.progrss + '%');
-    fetch('http://127.0.0.1:5000/prgrss').then(response => response.json()).then(data => document.getElementById("progrssbar").setAttribute('style', 'width: ' + data.progrss + '%'));
+    console.log("locked taskid:  " + taskkid);
+    fetch('http://127.0.0.1:5000/prgrss').then(response => response.json()).then(data => newtaskkid = data.taskidforprogrss);
+    
+    console.log("changing taskid:  " + newtaskkid);
+
+
+    if(taskkid == newtaskkid){
+        fetch('http://127.0.0.1:5000/prgrss').then(response => response.json()).then(data => document.getElementById("progrss").innerHTML = data.progrss + '%');
+        fetch('http://127.0.0.1:5000/prgrss').then(response => response.json()).then(data => document.getElementById("progrssbar").setAttribute('style', 'width: ' + data.progrss + '%'));
+    }
 }
 
 function createbar () { 
