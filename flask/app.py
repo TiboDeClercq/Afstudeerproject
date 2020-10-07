@@ -151,10 +151,14 @@ def success(task_id, deviceName):
 #Report methods - reports.html
 @app.route('/reports', methods=["GET"])
 def reports_GET():
+    task_list=tasks.get_task_list(tasks.get_task_id_list())
+    report_format_list = tasks.get_report_formats()
     return render_template('reports.html', tasks=task_list, reports=report_format_list)
 
 @app.route('/reports', methods=["POST"])
 def reports():
+    task_list=tasks.get_task_list(tasks.get_task_id_list())
+    report_format_list = tasks.get_report_formats()
     return render_template('reports.html', tasks=task_list)
 
 @app.route('/downloadreport', methods=["POST"])
@@ -234,7 +238,7 @@ def portAnswers():
                         a.write("port: " + port + " yes/no: " + AnswerList[ip][port][0] + ", explanation: " + AnswerList[ip][port][1] + "\n")
                         print(AnswerList[ip][port][0])
             a.write("\n")
-        zip_files(targetname)
+        #zip_files(targetname)
     return index()
 @app.route('/')
 def index():
