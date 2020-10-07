@@ -2,6 +2,23 @@ import subprocess
 import os
 import re
 
+
+def get_subnet():
+    os.system("sudo ifconfig > interfaces.txt")
+    with open ("interfaces.txt", "r") as f:
+        currentip=re.findall(r'inet \b(?:\d{1,3}\.){3}\d{1,3}\b  netmask \b(?:\d{1,3}\.){3}\d{1,3}\b', f.read())
+        currentip=re.findall(r'\b(?:\d{1,3}\.){3}\d{1,3}\b', currentip[0])
+        currentnetmask=currentip[1]
+        return currentnetmask
+
+def get_ip():
+    os.system("sudo ifconfig> interfaces.txt")
+    with open ("interfaces.txt", "r") as f:
+        currentip=re.findall(r'inet \b(?:\d{1,3}\.){3}\d{1,3}\b  netmask \b(?:\d{1,3}\.){3}\d{1,3}\b', f.read())
+        currentip=re.findall(r'\b(?:\d{1,3}\.){3}\d{1,3}\b', currentip[0])
+        currentip=currentip[0]
+        return currentip
+
 def get_interface():
     os.system("ip a > interfaces.txt")
     with open ("interfaces.txt", "r") as f:

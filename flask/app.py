@@ -8,7 +8,7 @@ sys.path.append(parentdir)
 from scan import scan, is_requested, is_running, get_newprogress
 from questions import questions
 import tasks
-from setup import set_dhcp, set_static_ip
+from setup import set_dhcp, set_static_ip, get_ip, get_subnet
 #from .. from setup import set_static_ip, set_dhcp
 import re
 import asyncio
@@ -170,22 +170,33 @@ def downloadreport():
     path = "../reportdownload/" + report_id + ".csv"
     return send_file(path)
 
+@app.route('/downloadzip', methods=["POST"])
+def downloadzip():
+    report_id = request.form.get("report_id")
+    tasks.zip_files(report_id)
+    path= "../zipfiles/" + tasks.get_target_name(report_id)[:-20] + ".zip"
+    return send_file(path)
+
 #Configure IP methods - config.html
 @app.route('/configuration', methods=["GET"])
 def config_GET():
-    return render_template('config.html')
+    ip=get_ip()
+    subnet=get_subnet()
+    print(ip)
+    print(subnet)
+    return render_template('config.html', ip=ip, subnet=subnet)
 
 @app.route('/staticip', methods=["POST"])
 def staticip():
     ip= request.form.get("ip")
     subnet=request.form.get("subnet")
     set_static_ip(ip, subnet)
-    return render_template('config.html')
+    return config_GET()
 
 @app.route('/dhcp', methods=["POST"])
 def dhcp():
     set_dhcp()
-    return render_template('config.html')
+    return config_GET()
 
 @app.route('/portQuestions', methods=["POST"])
 def portQuestions():

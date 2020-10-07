@@ -55,10 +55,17 @@
                                 {% endfor%}
                             </select>
                         </div>
-
+                    
                     </td>
                     <td><input class="btn btn-outline-primary" type="submit" value="Download"></td>
                 </form>
+                <td>
+                    <form action="/downloadzip" method="POST">
+                        <input type="hidden" name="report_id" value="{{task.report_id}}">
+                        <input class="btn-outline-primary" type="submit" value="zip">
+                    </form>
+                </td>
+                
             </tr>
             {% endfor %}
         </table>

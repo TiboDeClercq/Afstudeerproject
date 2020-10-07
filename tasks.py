@@ -6,6 +6,7 @@ import re
 from xml.etree import ElementTree
 from base64 import b64decode
 import os
+from zipfile import ZipFile
 
 connection = UnixSocketConnection()
 transform = EtreeTransform()
@@ -110,3 +111,27 @@ def download_report(report_id, report_format_id):
 		f = open("reportdownload/" + report_id + '.csv', 'wb')
 		f.write(b64decode(base64))
 		f.close()
+
+def zip_files(report_id):
+	full_target_name=get_target_name(report_id)
+	target_name=get_target_name(report_id)[:-20]
+	path = "txtfiles/answers_target_" + target_name
+	reportpath = "reportdownload/" + report_id + ".csv"
+
+	try:
+		os.system("mkdir zipfiles")
+	except:
+		print("directory exists")
+
+	zipObj = ZipFile("zipfiles/"+target_name+'.zip', 'w')
+	zipObj.write(path)
+	zipObj.write(reportpath)
+	zipObj.close()
+	print("successfull zipped")
+
+def get_target_name(report_id):
+	with Gmp(connection, transform=transform) as gmp:
+		gmp.authenticate(user, password)
+		xml = gmp.get_report(report_id)
+		l = get_name(xml)
+		return l[-1]
