@@ -24,7 +24,6 @@ report_format_list = tasks.get_report_formats()
 errorList = []
 progr=0
 task_id_for_progr = " "
-task_id_for_progr2 = " "
 thread_list=[]
 
 conf_id = "698f691e-7489-11df-9d8c-002264764cea"
@@ -98,6 +97,7 @@ def sendScan():
         #Target has to be unique. Date and time will be added to the devicename.
         targetUniqueName = deviceName.replace(' ', '-').lower() + "_" + datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
         task_id= scan(targetUniqueName, IpAddressen, conf_id)
+        set_task_id_for_progress(task_id)
         questions()
         IpAddressen[:]=[]
         return success(task_id, deviceName)
@@ -118,17 +118,8 @@ def get_task_id_for_progress():
     global task_id_for_progr
     return task_id_for_progr
 
-def set_task_id_for_progress2(newid):
-    global task_id_for_progr2 
-    task_id_for_progr2 = newid
-
-def get_task_id_for_progress2():
-    global task_id_for_progr2
-    return task_id_for_progr2
-
 def progress_check(task_id):
     #setter zorgt ervoor dat nieuwe progress en id is opgeslagen
-    set_task_id_for_progress2(task_id)
     while(progr != 100):
         set_progress(get_newprogress(task_id))
 
@@ -141,7 +132,7 @@ def progress_bar():
          data = str(progr) 
     jsondata = {
         "progrss": data,
-        "taskidforprogrss": task_id_for_progr2
+        "taskidforprogrss": task_id_for_progr
     }
 
     j=json.dumps(jsondata)
@@ -153,8 +144,6 @@ def success(task_id, deviceName):
     t1=threading.Thread(target=progress_check, args=(task_id,))
     thread_list.append(t1)
     t1.start()
-
-    set_task_id_for_progress(task_id)
 
     return render_template('success.html', targetname=deviceName)
 
