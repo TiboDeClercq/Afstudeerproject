@@ -135,8 +135,19 @@ def get_task_id_for_progress():
 
 def progress_check(task_id):
     #setter zorgt ervoor dat nieuwe progress en id is opgeslagen
-    while(progr != 100):
-        set_progress(get_newprogress(task_id))
+    if is_requested(task_id) or is_running(task_id):
+        while(progr != 100):
+            if is_requested(task_id) or is_running(task_id):
+                set_progress(get_newprogress(task_id))
+            else:
+                break
+        set_task_id_for_progress(" ")
+        set_already_running(False)
+        set_progress(0)
+    else:
+        set_task_id_for_progress(" ")
+        set_already_running(False)
+        set_progress(0)
 
 @app.route('/prgrss', methods=["GET"])
 def progress_bar():
@@ -162,7 +173,7 @@ def success(task_id, deviceName):
         set_already_running(True)
         msg="Success, your scan, " + deviceName + " has started"
     else:
-        msg="You have a scan running, " + deviceName
+        msg="You already have a scan running, " + deviceName
 
     return render_template('success.html', targetname=deviceName, message=msg)
 
