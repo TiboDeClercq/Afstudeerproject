@@ -7,7 +7,6 @@ function withFetch(){
 }
 
 function createbar () { 
-    // create a new div element 
     const bar = document.createElement("div"); 
     
     bar.setAttribute('class', 'progress-bar');

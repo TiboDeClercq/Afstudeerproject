@@ -24,6 +24,8 @@ report_format_list = tasks.get_report_formats()
 errorList = []
 progr=0
 task_id_for_progr = " "
+temp_deviceName= " "
+already_running=False
 thread_list=[]
 
 conf_id = "698f691e-7489-11df-9d8c-002264764cea"
@@ -82,6 +84,14 @@ def delIP():
 def delIP2():
     return redirect(url_for('index'))
 
+def set_temp_deviceName(newname):
+    global temp_deviceName 
+    temp_deviceName = newname
+
+def set_already_running(newstatus):
+    global already_running 
+    already_running = newstatus
+
 @app.route('/sendScan', methods=["POST"])
 def sendScan():
     conf_id=request.form.get("conf")
@@ -96,7 +106,13 @@ def sendScan():
         print("Success")
         #Target has to be unique. Date and time will be added to the devicename.
         targetUniqueName = deviceName.replace(' ', '-').lower() + "_" + datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
-        task_id= scan(targetUniqueName, IpAddressen, conf_id)
+        if task_id_for_progr == " ":
+            task_id= scan(targetUniqueName, IpAddressen, conf_id)
+            set_task_id_for_progress(task_id)
+            set_temp_deviceName(deviceName)
+        else:
+            task_id=task_id_for_progr
+            deviceName=temp_deviceName
         questions()
         IpAddressen[:]=[]
         return success(task_id, deviceName)
@@ -119,15 +135,22 @@ def get_task_id_for_progress():
 
 def progress_check(task_id):
     #setter zorgt ervoor dat nieuwe progress en id is opgeslagen
-
-    set_task_id_for_progress(task_id)
-
-    while(progr != 100):
-        set_progress(get_newprogress(task_id))
+    if is_requested(task_id) or is_running(task_id):
+        while(progr != 100):
+            if is_requested(task_id) or is_running(task_id):
+                set_progress(get_newprogress(task_id))
+            else:
+                break
+        set_task_id_for_progress(" ")
+        set_already_running(False)
+        set_progress(0)
+    else:
+        set_task_id_for_progress(" ")
+        set_already_running(False)
+        set_progress(0)
 
 @app.route('/prgrss', methods=["GET"])
 def progress_bar():
-
     if progr is None:
         data = str(0) 
     else:
@@ -143,11 +166,16 @@ def progress_bar():
 
 def success(task_id, deviceName):
     #voert progresschack uit zodat progr wordt veranderd
-    t1=threading.Thread(target=progress_check, args=(task_id,))
-    thread_list.append(t1)
-    t1.start()
+    if already_running == False:
+        t1=threading.Thread(target=progress_check, args=(task_id,))
+        thread_list.append(t1)
+        t1.start()
+        set_already_running(True)
+        msg="Success, your scan, " + deviceName + " has started"
+    else:
+        msg="You already have a scan running, " + deviceName
 
-    return render_template('success.html', targetname=deviceName)
+    return render_template('success.html', targetname=deviceName, message=msg)
 
 #Report methods - reports.html
 @app.route('/reports', methods=["GET"])
