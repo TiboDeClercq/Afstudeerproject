@@ -131,11 +131,11 @@ def progress_bar():
     #         yield progr
 
     if progr is None:
-        data = str(0) + "%"
+        data = str(0) #+ "%"
     # if progr != oldprogr:
     #     return render_template('success.html', progr=progr)
     else:
-         data = str(progr) + "%"
+         data = str(progr) #+ "%"
     #return Response(data)
 
     jsondata = {
