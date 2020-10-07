@@ -12,7 +12,7 @@ from setup import set_dhcp, set_static_ip, get_ip, get_subnet
 #from .. from setup import set_static_ip, set_dhcp
 import re
 import asyncio
-import websockets
+#import websockets
 from zipfile import ZipFile
 import json
 
@@ -216,7 +216,7 @@ def config_GET():
 
 @app.route('/staticip', methods=["POST"])
 def staticip():
-    ip= request.form.get("ip")
+    ip = request.form.get("ip")
     subnet=request.form.get("subnet")
     set_static_ip(ip, subnet)
     return config_GET()
@@ -225,6 +225,7 @@ def staticip():
 def dhcp():
     set_dhcp()
     return config_GET()
+
 
 @app.route('/portQuestions', methods=["POST"])
 def portQuestions():

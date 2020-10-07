@@ -1,0 +1,35 @@
+question 1
+is there any backend feedback during the process of scanning a device \ cli ?
+
+question 2
+Part of the complication of the actual deploment? How is it going to get depolyed?
+	- VM
+	- Docker
+	- manual installation
+
+suggestion 1 
+It would be great to have a discription about the scans
+
+question 3
+How do we collect all the results?
+	- Centerised? (gecentreerd)
+	- send it to s3?
+	- email is stil one of the best option
+	- how confidential is the information?
+
+question 4
+Is it already available? Or how will it be available (open source?)
+
+question 5
+how does the file update?
+
+suggestion 2 
+mailserver would be nice to send the reports
+
+suggestion 3 
+mail sturen via internet en dan terug overswitchen naar lokaal netwerk
+
+suggestion 4
+iets van network discovery stuff? click on a button
+	Tibo: Iets met nmap ofzo voor host discovery
+

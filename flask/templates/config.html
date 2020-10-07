@@ -22,6 +22,20 @@
 <div class="row">
     <p><i>Enter a valid IP address and a subnetmask to configure your own address staticly</i></p>
 </div>
+
+<div class="row">
+    <div class="column">
+        {% if Static_succes %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert    ">
+            Your IP addres is now: <b>{{IPaddres}}</b> with subnetmask <b>{{Subnetmask}}</b>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
 <div class="row">
     <form action="/staticip" method=POST>
         <div class="form-group">
@@ -44,12 +58,19 @@
 <div class="row">
     <p><i>By pressing the button, you configure your own IP addres dynamicly with DHCP. </i></p>
 </div>
+{% if dhcp_success%}
+<div class="alert alert-success alert-dismissible fade show" role="success">
+    Your IP addres is now: <b>127.0.0.1</b>
+    <button type="button btn-sm" class="close" data-dismiss="success" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endif %}
 
-<div class="row">
-    <form action="/dhcp" method="POST">
-        <label></label>
-        <button class="btn btn-primary" type="submit">Use DHCP</button>
-    </form>
+<form action="/dhcp" method="POST">
+    <label></label>
+    <button class="btn btn-primary" type="submit">Use DHCP</button>
+</form>
 </div>
 
 {% endblock %}
