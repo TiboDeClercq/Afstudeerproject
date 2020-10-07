@@ -5,3 +5,6 @@ zipfiles/
 flask/ports.txt
 flask/interfaces.txt
 reportdownload/
+ports/
+flask/ports
+sudo 

@@ -15,7 +15,7 @@ from datetime import datetime
 import os
 
 import time
-from console_progressbar import ProgressBar
+#from console_progressbar import ProgressBar
 from tqdm import tqdm
 
 import questions
@@ -138,17 +138,34 @@ def custome_port_table(ipList):
     print("Scanning open ports...")
     # os.system('nmap -p-  127.0.0.1 | grep open | cut -d" " -f1 > nmap_test/ports.txt')
     #Commando dat de scan gaat uitvoeren voor al de ip addressen
+
     try:
         os.system("mkdir ports")
     except:
         print("dir already exists")
-    cmd = "nmap -p-  " + ' '.join(map(str, ipList)) + " | grep open | cut -d' ' -f1 > ports/ports.txt"
-    os.system(cmd)
     
-    for ip in ipList:
-        cmd = "nmap -p-  "+ ip + "| grep open | cut -d' ' -f1>ports/" + ip + ".txt"
-        os.system(cmd)
+    try:
+        os.system("rm ports/ports.txt")
+        os.system("touch ports/ports.txt")
+    except:
+        print("dir already exists")
 
+    # cmd = "nmap " + ' '.join(map(str, ipList)) + " -sS | grep open | cut -d' ' -f1 > ports/ports.txt"
+    # print(cmd)
+    # os.system(cmd)
+    
+    with open("ports/ports.txt", "w") as f:
+        for ip in ipList:
+            try:
+                os.system("touch ports/"+ ip + ".txt")
+            except:
+                print("dir already exists")
+            cmd = "nmap "+ ip + " -sS| grep open | cut -d' ' -f1> ports/" + ip + ".txt"
+            os.system(cmd)           
+            with open("ports/" +ip+".txt", "r") as p:
+                print(ip + "read")
+                f.write(p.read())
+ 
     try:
         os.system("touch ports/ipList.txt")
     except:
@@ -164,29 +181,12 @@ def custome_port_table(ipList):
     move(abs_path, "ports/ipList.txt")
     print("iplist created")
 
-    with open("ports/ports.txt", "r") as f:
-            inhoud = f.read()
-            #Create temp file
-            fh, abs_path = mkstemp()
-            with fdopen(fh,'w') as new_file:             
-                    new_file.write("T:")
-                    for match in re.findall(r'.*\/tcp', inhoud):
-                        l=re.findall(r'[\d]*', match)
-                        new_file.write(l[0]+ ", ")
-                    new_file.write("\nU:")
-                    for match in re.findall(r'.*\/udp', inhoud):
-                        l=re.findall(r'[\d]*', match)
-                        new_file.write(l[0]+ ", ")
-    copymode("ports/ports.txt", abs_path)
-    #Remove original file
-    remove("ports/ports.txt")
-    #Move new file
-    move(abs_path, "ports/ports.txt")
+ 
 
     for ip in ipList:
         with open("ports/" + ip + ".txt", "r") as f:
-            inhoud = f.read()
             #Create temp file
+            inhoud=f.read()
             fh, abs_path = mkstemp()
             with fdopen(fh,'w') as new_file:             
                     new_file.write("T:")
@@ -203,6 +203,25 @@ def custome_port_table(ipList):
         remove("ports/" +ip + ".txt")
         #Move new file
         move(abs_path, "ports/" +ip + ".txt")
+
+    with open("ports/ports.txt", "r") as f:
+        inhoud = f.read()
+        #Create temp file
+        fh, abs_path = mkstemp()
+        with fdopen(fh,'w') as new_file:             
+                new_file.write("T:")
+                for match in re.findall(r'.*\/tcp', inhoud):
+                    l=re.findall(r'[\d]*', match)
+                    new_file.write(l[0]+ ", ")
+                new_file.write("\nU:")
+                for match in re.findall(r'.*\/udp', inhoud):
+                    l=re.findall(r'[\d]*', match)
+                    new_file.write(l[0]+ ", ")
+    copymode("ports/ports.txt", abs_path)
+    #Remove original file
+    remove("ports/ports.txt")
+    #Move new file
+    move(abs_path, "ports/ports.txt")
 
 def scan(target_name, ipList, config_id):
     thread_list=[]
