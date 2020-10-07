@@ -21,7 +21,7 @@
         {% for ip in iplist %}
         {% for port in ports[ip]%}
         <div class="form-group">
-            <label for="inputIP">Did you know that port <b>{{port}}</b> on host {{ip}} was open?</label><br>
+            <label for="inputIP">Did you know that port <b>{{port}}</b> on host <b>{{ip}}</b> was open?</label><br>
             <div class="form-check form-check-inline">
                 <input class="form-check-input " type="radio" name="inlineRadioOptions{{ip}}{{port}}" id="radio1{{ip}}{{port}}"
                     value="Yes" required>

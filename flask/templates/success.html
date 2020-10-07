@@ -22,14 +22,16 @@
 <br>
 <br>
 <br>
-<form action="/reports" method="POST" target="_blank">
-    <button id="reportsbutton" type="submit" class="btnOpenReport btn btn-primary">Click here to go to your reports</button>
-</form>
-<br>
-<br>
 <form action="/portQuestions" method="POST" target="_blank">
     <input type="hidden" value="{{targetname}}" name="targetname">
     <button type="submit" class="btnPortQuestions btn btn-primary">Click here to answer the port questions to improve the security of target {{targetname}}!</button>
 </form>
+<br>
+<br>
+<form action="/reports" method="POST" target="_blank">
+    <button id="reportsbutton" type="submit" class="btnOpenReport btn btn-primary">Click here to go to your reports</button>
+</form>
+
+
 <script type="text/javascript" src="static/css_image/progress.js"></script>
 {% endblock %}
