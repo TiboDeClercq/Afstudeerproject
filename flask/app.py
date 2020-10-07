@@ -24,6 +24,7 @@ report_format_list = tasks.get_report_formats()
 errorList = []
 progr=0
 task_id_for_progr = " "
+task_id_for_progr2 = " "
 thread_list=[]
 
 conf_id = "698f691e-7489-11df-9d8c-002264764cea"
@@ -117,8 +118,17 @@ def get_task_id_for_progress():
     global task_id_for_progr
     return task_id_for_progr
 
+def set_task_id_for_progress2(newid):
+    global task_id_for_progr2 
+    task_id_for_progr2 = newid
+
+def get_task_id_for_progress2():
+    global task_id_for_progr2
+    return task_id_for_progr2
+
 def progress_check(task_id):
     #setter zorgt ervoor dat nieuwe progress en id is opgeslagen
+    set_task_id_for_progress2(task_id)
     while(progr != 100):
         set_progress(get_newprogress(task_id))
 
@@ -131,7 +141,7 @@ def progress_bar():
          data = str(progr) 
     jsondata = {
         "progrss": data,
-        "taskidforprogrss": task_id_for_progr
+        "taskidforprogrss": task_id_for_progr2
     }
 
     j=json.dumps(jsondata)
