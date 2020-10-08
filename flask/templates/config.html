@@ -27,6 +27,16 @@
     </div>
 </div>
 {% endif %}
+<div class="row">
+    {% for i in errorList%}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{i}}
+        <button type="button btn-sm" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endfor %}
+</div>
 
 
 <div class="row">
@@ -77,7 +87,6 @@
 <div class="row">
     <p><i>By pressing the button, you configure your own IP addres dynamicly with DHCP. </i></p>
 </div>
-
 {% if dhcpSuccess == True %}
 <div class="row">
     <div class="alert alert-success alert-dismissible fade show" role="alert">
