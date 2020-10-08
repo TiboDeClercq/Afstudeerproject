@@ -16,7 +16,6 @@ from configparser import ConfigParser
 import os
 
 import time
-#from console_progressbar import ProgressBar
 from tqdm import tqdm
 
 import questions
@@ -38,6 +37,7 @@ def get_name_without(inputxml):
     regexid=re.findall(r'<name>[a-zA-Z0-9]*',xmlstr.decode('utf8'))
     return regexid[1][6:]
 
+#function to get status out of output string
 def get_status(inputxml):
     xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
     regexid=re.findall(r'<status>[a-zA-Z]*',xmlstr.decode('utf8'))
@@ -47,29 +47,6 @@ def get_progress(inputxml):
     xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
     regexid=re.findall(r'<progress>[0-9]*',xmlstr.decode('utf8'))
     return regexid[0][10:]
-
-# def get_progresshtml(taskid):
-#     connection = UnixSocketConnection()
-#     transform = EtreeTransform()
-#     with Gmp(connection, transform=transform) as gmp:
-#         # Login -> change to default admin password
-#         gmp.authenticate('scanner', 'scanner')
-#         taskxml=gmp.get_task(taskid)
-#         # gave message in cli "x : <status>"
-#         # print(get_name_without(taskxml),": ", get_status(taskxml))
-#         progr=0
-#         #print(i)
-#         yield progr
-#         pbar = tqdm(total = 100, initial = progr)
-#         while (get_status(taskxml)=='Requested' or get_status(taskxml)=='Running'):
-#             taskxml=gmp.get_task(taskid)
-#             while(get_status(taskxml)=='Running' and progr < int(get_progress(taskxml))):
-#                 if(get_progress(taskxml) != ''):
-#                     oldprogr = progr
-#                     progr = int(get_progress(taskxml))
-#                     pbar.update(progr - oldprogr)
-#                     yield progr                    
-#                     #print(i)
 
 def get_newprogress(taskid):
     connection = UnixSocketConnection()
@@ -119,40 +96,23 @@ def check_for_logging(taskid):
         return False
 
 def progressbar(taskid):
-        print("thread started")
         taskxml=gmp.get_task(taskid)
-        print(get_name_without(taskxml),": ", get_status(taskxml))
-        #print(get_name_without(taskxml),": ", "0 %")
-        #progr = 0
-        #pb = ProgressBar(total = 100, decimals=0, length=50, fill='=', zfill=' ')
         i = 0
         pbar = tqdm(total = 100, initial = i)
         while (get_status(taskxml)=='Requested' or get_status(taskxml)=='Running'):
             taskxml=gmp.get_task(taskid)
-            #if(get_status(taskxml)=='Running'):
-                #for i in tqdm (range (100), desc=get_name_without(taskxml)):
             while(get_status(taskxml)=='Running' and i < int(get_progress(taskxml))):
                 if(get_progress(taskxml) != ''):
                     oldi = i
                     i = int(get_progress(taskxml))
                     pbar.update(i - oldi)
-        # while get_status(taskxml)=='Requested' or get_status(taskxml)=='Running':
-        #     taskxml=gmp.get_task(taskid)
-        #     if(get_status(taskxml)=='Running' and progr < int(get_progress(taskxml))):
-        #         print("\n", get_name_without(taskxml),": ")
-        #         pb.print_progress_bar(int(get_progress(taskxml)))
-        #     if(get_progress(taskxml) != ''):
-        #         progr = int(get_progress(taskxml))
-        print(get_status(taskxml))
 
+#function to create a custom port table with ports scanned by NMAP
 def custome_port_table(ipList):
+    #read config file
     config=ConfigParser()
     config.read("config.ini")
     nmap_info=config["NMAP"]
-    #Scanning all ports
-    print("Scanning open ports...")
-    # os.system('nmap -p-  127.0.0.1 | grep open | cut -d" " -f1 > nmap_test/ports.txt')
-    #Commando dat de scan gaat uitvoeren voor al de ip addressen
 
     try:
         os.system("mkdir ports")
@@ -164,28 +124,27 @@ def custome_port_table(ipList):
         os.system("touch ports/ports.txt")
     except:
         print("dir already exists")
-
-    # cmd = "nmap " + ' '.join(map(str, ipList)) + " -sS | grep open | cut -d' ' -f1 > ports/ports.txt"
-    # print(cmd)
-    # os.system(cmd)
     
+    #open ports file where all the open ports will be written to
     with open("ports/ports.txt", "w") as f:
         for ip in ipList:
             try:
                 os.system("touch ports/"+ ip  + ".txt")
             except:
                 print("dir already exists")
+            #nmap command to scan every IP in the list, option to decide how aggressive the scan will be can be modified in config.ini file
             cmd = "nmap "+ ip + " -sS -" + nmap_info["scan"] + "| grep open | cut -d' ' -f1> ports/" + ip + ".txt"
-            os.system(cmd)           
+            os.system(cmd)
+            #for every IP there will be a seperate file with the open ports        
             with open("ports/" +ip+".txt", "r") as p:
-                print(ip + "read")
                 f.write(p.read())
  
     try:
         os.system("touch ports/ipList.txt")
     except:
         print("ipList already exists")
-        
+    
+    #all the scanned IP's will be written to a seperate file
     with open ("ports/ipList.txt", "r")as f:
         fh, abs_path = mkstemp()
         with fdopen(fh,'w') as new_file:
@@ -193,16 +152,17 @@ def custome_port_table(ipList):
                 new_file.write(ip + "\n")
     copymode("ports/ipList.txt", abs_path)
     remove("ports/ipList.txt")
-    move(abs_path, "ports/ipList.txt")
-    print("iplist created")
-
- 
+    move(abs_path, "ports/ipList.txt") 
 
     for ip in ipList:
+        #the goal for this part is to modify the files so that that a custom port list can be created
         with open("ports/" + ip + ".txt", "r") as f:
             #Create temp file
             inhoud=f.read()
             fh, abs_path = mkstemp()
+            # file must have the structure of:
+            # T: 22,443, ...
+            # U: 80, ...
             with fdopen(fh,'w') as new_file:             
                     new_file.write("T:")
                     for match in re.findall(r'.*\/tcp', inhoud):
@@ -223,6 +183,9 @@ def custome_port_table(ipList):
         inhoud = f.read()
         #Create temp file
         fh, abs_path = mkstemp()
+        # file must have the structure of:
+        # T: 22,443, ...
+        # U: 80, ...
         with fdopen(fh,'w') as new_file:             
                 new_file.write("T:")
                 for match in re.findall(r'.*\/tcp', inhoud):
@@ -245,7 +208,6 @@ def scan(target_name, ipList, config_id):
 
     with Gmp(connection, transform=transform) as gmp:
         # Login -> change to default admin password
-        #gmp.authenticate('sam', 'sam')
         gmp.authenticate('scanner', 'scanner')
 
         #check if scanner user already exists
@@ -255,20 +217,16 @@ def scan(target_name, ipList, config_id):
             #user creation
             user=gmp.create_user('scanner', password='scanner', role_ids=['7a8cb5b4-b74d-11e2-8187-406186ea4fc5'])
             user_id = get_id(user)
-            print(user_id)
 
         gmp.authenticate('scanner', 'scanner')
+
         # #target creation
-        #target=gmp.create_target(target_name, hosts=ipList)
-        #target_id = get_id(target)
         custome_port_table(ipList)
         #target creation with custome port list
         with open("ports/ports.txt", "r") as f:
             inhoud2 = f.read()
-            print(inhoud2)
         #Creating a new portlist
         portListName = target_name.replace(' ', '-').lower() + "_" + datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
-        print(portListName)
         superCooleLijst = gmp.create_port_list(portListName, inhoud2)
         pretty_print(superCooleLijst)
         superCooleLijstID = get_id(superCooleLijst)
@@ -286,7 +244,4 @@ def scan(target_name, ipList, config_id):
         return task_id
         
         print("task started succesfully!")
-        # t1=threading.Thread(target=progressbar, args=(task_id,))
-        # thread_list.append(t1)
-        # t1.start()
     
