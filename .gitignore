@@ -9,3 +9,6 @@ ports/
 flask/ports
 sudo 
 interfaces.txt
+flask/int/ip.txt
+flask/int/intname.txt
+flask/int/intsubnet.txt
