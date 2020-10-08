@@ -33,3 +33,21 @@ suggestion 4
 iets van network discovery stuff? click on a button
 	Tibo: Iets met nmap ofzo voor host discovery
 
+09/10 
+- eigen logs schrijven in package 
+	Meegeven vd paramters
+	parsen config files
+
+- vraag antwoord in txt files seperator
+	bv.: Vraag ****** Antwoord
+
+- Host discovery:
+	optie 1 vaste ip addressen gebruiken, 	eigen 192.1 ander 192.2, 192.3, ...
+		DHCP server starten, die telkens hetzelfde adres weg geeft
+	host discovery scan
+
+- type scan laten wegvallen
+
+-  PDF toevoegen aan optie, knoppen andere tekst geven, download report in 1 kolomn
+
+
