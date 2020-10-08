@@ -36,19 +36,23 @@ def valid_ip(address):
     try: 
         socket.inet_aton(address)
         #if the entered IP address is not in the list -> add to list
-        if address in IpAddressen:
-            errorList.append('This IP address is already in the list.')
-        elif re.match(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", address):
-            IpAddressen.append(address)
+        # if address in IpAddressen:
+        #     errorList.append('This IP address is already in the list.')
+        if re.match(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", address):
             return True
     except:
         #print("This IP address is not valid.")
         errorList.append('This IP address is not valid.')
         return False
 
+def add_to_IpList(address):
+    if address in IpAddressen:
+        errorList.append('This IP address is already in the list.')
+    elif valid_ip(address):
+        IpAddressen.append(address)
+
 def zip_files(targetname):
     path="txtfiles/answers_target_"+targetname
-
     try:
         os.system("mkdir zipfiles")
     except:
@@ -69,7 +73,7 @@ def addIP():
     errorList.clear()
     if not entered_text:
         print("You haven't entered an IP address")
-    elif valid_ip(entered_text):
+    elif add_to_IpList(entered_text):
         print('Addres succesfully added')
     return render_template('index.html', IpAdressen=IpAddressen, errorList=errorList)
 
@@ -215,7 +219,6 @@ def config_GET():
     subnet=get_subnet()
     print(ip)
     print(subnet)
-    print("dit is de standaard get")
     return render_template('config.html', ip=ip, subnet=subnet, staticSucces=staticSucces, dhcpSuccess=dhcpSucces)
 
 def config_GET_static(staticSucces):
@@ -223,31 +226,48 @@ def config_GET_static(staticSucces):
     subnet=get_subnet()
     print(ip)
     print(subnet)
-    print("static succes")
-    return render_template('config.html', ip=ip, subnet=subnet, staticSucces=staticSucces)
+    return render_template('config.html', ip=ip, subnet=subnet, staticSucces=staticSucces, errorList=errorList)
 
 def config_GET_dhcp(dhcpSuccess):
     ip=get_ip()
     subnet=get_subnet()
     print(ip)
     print(subnet)
-    print("dhcp success")
     return render_template('config.html', ip=ip, subnet=subnet, dhcpSuccess=dhcpSuccess)
 
 
 @app.route('/staticip', methods=["POST"])
 def staticip():
+    staticSuccess = False
     ip = request.form.get("ip")
-    subnet=request.form.get("subnet")
-    set_static_ip(ip, subnet)
-    staticSuccess = True
+    errorList.clear()
+    # IpAddressen.clear()
+    if not ip:
+         print("You haven't entered an IP address")
+    elif valid_ip(ip):
+        print("Static ip is valid")
+        subnet=request.form.get("subnet").replace(" ", "")
+        if re.match(r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$',subnet):
+            set_static_ip(ip, subnet)
+            staticSuccess = True
+        else:
+            print("werkt niet he man")
+            errorList.append("Subnetmask is not valid")
     return config_GET_static(staticSuccess)
+
+@app.route('/staticip', methods=["GET"])
+def staticip_GET():
+    return config_GET()
 
 @app.route('/dhcp', methods=["POST"])
 def dhcp():
-    # set_dhcp()
+    set_dhcp()
     dhcpSuccess = True
     return config_GET_dhcp(dhcpSuccess)
+
+@app.route('/dhcp', methods=["GET"])
+def dhcp_get():
+    return config_GET()
 
 
 @app.route('/portQuestions', methods=["POST"])
