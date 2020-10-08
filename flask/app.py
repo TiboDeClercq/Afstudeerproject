@@ -8,7 +8,7 @@ sys.path.append(parentdir)
 from scan import scan, is_requested, is_running, get_newprogress
 from questions import questions
 import tasks
-from setup import set_dhcp, set_static_ip
+from setup import set_dhcp, set_static_ip, get_ip, get_subnet
 #from .. from setup import set_static_ip, set_dhcp
 import re
 import asyncio
@@ -24,6 +24,8 @@ report_format_list = tasks.get_report_formats()
 errorList = []
 progr=0
 task_id_for_progr = " "
+temp_deviceName= " "
+already_running=False
 thread_list=[]
 
 conf_id = "698f691e-7489-11df-9d8c-002264764cea"
@@ -82,6 +84,14 @@ def delIP():
 def delIP2():
     return redirect(url_for('index'))
 
+def set_temp_deviceName(newname):
+    global temp_deviceName 
+    temp_deviceName = newname
+
+def set_already_running(newstatus):
+    global already_running 
+    already_running = newstatus
+
 @app.route('/sendScan', methods=["POST"])
 def sendScan():
     conf_id=request.form.get("conf")
@@ -96,7 +106,13 @@ def sendScan():
         print("Success")
         #Target has to be unique. Date and time will be added to the devicename.
         targetUniqueName = deviceName.replace(' ', '-').lower() + "_" + datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
-        task_id= scan(targetUniqueName, IpAddressen, conf_id)
+        if task_id_for_progr == " ":
+            task_id= scan(targetUniqueName, IpAddressen, conf_id)
+            set_task_id_for_progress(task_id)
+            set_temp_deviceName(deviceName)
+        else:
+            task_id=task_id_for_progr
+            deviceName=temp_deviceName
         questions()
         IpAddressen[:]=[]
         return success(task_id, deviceName)
@@ -119,15 +135,22 @@ def get_task_id_for_progress():
 
 def progress_check(task_id):
     #setter zorgt ervoor dat nieuwe progress en id is opgeslagen
-
-    set_task_id_for_progress(task_id)
-
-    while(progr != 100):
-        set_progress(get_newprogress(task_id))
+    if is_requested(task_id) or is_running(task_id):
+        while(progr != 100):
+            if is_requested(task_id) or is_running(task_id):
+                set_progress(get_newprogress(task_id))
+            else:
+                break
+        set_task_id_for_progress(" ")
+        set_already_running(False)
+        set_progress(0)
+    else:
+        set_task_id_for_progress(" ")
+        set_already_running(False)
+        set_progress(0)
 
 @app.route('/prgrss', methods=["GET"])
 def progress_bar():
-
     if progr is None:
         data = str(0) 
     else:
@@ -143,11 +166,16 @@ def progress_bar():
 
 def success(task_id, deviceName):
     #voert progresschack uit zodat progr wordt veranderd
-    t1=threading.Thread(target=progress_check, args=(task_id,))
-    thread_list.append(t1)
-    t1.start()
+    if already_running == False:
+        t1=threading.Thread(target=progress_check, args=(task_id,))
+        thread_list.append(t1)
+        t1.start()
+        set_already_running(True)
+        msg="Success, your scan, " + deviceName + " has started"
+    else:
+        msg="You already have a scan running, " + deviceName
 
-    return render_template('success.html', targetname=deviceName)
+    return render_template('success.html', targetname=deviceName, message=msg)
 
 #Report methods - reports.html
 @app.route('/reports', methods=["GET"])
@@ -170,28 +198,33 @@ def downloadreport():
     path = "../reportdownload/" + report_id + ".csv"
     return send_file(path)
 
+@app.route('/downloadzip', methods=["POST"])
+def downloadzip():
+    report_id = request.form.get("report_id")
+    tasks.zip_files(report_id)
+    path= "../zipfiles/" + tasks.get_target_name(report_id)[:-20] + ".zip"
+    return send_file(path)
+
 #Configure IP methods - config.html
 @app.route('/configuration', methods=["GET"])
 def config_GET():
-    return render_template('config.html')
+    ip=get_ip()
+    subnet=get_subnet()
+    print(ip)
+    print(subnet)
+    return render_template('config.html', ip=ip, subnet=subnet)
 
 @app.route('/staticip', methods=["POST"])
 def staticip():
     ip = request.form.get("ip")
     subnet=request.form.get("subnet")
     set_static_ip(ip, subnet)
-    staticsuccess = True
-    return render_template('config.html', Static_succes=staticsuccess, IPaddres=ip, Subnetmask=subnet)
+    return config_GET()
 
 @app.route('/dhcp', methods=["POST"])
 def dhcp():
     set_dhcp()
-    dhcp_succes = True
-    return render_template('config.html', dhcp_succes=dhcp_succes)
-
-@app.route('/dhcp', methods=["GET"])
-def dhcp_get():
-    return render_template('config.html')
+    return config_GET()
 
 
 @app.route('/portQuestions', methods=["POST"])
