@@ -261,7 +261,7 @@ def staticip_GET():
 
 @app.route('/dhcp', methods=["POST"])
 def dhcp():
-    #set_dhcp()
+    set_dhcp()
     dhcpSuccess = True
     return config_GET_dhcp(dhcpSuccess)
 
@@ -333,5 +333,5 @@ def scann():
     return render_template('index.html', IpAdressen=IpAddressen)
 
 if __name__ == "__main__":
-    # update_code()
+    #update_code()
     app.run(debug=True)   
