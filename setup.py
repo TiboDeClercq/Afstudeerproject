@@ -19,6 +19,7 @@ def set_static_ip(address, netmask):
         print(netmask)
         os.system("sudo ifconfig " + str(interface) + " " + str(address) + " netmask " + str(netmask))
         print("static_ip_set")
+        
 
 def set_dhcp():
     interface = get_interface()

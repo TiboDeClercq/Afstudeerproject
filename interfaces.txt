@@ -4,11 +4,13 @@
        valid_lft forever preferred_lft forever
     inet6 ::1/128 scope host 
        valid_lft forever preferred_lft forever
-2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+2: eth0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc pfifo_fast state DOWN group default qlen 1000
     link/ether a4:4c:c8:05:2b:43 brd ff:ff:ff:ff:ff:ff
-    inet 192.168.1.184/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0
-       valid_lft 84140sec preferred_lft 84140sec
-    inet6 fe80::a64c:c8ff:fe05:2b43/64 scope link noprefixroute 
+    inet 128.0.1.2/24 brd 128.0.1.255 scope global eth0
        valid_lft forever preferred_lft forever
-3: wlan0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default qlen 1000
-    link/ether b2:af:04:97:1f:04 brd ff:ff:ff:ff:ff:ff permaddr f8:59:71:c4:50:31
+3: wlan0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether f8:59:71:c4:50:31 brd ff:ff:ff:ff:ff:ff
+    inet 10.23.216.129/16 brd 10.23.255.255 scope global dynamic noprefixroute wlan0
+       valid_lft 898sec preferred_lft 898sec
+    inet6 fe80::2356:daaa:c7d5:b723/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever
