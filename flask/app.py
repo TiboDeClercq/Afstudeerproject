@@ -208,23 +208,45 @@ def downloadzip():
 #Configure IP methods - config.html
 @app.route('/configuration', methods=["GET"])
 def config_GET():
+    staticSucces = False
+    dhcpSucces = False
     ip=get_ip()
     subnet=get_subnet()
     print(ip)
     print(subnet)
-    return render_template('config.html', ip=ip, subnet=subnet)
+    print("dit is de standaard get")
+    return render_template('config.html', ip=ip, subnet=subnet, staticSucces=staticSucces, dhcpSuccess=dhcpSucces)
+
+def config_GET_static(staticSucces):
+    ip=get_ip()
+    subnet=get_subnet()
+    print(ip)
+    print(subnet)
+    print("static succes")
+    return render_template('config.html', ip=ip, subnet=subnet, staticSucces=staticSucces)
+
+def config_GET_dhcp(dhcpSuccess):
+    ip=get_ip()
+    subnet=get_subnet()
+    print(ip)
+    print(subnet)
+    print("dhcp success")
+    return render_template('config.html', ip=ip, subnet=subnet, dhcpSuccess=dhcpSuccess)
+
 
 @app.route('/staticip', methods=["POST"])
 def staticip():
     ip = request.form.get("ip")
     subnet=request.form.get("subnet")
     set_static_ip(ip, subnet)
-    return config_GET()
+    staticSuccess = True
+    return config_GET_static(staticSuccess)
 
 @app.route('/dhcp', methods=["POST"])
 def dhcp():
-    set_dhcp()
-    return config_GET()
+    # set_dhcp()
+    dhcpSuccess = True
+    return config_GET_dhcp(dhcpSuccess)
 
 
 @app.route('/portQuestions', methods=["POST"])
