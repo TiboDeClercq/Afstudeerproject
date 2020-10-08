@@ -1,0 +1,7 @@
+vm maken met opstartscript -> Thomas
+nmap bug fixen -> Sam
+nmap network discovery
+google docs herwerken naar webpagina met txt file -> Tibo
+updatescript (code github) -> Ruben
+testen op verschillende devices
+
