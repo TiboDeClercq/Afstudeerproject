@@ -12,6 +12,7 @@ from tempfile import mkstemp
 from shutil import move, copymode
 from os import fdopen, remove
 from datetime import datetime
+from configparser import ConfigParser
 import os
 
 import time
@@ -134,6 +135,9 @@ def progressbar(taskid):
         print(get_status(taskxml))
 
 def custome_port_table(ipList):
+    config=ConfigParser()
+    config.read("config.ini")
+    nmap_info=config["NMAP"]
     #Scanning all ports
     print("Scanning open ports...")
     # os.system('nmap -p-  127.0.0.1 | grep open | cut -d" " -f1 > nmap_test/ports.txt')
@@ -160,7 +164,7 @@ def custome_port_table(ipList):
                 os.system("touch ports/"+ ip  + ".txt")
             except:
                 print("dir already exists")
-            cmd = "nmap "+ ip + " -sS -T5| grep open | cut -d' ' -f1> ports/" + ip + ".txt"
+            cmd = "nmap "+ ip + " -sS -" + nmap_info["scan"] + "| grep open | cut -d' ' -f1> ports/" + ip + ".txt"
             os.system(cmd)           
             with open("ports/" +ip+".txt", "r") as p:
                 print(ip + "read")

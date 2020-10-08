@@ -7,6 +7,7 @@ from xml.etree import ElementTree
 from base64 import b64decode
 import os
 from zipfile import ZipFile
+from configparser import ConfigParser
 
 connection = UnixSocketConnection()
 transform = EtreeTransform()
@@ -113,7 +114,11 @@ def download_report(report_id, report_format_id):
 		f.close()
 
 def zip_files(report_id):
-	download_report(report_id, "c1645568-627a-11e3-a660-406186ea4fc5")
+	config=ConfigParser()
+	config.read("config.ini")
+	report_format=config["REPORT"]
+
+	download_report(report_id, report_format["id"])
 	full_target_name=get_target_name(report_id)
 	target_name=get_target_name(report_id)[:-20]
 	path = "txtfiles/answers_target_" + target_name

@@ -10,6 +10,7 @@ from questions import getQuestions, submitAnswers
 import tasks
 from setup import set_dhcp, set_static_ip, get_ip, get_subnet
 from update_code import update_code
+from configparser import ConfigParser
 #from .. from setup import set_static_ip, set_dhcp
 import re
 import asyncio
@@ -120,7 +121,12 @@ def set_already_running(newstatus):
 
 @app.route('/sendScan', methods=["POST"])
 def sendScan():
-    conf_id=request.form.get("conf")
+    config=ConfigParser()
+    config.read("config.ini")
+    scan_info=config["SCAN"]
+
+    conf_id=scan_info["type"]
+    print(conf_id)
     deviceName= request.form.get("inputName")
     if not deviceName:
         print("You haven't entered a device name.")
