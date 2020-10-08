@@ -9,6 +9,7 @@ from scan import scan, is_requested, is_running, get_newprogress
 from questions import questions
 import tasks
 from setup import set_dhcp, set_static_ip, get_ip, get_subnet
+from update_code import update_code
 #from .. from setup import set_static_ip, set_dhcp
 import re
 import asyncio
@@ -312,4 +313,5 @@ def scann():
     return render_template('index.html', IpAdressen=IpAddressen)
 
 if __name__ == "__main__":
+    update_code()
     app.run(debug=True)   
