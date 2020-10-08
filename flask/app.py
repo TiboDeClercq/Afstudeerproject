@@ -313,5 +313,5 @@ def scann():
     return render_template('index.html', IpAdressen=IpAddressen)
 
 if __name__ == "__main__":
-    update_code()
+    #update_code()
     app.run(debug=True)   
