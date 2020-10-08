@@ -35,3 +35,5 @@ def submitAnswers(answers):
       p.write(": ")
       p.write(answers[i])
       p.write("\n")
+      p.write("##########")
+      p.write("\n")
