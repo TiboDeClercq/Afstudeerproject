@@ -83,7 +83,11 @@
                         <option value="74db13d6-7489-11df-91b9-002264764cea">Full and very Deep Ultimate</option>
                     </select>
                 </div>
+                {% if not IpAdressen %}
+                    <button type="submit" class="btnSendScan btn btn-primary" id="btnSendScan" disabled>Send scan</button>
+                {% else %}
                 <button type="submit" class="btnSendScan btn btn-primary" id="btnSendScan">Send scan</button>
+                {% endif %}
             </form>
 
         </div>
