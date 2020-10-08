@@ -91,7 +91,7 @@ def check_for_logging(taskid):
         # Login -> change to default admin password
         gmp.authenticate('scanner', 'scanner')
         taskxml=gmp.get_task(taskid)
-        if get_status(taskxml)=='Stopped':
+        if get_status(taskxml)=='Stopped' or get_status(taskxml)=='Done':
             return True
         return False
 
