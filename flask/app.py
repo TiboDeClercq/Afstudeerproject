@@ -96,6 +96,22 @@ def addIP():
         print("You haven't entered an IP address")
     elif add_to_IpList(entered_text):
         print('Addres succesfully added')
+    
+    todays_logs = datetime.now().strftime("%d-%m-%Y")
+    
+    try:
+        os.system("mkdir logs")
+    except:
+        print("directory exists")
+    try:
+        os.system('touch logs/' + todays_logs + '_APPlogs.txt')
+    except:
+        print("file exists")
+
+    with open("logs/" + todays_logs + "_APPlogs.txt", "a") as file_object:
+        date_and_time = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
+        file_object.write("\n"+ date_and_time + ": IP address: " + entered_text + " is added.")
+
     return render_template('index.html', IpAdressen=IpAddressen, errorList=errorList)
 
 @app.route("/delIP", methods=["POST"])
@@ -104,6 +120,13 @@ def delIP():
     if IpAddressen:
         print(entered_text)
         IpAddressen.remove(entered_text)
+
+        todays_logs = datetime.now().strftime("%d-%m-%Y")
+
+        with open("logs/" + todays_logs + "_APPlogs.txt", "a") as file_object:
+            date_and_time = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
+            file_object.write("\n" + date_and_time + ": IP address: " + entered_text + " is deleted.")
+
     return render_template('index.html', IpAdressen=IpAddressen)     
 
 @app.route("/delIP", methods=["GET"])
@@ -139,6 +162,22 @@ def sendScan():
         else:
             task_id=task_id_for_progr
             deviceName=temp_deviceName
+
+        try:
+            os.system("mkdir logs")
+        except:
+            print("directory exists")
+        try:
+            os.system('touch logs/' + todays_logs + '_APPlogs.txt')
+        except:
+            print("file exists")
+
+        todays_logs = datetime.now().strftime("%d-%m-%Y")
+
+        with open("logs/" + todays_logs + "_APPlogs.txt", "a") as file_object:
+            date_and_time = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
+            file_object.write("\n"+ date_and_time + ": your scan " + targetUniqueName + " has started.")
+
 
         IpAddressen[:]=[]
         return success(task_id, deviceName)
@@ -195,9 +234,14 @@ def writelogsscan(task_id, deviceName):
         os.system("mkdir logs")
     except:
         print("directory exists")
+    targetUniqueName = deviceName.replace(' ', '-').lower() + "_" + datetime.now().strftime("%d-%m-%Y_%H:%M:%S")
     while check_for_logging(task_id) == False:
-        os.system('cat /var/log/gvm/gvmd.log | grep ' + task_id + ' > logs/' + deviceName + '_log.txt')
+        os.system('cat /var/log/gvm/gvmd.log | grep ' + task_id + ' > logs/' + targetUniqueName + '_GVMlogs.txt')
         time.sleep(5)
+    with open("logs/" + targetUniqueName + "_GVMlogs.txt", "a") as file_object:
+        date_and_time = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
+        file_object.write("\n"+ date_and_time + ":Your scan, " + targetUniqueName + ", has stopped.")
+    
 
 def success(task_id, deviceName):
     #voert progresschack uit zodat progr wordt veranderd
