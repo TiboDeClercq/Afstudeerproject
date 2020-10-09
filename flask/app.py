@@ -28,6 +28,7 @@ task_id_for_progr = " "
 temp_deviceName= " "
 already_running=False
 thread_list=[]
+active_hosts=[]
 
 conf_id = "698f691e-7489-11df-9d8c-002264764cea"
 
@@ -62,6 +63,21 @@ def zip_files(targetname):
     zipObj.write(path)
     zipObj.close
     print("successfull zipped")
+
+@app.route('/activehosts', methods=["GET"])
+def activeHostDetect():
+    os.system('ip a | grep \'eth0\' | grep \'inet\' | grep -oP \'(?<=inet\s)\d+(\.\d+){3}\' > int/intip.txt')
+    os.system('ip a | grep \'eth0\' | grep \'inet\' | grep -oP \'/[0-9][0-9]\' > int/intsubnet.txt')
+    with open("int/intip.txt", "r") as ipfile:
+        ip= ipfile.read()
+    with open("int/intsubnet.txt", "r") as subnetfile:
+        subnet= subnetfile.read()
+    ipaddress= ip.rstrip() + subnet.rstrip()
+    os.system('nmap -sn ' + ipaddress + ' > int/activehostsoutputnmap.txt')
+    os.system('cat int/activehostsoutputnmap.txt | grep -o \'[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\' > int/activehosts.txt')
+    with open("int/activehosts.txt", "r") as hostsfile:
+        active_hosts=hostsfile.readlines()
+    return render_template('activehosts.html', scannedip=ipaddress, activehosts=active_hosts)
 
 @app.route('/createScan', methods=["GET"])
 def createScan():
