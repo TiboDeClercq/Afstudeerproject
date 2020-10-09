@@ -105,6 +105,17 @@ def is_running(taskid):
         if get_status(taskxml)=='Running':
             return True
         return False
+    
+def check_for_logging(taskid):
+    connection = UnixSocketConnection()
+    transform = EtreeTransform()
+    with Gmp(connection, transform=transform) as gmp:
+        # Login -> change to default admin password
+        gmp.authenticate('scanner', 'scanner')
+        taskxml=gmp.get_task(taskid)
+        if get_status(taskxml)=='Stopped':
+            return True
+        return False
 
 def progressbar(taskid):
         print("thread started")

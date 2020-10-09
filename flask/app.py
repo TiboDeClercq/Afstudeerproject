@@ -5,7 +5,7 @@ from datetime import datetime
 currentdir = os.path.dirname(os.path.realpath(__file__))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
-from scan import scan, is_requested, is_running, get_newprogress
+from scan import scan, is_requested, is_running, get_newprogress, check_for_logging
 from questions import getQuestions, submitAnswers
 import tasks
 from setup import set_dhcp, set_static_ip, get_ip, get_subnet
@@ -195,7 +195,7 @@ def writelogsscan(task_id, deviceName):
         os.system("mkdir logs")
     except:
         print("directory exists")
-    while task_id_for_progr != " ":
+    while check_for_logging(task_id) == False:
         os.system('cat /var/log/gvm/gvmd.log | grep ' + task_id + ' > logs/' + deviceName + '_log.txt')
         time.sleep(5)
 
