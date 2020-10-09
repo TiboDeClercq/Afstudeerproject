@@ -16,6 +16,7 @@ import asyncio
 #import websockets
 from zipfile import ZipFile
 import json
+import time
 
 app = Flask(__name__)
 
@@ -185,12 +186,20 @@ def progress_bar():
 
     return Response(j, mimetype='application/json')
 
+def writelogsscan(task_id, deviceName):
+    while task_id_for_progr != " ":
+        os.system('cat /var/log/gvm/gvmd.log | grep ' + task_id + ' > logs/' + deviceName + '_log.txt')
+        time.sleep(5)
+
 def success(task_id, deviceName):
     #voert progresschack uit zodat progr wordt veranderd
     if already_running == False:
         t1=threading.Thread(target=progress_check, args=(task_id,))
         thread_list.append(t1)
         t1.start()
+        t2=threading.Thread(target=writelogsscan, args=(task_id, deviceName))
+        thread_list.append(t2)
+        t2.start()
         set_already_running(True)
         msg="Success, your scan, " + deviceName + " has started"
     else:
