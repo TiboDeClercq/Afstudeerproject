@@ -77,7 +77,7 @@ def activeHostDetect():
         ip= ipfile.read()
     with open("int/intsubnet.txt", "r") as subnetfile:
         subnet= subnetfile.read()
-    ipaddress= ip.rstrip() + subnet.rstrip()
+    ipaddress= ip.splitlines()[0] + subnet.splitlines()[0]
     os.system('nmap -sn ' + ipaddress + ' > int/activehostsoutputnmap.txt')
     os.system('cat int/activehostsoutputnmap.txt | grep -o \'[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\' > int/activehosts.txt')
     with open("int/activehosts.txt", "r") as hostsfile:
