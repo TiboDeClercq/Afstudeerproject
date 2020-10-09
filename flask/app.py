@@ -1,12 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, Response, send_file
 import socket, threading
-import sys, os, subprocess
+import sys, os
 from datetime import datetime
 currentdir = os.path.dirname(os.path.realpath(__file__))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
 from scan import scan, is_requested, is_running, get_newprogress
-from questions import questions
+from questions import getQuestions, submitAnswers
 import tasks
 from setup import set_dhcp, set_static_ip, get_ip, get_subnet
 from update_code import update_code
@@ -135,7 +135,7 @@ def sendScan():
         else:
             task_id=task_id_for_progr
             deviceName=temp_deviceName
-        questions()
+
         IpAddressen[:]=[]
         return success(task_id, deviceName)
 
@@ -240,15 +240,11 @@ def downloadzip():
 def config_GET():
     staticSucces = False
     dhcpSucces = False
-    # ip=get_ip()
-    os.system('ip a | grep \'eth0\' | grep \'inet\' | grep -oP \'(?<=inet\s)\d+(\.\d+){3}\' > int/intip.txt')
-    with open("int/intip.txt", "r") as ipfile:
-        ip= ipfile.read()
-    intname= 'eth0'
-    os.system('ip a | grep \'eth0\' | grep \'inet\' | grep -oP \'/[0-9][0-9]\' > int/intsubnet.txt')
-    with open("int/intsubnet.txt", "r") as subnetfile:
-        subnet= subnetfile.read()
-    return render_template('config.html', ip=ip, subnet=subnet, int_name=intname, staticSucces=staticSucces, dhcpSuccess=dhcpSucces)
+    ip=get_ip()
+    subnet=get_subnet()
+    print(ip)
+    print(subnet)
+    return render_template('config.html', ip=ip, subnet=subnet, staticSucces=staticSucces, dhcpSuccess=dhcpSucces)
 
 def config_GET_static(staticSucces):
     ip=get_ip()
@@ -353,6 +349,26 @@ def portAnswers():
             a.write("\n")
         #zip_files(targetname)
     return index()
+
+@app.route('/questionOverview', methods=["GET"])
+def questionOverview():
+    questions = getQuestions()
+    return render_template("questionOverview.html", questions=questions)
+
+# @app.route('/addQuestion', methoods=["GET"])
+# def addQuestion_GET():
+#     return render_template("addQuestion.html")
+
+@app.route('/submitGeneralQuestions', methods=["POST"])
+def submitGeneralQuestions():
+    questions= getQuestions()
+    Answers=[]
+    for question in questions:
+        answer=request.form.get("answer"+question)
+        Answers.append(answer)
+    submitAnswers(Answers)
+    return index()
+    
 @app.route('/')
 def index():
     return render_template('index.html', IpAdressen=IpAddressen)

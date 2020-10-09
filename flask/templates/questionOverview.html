@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block head %}
+
+{% endblock %}
+
+{% block nav %}
+<a class="nav-link active" href="/createScan">Scan device</a>
+<a class="nav-link" href="/configuration">Configuration</a>
+<a class="nav-link" href="/reports">Reports</a>
+<a class="nav-link" href="/questionOverview">General questions</a>
+{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="column">
+        <h2>Question Overview</h2>
+    </div>
+</div>
+<br>
+<div class="row">
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Question</th>
+                <th scope="col">Type</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if questions is defined %}
+            <form action="/submitGeneralQuestions" method="POST">
+                <div class="form-group">
+                {% for question in questions %}
+                <tr>
+                    <td scope="row">{{ question }}</td>
+                    <td scope="row"><textarea class="form-control" rows="3" name="answer{{question}}" required></textarea></td>
+                </tr>
+                {% endfor %}
+            </div>
+                <input  type="submit" value="Submit answers">
+            
+            </form>
+            {% else %}
+            <h2>No questions</h2>
+            {% endif %}
+        </tbody>
+    </table>
+
+</div>
+
+<!-- <p>{{ key }}</p>
+<p>{{ value }}</p> -->
+
+{% endblock %}
