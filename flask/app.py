@@ -67,6 +67,10 @@ def zip_files(targetname):
 
 @app.route('/activehosts', methods=["GET"])
 def activeHostDetect():
+    try:
+        os.system("mkdir int")
+    except:
+        print("directory exists")
     os.system('ip a | grep \'eth0\' | grep \'inet\' | grep -oP \'(?<=inet\s)\d+(\.\d+){3}\' > int/intip.txt')
     os.system('ip a | grep \'eth0\' | grep \'inet\' | grep -oP \'/[0-9][0-9]\' > int/intsubnet.txt')
     with open("int/intip.txt", "r") as ipfile:
@@ -187,6 +191,10 @@ def progress_bar():
     return Response(j, mimetype='application/json')
 
 def writelogsscan(task_id, deviceName):
+    try:
+        os.system("mkdir logs")
+    except:
+        print("directory exists")
     while task_id_for_progr != " ":
         os.system('cat /var/log/gvm/gvmd.log | grep ' + task_id + ' > logs/' + deviceName + '_log.txt')
         time.sleep(5)
