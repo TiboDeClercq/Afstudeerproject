@@ -151,6 +151,18 @@ def sendScan():
     conf_id=scan_info["type"]
     print(conf_id)
     deviceName= request.form.get("inputName")
+
+    todays_logs = datetime.now().strftime("%d-%m-%Y")
+
+    try:
+        os.system("mkdir logs")
+    except:
+        print("directory exists")
+    try:
+        os.system('touch logs/' + todays_logs + '_APPlogs.txt')
+    except:
+        print("file exists")
+
     if not deviceName:
         print("You haven't entered a device name.")
         errorList.append("You haven't entered a device name.")
@@ -161,29 +173,19 @@ def sendScan():
         print("Success")
         #Target has to be unique. Date and time will be added to the devicename.
         targetUniqueName = deviceName.replace(' ', '-').lower() + "_" + datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
-        if task_id_for_progr == " ":
-            task_id= scan(targetUniqueName, IpAddressen, conf_id)
-            set_task_id_for_progress(task_id)
-            set_temp_deviceName(deviceName)
-        else:
-            task_id=task_id_for_progr
-            deviceName=temp_deviceName
-
-        try:
-            os.system("mkdir logs")
-        except:
-            print("directory exists")
-        try:
-            os.system('touch logs/' + todays_logs + '_APPlogs.txt')
-        except:
-            print("file exists")
-
-        todays_logs = datetime.now().strftime("%d-%m-%Y")
 
         with open("logs/" + todays_logs + "_APPlogs.txt", "a") as file_object:
             date_and_time = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
-            file_object.write("\n"+ date_and_time + ": your scan " + targetUniqueName + " has started.")
 
+            if task_id_for_progr == " ":
+                task_id= scan(targetUniqueName, IpAddressen, conf_id)
+                set_task_id_for_progress(task_id)
+                set_temp_deviceName(deviceName)
+                file_object.write("\n"+ date_and_time + ": your scan " + targetUniqueName + " has started.")
+            else:
+                task_id=task_id_for_progr
+                deviceName=temp_deviceName
+                file_object.write("\n"+ date_and_time + ": your scan " + targetUniqueName + " hasn't started. " + deviceName + " is running.")
 
         IpAddressen[:]=[]
         return success(task_id, deviceName)
