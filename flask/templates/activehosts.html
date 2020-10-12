@@ -12,8 +12,10 @@
 {% endblock %}
 
 {% block body %}
+<!-- print the ip and subnet you scanned -->
 <h1>All active hosts for {{scannedip}} are:</h1>
 <br>
+<!-- prints the active hosts in the given list and print them  -->
 {% for ip in activehosts %}
     <input type="text" value={{ip}} readonly></input>
     <br>
