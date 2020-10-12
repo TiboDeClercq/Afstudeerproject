@@ -49,10 +49,27 @@ def valid_ip(address):
         return False
 
 def add_to_IpList(address):
-    if address in IpAddressen:
-        errorList.append('This IP address is already in the list.')
-    elif valid_ip(address):
-        IpAddressen.append(address)
+    todays_logs = datetime.now().strftime("%d-%m-%Y")
+    
+    # check if the directory for the logs exists and if the logfile for this day exists
+    try:
+        os.system("mkdir logs")
+    except:
+        print("directory exists")
+    try:
+        os.system('touch logs/' + todays_logs + '_APPlogs.txt')
+    except:
+        print("file exists")
+
+    # open logsfile and write to it
+    with open("logs/" + todays_logs + "_APPlogs.txt", "a") as file_object:
+        date_and_time = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
+        if address in IpAddressen:
+            errorList.append('This IP address is already in the list.')
+            file_object.write("\n"+ date_and_time + ": IP address: " + address + " is already added.")
+        elif valid_ip(address):
+            IpAddressen.append(address)
+            file_object.write("\n"+ date_and_time + ": IP address: " + address + " is added.")
 
 def zip_files(targetname):
     path="txtfiles/answers_target_"+targetname
@@ -100,23 +117,6 @@ def addIP():
     elif add_to_IpList(entered_text):
         print('Addres succesfully added')
     
-    todays_logs = datetime.now().strftime("%d-%m-%Y")
-    
-    # check if the directory for the logs exists and if the logfile for this day exists
-    try:
-        os.system("mkdir logs")
-    except:
-        print("directory exists")
-    try:
-        os.system('touch logs/' + todays_logs + '_APPlogs.txt')
-    except:
-        print("file exists")
-
-    # open logsfile and write to it
-    with open("logs/" + todays_logs + "_APPlogs.txt", "a") as file_object:
-        date_and_time = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
-        file_object.write("\n"+ date_and_time + ": IP address: " + entered_text + " is added.")
-
     return render_template('index.html', IpAdressen=IpAddressen, errorList=errorList)
 
 @app.route("/delIP", methods=["POST"])
