@@ -66,6 +66,8 @@ def zip_files(targetname):
     zipObj.close
     print("successfull zipped")
 
+# check the eth0 ip address and subnet for active hosts (nmap scan below)
+# they get written into a file and this file gets read
 @app.route('/activehosts', methods=["GET"])
 def activeHostDetect():
     try:
@@ -100,6 +102,7 @@ def addIP():
     
     todays_logs = datetime.now().strftime("%d-%m-%Y")
     
+    # check if the directory for the logs exists and if the logfile for this day exists
     try:
         os.system("mkdir logs")
     except:
@@ -109,6 +112,7 @@ def addIP():
     except:
         print("file exists")
 
+    # open logsfile and write to it
     with open("logs/" + todays_logs + "_APPlogs.txt", "a") as file_object:
         date_and_time = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
         file_object.write("\n"+ date_and_time + ": IP address: " + entered_text + " is added.")
@@ -124,6 +128,7 @@ def delIP():
 
         todays_logs = datetime.now().strftime("%d-%m-%Y")
 
+        # open logfile and write to it
         with open("logs/" + todays_logs + "_APPlogs.txt", "a") as file_object:
             date_and_time = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
             file_object.write("\n" + date_and_time + ": IP address: " + entered_text + " is deleted.")
@@ -134,6 +139,7 @@ def delIP():
 def delIP2():
     return redirect(url_for('index'))
 
+# setter for saving devicename of running scan
 def set_temp_deviceName(newname):
     global temp_deviceName 
     temp_deviceName = newname
@@ -154,6 +160,7 @@ def sendScan():
 
     todays_logs = datetime.now().strftime("%d-%m-%Y")
 
+    # check if the directory for the logs exists and if the logfile for this day exists
     try:
         os.system("mkdir logs")
     except:
@@ -174,9 +181,11 @@ def sendScan():
         #Target has to be unique. Date and time will be added to the devicename.
         targetUniqueName = deviceName.replace(' ', '-').lower() + "_" + datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
 
+        # Open the log file for this day
         with open("logs/" + todays_logs + "_APPlogs.txt", "a") as file_object:
             date_and_time = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
-
+            # Checks if the taskid is empty, if it is the scan can run and the tempdevicename, taskid are set. Also writes to the log file it has started
+            # Else you get notified that there is a scan running (tempdevicename), also written to the log file
             if task_id_for_progr == " ":
                 task_id= scan(targetUniqueName, IpAddressen, conf_id)
                 set_task_id_for_progress(task_id)
@@ -190,6 +199,7 @@ def sendScan():
         IpAddressen[:]=[]
         return success(task_id, deviceName)
 
+#change progress amount and save
 def set_progress(newprogr):
     global progr 
     progr = newprogr
@@ -207,7 +217,7 @@ def get_task_id_for_progress():
     return task_id_for_progr
 
 def progress_check(task_id):
-    #setter zorgt ervoor dat nieuwe progress en id is opgeslagen
+    #setter makes sure new id and progress is saved
     if is_requested(task_id) or is_running(task_id):
         while(progr != 100):
             if is_requested(task_id) or is_running(task_id):
@@ -222,6 +232,7 @@ def progress_check(task_id):
         set_already_running(False)
         set_progress(0)
 
+# progress and taskid get written to this page in json format for the js to read
 @app.route('/prgrss', methods=["GET"])
 def progress_bar():
     if progr is None:
@@ -237,6 +248,8 @@ def progress_bar():
 
     return Response(j, mimetype='application/json')
 
+# this function creates a logfile for each activated scan, it takes the information from the gvmd service
+# and writes this to the logfile until a scan stops.
 def writelogsscan(task_id, deviceName):
     try:
         os.system("mkdir logs")
@@ -252,7 +265,9 @@ def writelogsscan(task_id, deviceName):
     
 
 def success(task_id, deviceName):
-    #voert progresschack uit zodat progr wordt veranderd
+    # checks progresscheck, to see if the progress has changed
+    # second thread for writing of logs
+    # the message that's given with the html page shows if the scan starts or if there is one running
     if already_running == False:
         t1=threading.Thread(target=progress_check, args=(task_id,))
         thread_list.append(t1)
