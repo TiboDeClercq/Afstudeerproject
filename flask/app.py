@@ -324,21 +324,26 @@ def config_GET():
     os.system('ip a | grep \'eth0\' | grep \'inet\' | grep -oP \'/[0-9][0-9]\' > int/intsubnet.txt')
     with open("int/intsubnet.txt", "r") as subnetfile:
         subnet= subnetfile.read()
+
+    ip = ip.splitlines()[0]
+    subnet = subnet.splitlines()[0]
     return render_template('config.html', ip=ip, subnet=subnet, int_name=intname, staticSucces=staticSucces, dhcpSuccess=dhcpSucces)
 
 def config_GET_static(staticSucces):
+    intname= 'eth0'
     ip=get_ip()
     subnet=get_subnet()
     print(ip)
     print(subnet)
-    return render_template('config.html', ip=ip, subnet=subnet, staticSucces=staticSucces, errorList=errorList)
+    return render_template('config.html', ip=ip, subnet=subnet, int_name=intname, staticSucces=staticSucces, errorList=errorList)
 
 def config_GET_dhcp(dhcpSuccess):
+    intname= 'eth0'
     ip=get_ip()
     subnet=get_subnet()
     print(ip)
     print(subnet)
-    return render_template('config.html', ip=ip, subnet=subnet, dhcpSuccess=dhcpSuccess)
+    return render_template('config.html', ip=ip, subnet=subnet, int_name=intname, dhcpSuccess=dhcpSuccess)
 
 @app.route('/staticip', methods=["POST"])
 def staticip():
