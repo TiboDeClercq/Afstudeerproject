@@ -1,3 +1,2 @@
-Hoe gaat het?
-Alles goed?
-Wat voor weer is het vandaag?
+What is the name of your organisation?
+What is your function?
