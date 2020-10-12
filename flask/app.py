@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, Response, 
 import socket, threading
 import sys, os
 from datetime import datetime
+# makes sure the app.py can find all the python scripts in the directory above 
+# and call the functions inside these scripts
 currentdir = os.path.dirname(os.path.realpath(__file__))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)

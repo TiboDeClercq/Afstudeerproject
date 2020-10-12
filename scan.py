@@ -43,6 +43,7 @@ def get_status(inputxml):
     regexid=re.findall(r'<status>[a-zA-Z]*',xmlstr.decode('utf8'))
     return regexid[0][8:]
 
+# gets progressval from task
 def get_progress(inputxml):
     xmlstr=ElementTree.tostring(inputxml, encoding='utf8', method='xml')
     regexid=re.findall(r'<progress>[0-9]*',xmlstr.decode('utf8'))
