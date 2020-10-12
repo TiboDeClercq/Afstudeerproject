@@ -48,6 +48,8 @@ def get_progress(inputxml):
     regexid=re.findall(r'<progress>[0-9]*',xmlstr.decode('utf8'))
     return regexid[0][10:]
 
+# makes a connection to gvm and checks the status of the task to return the progress 
+# (requested = 0 | running returns the amount is gets from the function above)
 def get_newprogress(taskid):
     connection = UnixSocketConnection()
     transform = EtreeTransform()
@@ -62,6 +64,7 @@ def get_newprogress(taskid):
         if is_running(taskid):
             return int(get_progress(taskxml)) 
 
+# check to see if the task is requested
 def is_requested(taskid):
     connection = UnixSocketConnection()
     transform = EtreeTransform()
@@ -73,6 +76,7 @@ def is_requested(taskid):
             return True
         return False
 
+# check to see if the task is running
 def is_running(taskid):
     connection = UnixSocketConnection()
     transform = EtreeTransform()
@@ -83,7 +87,8 @@ def is_running(taskid):
         if get_status(taskxml)=='Running':
             return True
         return False
-    
+
+# checks if the task is stopped or done to log the state    
 def check_for_logging(taskid):
     connection = UnixSocketConnection()
     transform = EtreeTransform()
@@ -95,6 +100,7 @@ def check_for_logging(taskid):
             return True
         return False
 
+# was for the cli app, creates a dynamic progress bar in cli and updates this (not used for web interface)
 def progressbar(taskid):
         taskxml=gmp.get_task(taskid)
         i = 0
