@@ -31,7 +31,6 @@ def create_default_user():
         else:
             #user creation
             user=gmp.create_user('scanner', password='scanner', role_ids=['7a8cb5b4-b74d-11e2-8187-406186ea4fc5'])
-            user_id = get_id(user)
 	
 #function to get ID out of output string when new user/asset is created
 def get_id(inputxml, pre):
