@@ -24,12 +24,12 @@ class Task:
 def create_default_user():
     with Gmp(connection, transform=transform) as gmp:
     # Login -> change to default admin password
-    gmp.authenticate('admin', '444c6ee8-f3f9-4bd8-873a-bbfdf37b8221')
-    #check if scanner user already exists
-    if any("<name>scanner</name>" in s for s in get_name(gmp.get_users())):
-        print("no new user created")
+        gmp.authenticate('admin', '444c6ee8-f3f9-4bd8-873a-bbfdf37b8221')
+        #check if scanner user already exists
+        if any("<name>scanner</name>" in s for s in get_name(gmp.get_users())):
+            print("no new user created")
 	else:
-	#user creation
+	    #user creation
 	    user=gmp.create_user('scanner', password='scanner', role_ids=['7a8cb5b4-b74d-11e2-8187-406186ea4fc5'])
 	    user_id = get_id(user)
 	
