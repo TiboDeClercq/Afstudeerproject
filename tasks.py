@@ -157,7 +157,6 @@ def zip_files(report_id):
 	except:
 		print("path to answers general questions does not exist")
 	zipObj.close()
-	print("successfull zipped")
 
 def get_target_name(report_id):
 	with Gmp(connection, transform=transform) as gmp:

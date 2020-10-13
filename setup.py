@@ -29,13 +29,12 @@ def get_interface():
 
 def set_static_ip(address, netmask):
     if address =="" or netmask=="":
-        print("niks aanwezig")
+        print("empty")
     else:      
         interface = get_interface()
-        print(address)
-        print(netmask)
         os.system("sudo ifconfig " + str(interface) + " 0")
         os.system("sudo ifconfig " + str(interface) + " " + str(address) + " netmask " + str(netmask))
+        #for cli version (old)
         print("static_ip_set")
         
 
@@ -43,5 +42,6 @@ def set_dhcp():
     interface = get_interface()
     os.system("sudo ifconfig " + str(interface) + " 0")
     os.system("sudo dhclient " + interface + " -v")
+    #for cli version (old)
     print("dhcp set")
 

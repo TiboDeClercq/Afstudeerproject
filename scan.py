@@ -238,6 +238,6 @@ def scan(target_name, ipList, config_id):
         #task start
         gmp.start_task(task_id)
         return task_id
-        
+        #for cli version (old)
         print("task started succesfully!")
     

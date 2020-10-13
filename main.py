@@ -64,8 +64,6 @@ def ipPopUp():
     netmaskEntry=Entry(ipPopUp, width= 20, bg="white")
     netmaskEntry.grid(row=11, column=5, sticky=W)
 
-    print(ipEntry.get())
-    print(netmaskEntry.get())
     Button(ipPopUp, text="set static ip address", width=15, command=sendIP(ipEntry.get(), netmaskEntry.get())).grid(row=12, column=0, sticky=W)
     Button(ipPopUp, text="set dhcp", width=6, command=set_dhcp).grid(row=14, column=0, sticky=W)
     ipPopUp.mainloop()
@@ -114,18 +112,14 @@ def change_config_id(*args):
     type
     if selectedType == 'Full and Fast':
         config_id = "daba56c8-73ec-11df-a475-002264764cea"
-        print(config_id)
     elif selectedType == 'Full and Fast Ultimate':
         config_id = "698f691e-7489-11df-9d8c-002264764cea"
-        print(config_id)
     elif selectedType == 'Full and very Deep':
         config_id = "708f25c4-7489-11df-8094-002264764cea"
-        print(config_id)
     elif selectedType == 'Full and very Deep Ultimate':
         config_id = "74db13d6-7489-11df-91b9-002264764cea"
-        print(config_id) 
     else:
-        print("niks")
+        print("nothing")
 
 #layout
 #ipPopUp()
