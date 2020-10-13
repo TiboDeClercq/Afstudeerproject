@@ -47,19 +47,16 @@
             </div>
             {% endfor %}
             <div class="list">
-                <!-- <h5>IP address list</h5> -->
                 <caption><i>List of IP addresses</i></caption>
                 <table class="table table-borderless table-sm">
                     {% for ip in IpAdressen %}
                     <tr>
-
                         <form action="/delIP" method="POST">
                             <td><input type="text" value={{ip}} name="delIP" readonly></input></td>
                             <td><button class="btn btn-outline-danger btn-sm" type="submit" class="delIP"
                                     id="delIP">Delete
                                 </button></td>
                         </form>
-
                     </tr>
                     {% endfor %}
                 </table>
@@ -69,22 +66,11 @@
     <div class="row">
         <div class="column">
             <form action="/sendScan" method="POST">
-                <!-- <div class="scanform"></div> -->
-
                 <div class="form-group">
                     <label for="inputName"><b>Enter devicename</b></label>
                     <input class="form-control" type="text" name="inputName" id="inputName" placeholder="Devicename"
                         required>
                 </div>
-                <!-- <div class="form-group">
-                    <label for="selectScanType"><b>Select the type of scan</b></label>
-                    <select name="conf" id="conf" class="form-control" id="selectScanType">
-                        <option value="daba56c8-73ec-11df-a475-002264764cea">Full and Fast</option>
-                        <option value="698f691e-7489-11df-9d8c-002264764cea">Full and Fast Ultimate</option>
-                        <option value="708f25c4-7489-11df-8094-002264764cea">Full and very Deep</option>
-                        <option value="74db13d6-7489-11df-91b9-002264764cea">Full and very Deep Ultimate</option>
-                    </select>
-                </div> -->
                 {% if not IpAdressen %}
                     <button type="submit" class="btnSendScan btn btn-primary" id="btnSendScan" disabled>Send scan</button>
                 {% else %}
@@ -94,8 +80,5 @@
 
         </div>
     </div>
-    
     <br>
-
-
 {% endblock %}

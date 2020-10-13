@@ -45,12 +45,10 @@
             <tr>
                 <form action="/downloadreport" method=POST>
                     <input type="hidden" name="report_id" value="{{task.report_id}}">
-                    <!-- <td><input type="checkbox" id="select"></td> -->
                     <td>{{task.task_name}}</td>
                     <td>
                         <div class="dropdown">
                             <select name="format" class="btn btn-sm btn-secondary dropdown-toggle">
-                                <!-- <option selected>Please choose</option> -->
                                 {% for k, v in reports.items() %}
                                 <option value="{{k}}">{{v}}</option>
                                 {% endfor%}

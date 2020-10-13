@@ -3,21 +3,6 @@ import webbrowser
 import os
 import pwd
 import os
-#type of question t = text 
-# y = yes or no
-
-
-# def questions():
-#     #thread_list=[]
-#     #print("questions thread started")
-#     #uid = pwd.getpwnam('kali')[2]
-#     #os.setuid(uid)
-#     #webbrowser.open('https://docs.google.com/forms/d/e/1FAIpQLSdBnpgfcMkY3wvy5mouEkjvFBbhbBXjrh-lw4o7nUeopZ-3Kw/viewform?usp=sf_link', new=1)
-#     # os.system('sudo -ukali xdg-open https://docs.google.com/forms/d/e/1FAIpQLSdBnpgfcMkY3wvy5mouEkjvFBbhbBXjrh-lw4o7nUeopZ-3Kw/viewform?usp=sf_link')
-#     #tquestions=threading.Thread(target=questions)
-#     #thread_list.append(tquestions)
-#     #tquestions.start()
-#     retu
 
 def getQuestions():
   with open("./questions.txt", "r") as i:

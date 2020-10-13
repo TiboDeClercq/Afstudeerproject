@@ -13,10 +13,7 @@ import tasks
 from setup import set_dhcp, set_static_ip, get_ip, get_subnet
 from update_code import update_code
 from configparser import ConfigParser
-#from .. from setup import set_static_ip, set_dhcp
 import re
-import asyncio
-#import websockets
 from zipfile import ZipFile
 import json
 import time
@@ -24,7 +21,6 @@ import time
 app = Flask(__name__)
 
 IpAddressen = []
-#tasks.create_default_user()
 task_list=tasks.get_task_list(tasks.get_task_id_list())
 report_format_list = tasks.get_report_formats()
 errorList = []
@@ -70,7 +66,6 @@ def valid_ip(address):
                 # open logfile and write to it
                 file_object.write("\n"+ date_and_time + ": the IP address you entered is not valid.")
         except:
-            #print("This IP address is not valid.")
             errorList.append('This IP address is not valid.')
             date_and_time = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
             # open logfile and write to it
@@ -102,7 +97,6 @@ def zip_files(targetname):
 
     zipObj.write(path)
     zipObj.close
-    print("successfull zipped")
 
 # check the eth0 ip address and subnet for active hosts (nmap scan below)
 # they get written into a file and this file gets read
@@ -144,7 +138,6 @@ def addIP():
 def delIP():
     entered_text=request.form.get("delIP")
     if IpAddressen:
-        print(entered_text)
         IpAddressen.remove(entered_text)
 
         todays_logs = datetime.now().strftime("%d-%m-%Y")
@@ -176,7 +169,6 @@ def sendScan():
     scan_info=config["SCAN"]
 
     conf_id=scan_info["type"]
-    print(conf_id)
     deviceName= request.form.get("inputName")
 
     todays_logs = datetime.now().strftime("%d-%m-%Y")
@@ -186,15 +178,12 @@ def sendScan():
     # Open the log file for this day
     with open("logs/" + todays_logs + "_APPlogs.txt", "a") as file_object:
         if not deviceName:
-            print("You haven't entered a device name.")
             file_object.write("\n"+ date_and_time + ": you haven't entered a valid device name.")
             errorList.append("You haven't entered a device name.")
         if not IpAddressen:
-            print("You haven't entered any IP address.")
             file_object.write("\n"+ date_and_time + ": you haven't entered a valid IP address to the list.")
             errorList.append("You haven't entered any IP address.")
         else:
-            print("Success")
             #Target has to be unique. Date and time will be added to the devicename.
             targetUniqueName = deviceName.replace(' ', '-').lower() + "_" + datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
 
@@ -346,16 +335,12 @@ def config_GET_static(staticSucces):
     intname= 'eth0'
     ip=get_ip()
     subnet=get_subnet()
-    print(ip)
-    print(subnet)
     return render_template('config.html', ip=ip, subnet=subnet, int_name=intname, staticSucces=staticSucces, errorList=errorList)
 
 def config_GET_dhcp(dhcpSuccess):
     intname= 'eth0'
     ip=get_ip()
     subnet=get_subnet()
-    print(ip)
-    print(subnet)
     return render_template('config.html', ip=ip, subnet=subnet, int_name=intname, dhcpSuccess=dhcpSuccess)
 
 @app.route('/staticip', methods=["POST"])
@@ -363,23 +348,19 @@ def staticip():
     staticSuccess = False
     ip = request.form.get("ip")
     errorList.clear()
-    # IpAddressen.clear()
     create_dailylog()
     todays_logs = datetime.now().strftime("%d-%m-%Y")
     with open("logs/" + todays_logs + "_APPlogs.txt", "a") as file_object:
         date_and_time = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
         if not ip:
-            print("You haven't entered an IP address")
             file_object.write("\n"+ date_and_time + ": You haven't entered an static IP address.")
         elif valid_ip(ip):
-            print("Static ip is valid")
             file_object.write("\n"+ date_and_time + ": static IP address: " + ip + " is valid.")
             subnet=request.form.get("subnet").replace(" ", "")
             if re.match(r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$',subnet):
                 set_static_ip(ip, subnet)
                 staticSuccess = True
             else:
-                print("werkt niet he man")
                 file_object.write("\n"+ date_and_time + ": invalid subnetmask entered.")    
                 errorList.append("Subnetmask is not valid")
     return config_GET_static(staticSuccess)
@@ -426,14 +407,12 @@ def portAnswers():
                     AnswerListPorts=dict()
                     port_list = f.read()           
                     port_list=re.findall(r'[\d]*[^,\sTU:]', port_list)
-                    print(port_list)
                     for port in port_list:                           
                         yesno=request.form.get("inlineRadioOptions"+ ip + port)
                         explanation=""
                         explanation=request.form.get("textArea"+ ip + port)
                         AnswerListPorts[port]=[yesno, explanation]
                         AnswerList[ip]=AnswerListPorts
-    print(AnswerList)
     try:
         os.system("mkdir txtfiles")
     except:
@@ -449,19 +428,13 @@ def portAnswers():
                     port_list=re.findall(r'[\d]*[^,\sTU:]', port_list)
                     for port in port_list:
                         a.write("port: " + port + " yes/no: " + AnswerList[ip][port][0] + ", explanation: " + AnswerList[ip][port][1] + "\n")
-                        print(AnswerList[ip][port][0])
             a.write("\n")
-        #zip_files(targetname)
     return index()
 
 @app.route('/questionOverview', methods=["GET"])
 def questionOverview():
     questions = getQuestions()
     return render_template("questionOverview.html", questions=questions)
-
-# @app.route('/addQuestion', methoods=["GET"])
-# def addQuestion_GET():
-#     return render_template("addQuestion.html")
 
 @app.route('/submitGeneralQuestions', methods=["POST"])
 def submitGeneralQuestions():
