@@ -364,7 +364,7 @@ def staticip():
         date_and_time = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
         if not ip:
             print("You haven't entered an IP address")
-            file_object.write("\n"+ date_and_time + ": You haven't entered an IP address.")
+            file_object.write("\n"+ date_and_time + ": You haven't entered an static IP address.")
         elif valid_ip(ip):
             print("Static ip is valid")
             file_object.write("\n"+ date_and_time + ": static IP address: " + ip + " is valid.")
