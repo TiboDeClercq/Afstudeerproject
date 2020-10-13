@@ -34,12 +34,14 @@ def set_static_ip(address, netmask):
         interface = get_interface()
         print(address)
         print(netmask)
+        os.system("sudo ifconfig " + str(interface) + " 0")
         os.system("sudo ifconfig " + str(interface) + " " + str(address) + " netmask " + str(netmask))
         print("static_ip_set")
         
 
 def set_dhcp():
     interface = get_interface()
+    os.system("sudo ifconfig " + str(interface) + " 0")
     os.system("sudo dhclient " + interface + " -v")
     print("dhcp set")
 
