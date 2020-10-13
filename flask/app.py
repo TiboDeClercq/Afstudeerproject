@@ -193,7 +193,7 @@ def sendScan():
                 task_id= scan(targetUniqueName, IpAddressen, conf_id)
                 set_task_id_for_progress(task_id)
                 set_temp_deviceName(deviceName)
-                file_object.write("\n"+ date_and_time + ": your scan " + targetUniqueName + " has started.")
+                file_object.write("\n"+ date_and_time + ": your scan " + targetUniqueName + " has started. See " + targetUniqueName + '_GVMlogs.txt for more information on the scan.')
             else:
                 task_id=task_id_for_progr
                 deviceName=temp_deviceName
