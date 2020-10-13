@@ -68,7 +68,7 @@ def valid_ip(address):
             errorList.append('This IP address is not valid.')
             date_and_time = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
             # open logfile and write to it
-            file_object.write("\n"+ date_and_time + ": the IP address you try to add is not valid.")
+            file_object.write("\n"+ date_and_time + ": the IP address you entered is not valid.")
             return False
 
 def add_to_IpList(address):
@@ -358,17 +358,24 @@ def staticip():
     ip = request.form.get("ip")
     errorList.clear()
     # IpAddressen.clear()
-    if not ip:
-         print("You haven't entered an IP address")
-    elif valid_ip(ip):
-        print("Static ip is valid")
-        subnet=request.form.get("subnet").replace(" ", "")
-        if re.match(r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$',subnet):
-            set_static_ip(ip, subnet)
-            staticSuccess = True
-        else:
-            print("werkt niet he man")
-            errorList.append("Subnetmask is not valid")
+    create_dailylog()
+    todays_logs = datetime.now().strftime("%d-%m-%Y")
+    with open("logs/" + todays_logs + "_APPlogs.txt", "a") as file_object:
+        date_and_time = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
+        if not ip:
+            print("You haven't entered an IP address")
+            file_object.write("\n"+ date_and_time + ": You haven't entered an IP address.")
+        elif valid_ip(ip):
+            print("Static ip is valid")
+            file_object.write("\n"+ date_and_time + ": static IP address: " + ip + " is valid.")
+            subnet=request.form.get("subnet").replace(" ", "")
+            if re.match(r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$',subnet):
+                set_static_ip(ip, subnet)
+                staticSuccess = True
+            else:
+                print("werkt niet he man")
+                file_object.write("\n"+ date_and_time + ": invalid subnetmask entered.")    
+                errorList.append("Subnetmask is not valid")
     return config_GET_static(staticSuccess)
 
 @app.route('/staticip', methods=["GET"])
