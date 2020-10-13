@@ -24,6 +24,7 @@ import time
 app = Flask(__name__)
 
 IpAddressen = []
+tasks.create_default_user()
 task_list=tasks.get_task_list(tasks.get_task_id_list())
 report_format_list = tasks.get_report_formats()
 errorList = []
