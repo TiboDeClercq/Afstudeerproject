@@ -214,17 +214,6 @@ def scan(target_name, ipList, config_id):
     transform = EtreeTransform()
 
     with Gmp(connection, transform=transform) as gmp:
-        # Login -> change to default admin password
-        gmp.authenticate('scanner', 'scanner')
-
-        #check if scanner user already exists
-        if any("<name>scanner</name>" in s for s in get_name(gmp.get_users())):
-            print("no new user created")
-        else:
-            #user creation
-            user=gmp.create_user('scanner', password='scanner', role_ids=['7a8cb5b4-b74d-11e2-8187-406186ea4fc5'])
-            user_id = get_id(user)
-
         gmp.authenticate('scanner', 'scanner')
 
         # #target creation
