@@ -24,7 +24,7 @@ import time
 app = Flask(__name__)
 
 IpAddressen = []
-tasks.create_default_user()
+#tasks.create_default_user()
 task_list=tasks.get_task_list(tasks.get_task_id_list())
 report_format_list = tasks.get_report_formats()
 errorList = []
@@ -37,21 +37,7 @@ active_hosts=[]
 
 conf_id = "698f691e-7489-11df-9d8c-002264764cea"
 
-#function to check if entered IP address is valid
-def valid_ip(address):
-    try: 
-        socket.inet_aton(address)
-        #if the entered IP address is not in the list -> add to list
-        # if address in IpAddressen:
-        #     errorList.append('This IP address is already in the list.')
-        if re.match(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", address):
-            return True
-    except:
-        #print("This IP address is not valid.")
-        errorList.append('This IP address is not valid.')
-        return False
-
-def add_to_IpList(address):
+def create_dailylog():
     todays_logs = datetime.now().strftime("%d-%m-%Y")
     
     # check if the directory for the logs exists and if the logfile for this day exists
@@ -63,6 +49,32 @@ def add_to_IpList(address):
         os.system('touch logs/' + todays_logs + '_APPlogs.txt')
     except:
         print("file exists")
+
+
+#function to check if entered IP address is valid
+def valid_ip(address):
+    todays_logs = datetime.now().strftime("%d-%m-%Y")
+    create_dailylog()
+    with open("logs/" + todays_logs + "_APPlogs.txt", "a") as file_object:
+        try: 
+            socket.inet_aton(address)
+            #if the entered IP address is not in the list -> add to list
+            # if address in IpAddressen:
+            #     errorList.append('This IP address is already in the list.')
+            if re.match(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", address):
+                return True
+        except:
+            #print("This IP address is not valid.")
+            errorList.append('This IP address is not valid.')
+            date_and_time = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
+            # open logfile and write to it
+            file_object.write("\n"+ date_and_time + ": the IP address you try to add is not valid.")
+            return False
+
+def add_to_IpList(address):
+    todays_logs = datetime.now().strftime("%d-%m-%Y")
+    
+    create_dailylog()
 
     # open logsfile and write to it
     with open("logs/" + todays_logs + "_APPlogs.txt", "a") as file_object:
@@ -162,31 +174,24 @@ def sendScan():
     deviceName= request.form.get("inputName")
 
     todays_logs = datetime.now().strftime("%d-%m-%Y")
+    date_and_time = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
 
-    # check if the directory for the logs exists and if the logfile for this day exists
-    try:
-        os.system("mkdir logs")
-    except:
-        print("directory exists")
-    try:
-        os.system('touch logs/' + todays_logs + '_APPlogs.txt')
-    except:
-        print("file exists")
+    create_dailylog()
+    # Open the log file for this day
+    with open("logs/" + todays_logs + "_APPlogs.txt", "a") as file_object:
+        if not deviceName:
+            print("You haven't entered a device name.")
+            file_object.write("\n"+ date_and_time + ": you haven't entered a valid device name.")
+            errorList.append("You haven't entered a device name.")
+        if not IpAddressen:
+            print("You haven't entered any IP address.")
+            file_object.write("\n"+ date_and_time + ": you haven't entered a valid IP address to the list.")
+            errorList.append("You haven't entered any IP address.")
+        else:
+            print("Success")
+            #Target has to be unique. Date and time will be added to the devicename.
+            targetUniqueName = deviceName.replace(' ', '-').lower() + "_" + datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
 
-    if not deviceName:
-        print("You haven't entered a device name.")
-        errorList.append("You haven't entered a device name.")
-    if not IpAddressen:
-        print("You haven't entered any IP address.")
-        errorList.append("You haven't entered any IP address.")
-    else:
-        print("Success")
-        #Target has to be unique. Date and time will be added to the devicename.
-        targetUniqueName = deviceName.replace(' ', '-').lower() + "_" + datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
-
-        # Open the log file for this day
-        with open("logs/" + todays_logs + "_APPlogs.txt", "a") as file_object:
-            date_and_time = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
             # Checks if the taskid is empty, if it is the scan can run and the tempdevicename, taskid are set. Also writes to the log file it has started
             # Else you get notified that there is a scan running (tempdevicename), also written to the log file
             if task_id_for_progr == " ":
@@ -199,8 +204,8 @@ def sendScan():
                 deviceName=temp_deviceName
                 file_object.write("\n"+ date_and_time + ": your scan " + targetUniqueName + " hasn't started. " + deviceName + " is running.")
 
-        IpAddressen[:]=[]
-        return success(task_id, deviceName)
+            IpAddressen[:]=[]
+            return success(task_id, deviceName)
 
 #change progress amount and save
 def set_progress(newprogr):
@@ -221,27 +226,27 @@ def get_task_id_for_progress():
 
 def progress_check(task_id):
     #setter makes sure new id and progress is saved
+    if progr == 100:
+        set_progress(0)
     if is_requested(task_id) or is_running(task_id):
         while(progr != 100):
-            if is_requested(task_id) or is_running(task_id):
+            if is_requested(task_id):
+                set_progress(0)
+            elif is_running(task_id):
                 set_progress(get_newprogress(task_id))
             else:
                 break
         set_task_id_for_progress(" ")
         set_already_running(False)
-        set_progress(0)
-    else:
-        set_task_id_for_progress(" ")
-        set_already_running(False)
-        set_progress(0)
-
+        set_progress(100)
+    
 # progress and taskid get written to this page in json format for the js to read
 @app.route('/prgrss', methods=["GET"])
 def progress_bar():
     if progr is None:
-        data = str(0) 
+        data = str(0)
     else:
-         data = str(progr) 
+        data = str(progr)
     jsondata = {
         "progrss": data,
         "taskidforprogrss": task_id_for_progr
@@ -262,9 +267,10 @@ def writelogsscan(task_id, deviceName):
     while check_for_logging(task_id) == False:
         os.system('cat /var/log/gvm/gvmd.log | grep ' + task_id + ' > logs/' + targetUniqueName + '_GVMlogs.txt')
         time.sleep(5)
-    with open("logs/" + targetUniqueName + "_GVMlogs.txt", "a") as file_object:
+    todays_logs = datetime.now().strftime("%d-%m-%Y")
+    with open("logs/" + todays_logs + "_APPlogs.txt", "a") as file_object:
         date_and_time = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
-        file_object.write("\n"+ date_and_time + ":Your scan, " + targetUniqueName + ", has stopped.")
+        file_object.write("\n"+ date_and_time + ": your scan " + targetUniqueName + " has stopped.")
     
 
 def success(task_id, deviceName):
