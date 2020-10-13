@@ -57,12 +57,18 @@ def valid_ip(address):
     create_dailylog()
     with open("logs/" + todays_logs + "_APPlogs.txt", "a") as file_object:
         try: 
-            socket.inet_aton(address)
+            
             #if the entered IP address is not in the list -> add to list
             # if address in IpAddressen:
             #     errorList.append('This IP address is already in the list.')
             if re.match(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", address):
+                socket.inet_aton(address)
                 return True
+            else:
+                errorList.append('This IP address is not valid.')
+                date_and_time = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
+                # open logfile and write to it
+                file_object.write("\n"+ date_and_time + ": the IP address you entered is not valid.")
         except:
             #print("This IP address is not valid.")
             errorList.append('This IP address is not valid.')
