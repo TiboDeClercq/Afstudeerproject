@@ -165,7 +165,7 @@ def set_already_running(newstatus):
 @app.route('/sendScan', methods=["POST"])
 def sendScan():
     config=ConfigParser()
-    config.read("/opt/Afstudeerproject/config.ini")
+    config.read("config.ini")
     scan_info=config["SCAN"]
 
     conf_id=scan_info["type"]
