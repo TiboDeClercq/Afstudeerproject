@@ -38,7 +38,7 @@ def create_dailylog():
     
     # check if the directory for the logs exists and if the logfile for this day exists
     try:
-        os.system("mkdir /opt/Afstudeerproject/logs")
+        os.system("mkdir logs")
     except:
         print("directory exists")
     try:
@@ -51,7 +51,7 @@ def create_dailylog():
 def valid_ip(address):
     todays_logs = datetime.now().strftime("%d-%m-%Y")
     create_dailylog()
-    with open("/opt/Afstudeerproject/logs/" + todays_logs + "_APPlogs.txt", "a") as file_object:
+    with open("logs/" + todays_logs + "_APPlogs.txt", "a") as file_object:
         try: 
             
             #if the entered IP address is not in the list -> add to list
@@ -78,7 +78,7 @@ def add_to_IpList(address):
     create_dailylog()
 
     # open logsfile and write to it
-    with open("/opt/afstudeerproject/logs/" + todays_logs + "_APPlogs.txt", "a") as file_object:
+    with open("logs/" + todays_logs + "_APPlogs.txt", "a") as file_object:
         date_and_time = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
         if address in IpAddressen:
             errorList.append('This IP address is already in the list.')
@@ -88,12 +88,12 @@ def add_to_IpList(address):
             file_object.write("\n"+ date_and_time + ": IP address: " + address + " is added.")
 
 def zip_files(targetname):
-    path="/opt/Afstudeerproject/txtfiles/answers_target_"+targetname
+    path="txtfiles/answers_target_"+targetname
     try:
         os.system("mkdir zipfiles")
     except:
         print("directory exists")
-    zipObj=ZipFile("/opt/Afstudeerproject/zipfiles/"+targetname+'.zip', 'w')
+    zipObj=ZipFile("zipfiles/"+targetname+'.zip', 'w')
 
     zipObj.write(path)
     zipObj.close
@@ -143,7 +143,7 @@ def delIP():
         todays_logs = datetime.now().strftime("%d-%m-%Y")
 
         # open logfile and write to it
-        with open("/opt/Afstudeerproject/logs/" + todays_logs + "_APPlogs.txt", "a") as file_object:
+        with open("logs/" + todays_logs + "_APPlogs.txt", "a") as file_object:
             date_and_time = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
             file_object.write("\n" + date_and_time + ": IP address: " + entered_text + " is deleted.")
 
@@ -176,7 +176,7 @@ def sendScan():
 
     create_dailylog()
     # Open the log file for this day
-    with open("/opt/Afstudeerproject/logs/" + todays_logs + "_APPlogs.txt", "a") as file_object:
+    with open("logs/" + todays_logs + "_APPlogs.txt", "a") as file_object:
         if not deviceName:
             file_object.write("\n"+ date_and_time + ": you haven't entered a valid device name.")
             errorList.append("You haven't entered a device name.")
