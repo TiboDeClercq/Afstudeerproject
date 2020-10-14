@@ -4,6 +4,9 @@ import os
 import pwd
 import os
 
+currentdir = os.path.dirname(os.path.realpath(__file__))
+parentdir = os.path.dirname(currentdir)
+sys.path.append(parentdir)
 def getQuestions():
   with open("./questions.txt", "r") as i:
     content=i.readlines()
