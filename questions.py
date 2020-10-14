@@ -5,7 +5,7 @@ import pwd
 import sys
 
 def getQuestions():
-  with open("questions.txt", "r") as i:
+  with open("/opt/Afstudeerproject/questions.txt", "r") as i:
     content=i.readlines()
 
   questions=[x.strip() for x in content]
