@@ -118,7 +118,7 @@ def progressbar(taskid):
 def custome_port_table(ipList):
     #read config file
     config=ConfigParser()
-    config.read("config.ini")
+    config.read("/opt/Afstudeerproject/config.ini")
     nmap_info=config["NMAP"]
 
     try:
@@ -127,8 +127,8 @@ def custome_port_table(ipList):
         print("dir already exists")
     
     try:
-        os.system("rm ports/ports.txt")
-        os.system("touch ports/ports.txt")
+        os.system("rm /opt/Afstudeerproject/ports/ports.txt")
+        os.system("touch /opt/Afstudeerproject/ports/ports.txt")
     except:
         print("dir already exists")
     
@@ -136,14 +136,14 @@ def custome_port_table(ipList):
     with open("ports/ports.txt", "w") as f:
         for ip in ipList:
             try:
-                os.system("touch ports/"+ ip  + ".txt")
+                os.system("touch /opt/Afstudeerproject/ports/"+ ip  + ".txt")
             except:
                 print("dir already exists")
             #nmap command to scan every IP in the list, option to decide how aggressive the scan will be can be modified in config.ini file
             cmd = "nmap "+ ip + " -sS -" + nmap_info["scan"] + "| grep open | cut -d' ' -f1> ports/" + ip + ".txt"
             os.system(cmd)
             #for every IP there will be a seperate file with the open ports        
-            with open("ports/" +ip+".txt", "r") as p:
+            with open("/opt/Afstudeerproject/ports/" +ip+".txt", "r") as p:
                 f.write(p.read())
  
     try:
@@ -152,18 +152,18 @@ def custome_port_table(ipList):
         print("ipList already exists")
     
     #all the scanned IP's will be written to a seperate file
-    with open ("ports/ipList.txt", "r")as f:
+    with open ("/opt/Afstudeerproject/ports/ipList.txt", "r")as f:
         fh, abs_path = mkstemp()
         with fdopen(fh,'w') as new_file:
             for ip in ipList:
                 new_file.write(ip + "\n")
-    copymode("ports/ipList.txt", abs_path)
-    remove("ports/ipList.txt")
-    move(abs_path, "ports/ipList.txt") 
+    copymode("/opt/Afstudeerproject/ports/ipList.txt", abs_path)
+    remove("/opt/Afstudeerproject/ports/ipList.txt")
+    move(abs_path, "/opt/Afstudeerproject/ports/ipList.txt") 
 
     for ip in ipList:
         #the goal for this part is to modify the files so that that a custom port list can be created
-        with open("ports/" + ip + ".txt", "r") as f:
+        with open("/opt/Afstudeerproject/ports/" + ip + ".txt", "r") as f:
             #Create temp file
             inhoud=f.read()
             fh, abs_path = mkstemp()
@@ -180,11 +180,11 @@ def custome_port_table(ipList):
                         l=re.findall(r'[\d]*', match)
                         new_file.write(l[0]+ ", ")
         #Copy the file permissions from the old file to the new file
-        copymode("ports/" +ip + ".txt", abs_path)
+        copymode("/opt/Afstudeerproject/ports/" +ip + ".txt", abs_path)
         #Remove original file
-        remove("ports/" +ip + ".txt")
+        remove("/opt/Afstudeerproject/ports/" +ip + ".txt")
         #Move new file
-        move(abs_path, "ports/" +ip + ".txt")
+        move(abs_path, "/opt/Afstudeerproject/ports/" +ip + ".txt")
 
     with open("ports/ports.txt", "r") as f:
         inhoud = f.read()
