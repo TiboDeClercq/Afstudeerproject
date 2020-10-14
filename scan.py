@@ -118,7 +118,7 @@ def progressbar(taskid):
 def custome_port_table(ipList):
     #read config file
     config=ConfigParser()
-    config.read("/opt/Afstudeerproject/config.ini")
+    config.read("config.ini")
     nmap_info=config["NMAP"]
 
     try:
