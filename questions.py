@@ -2,10 +2,10 @@ import threading
 import webbrowser
 import os
 import pwd
-import os
+import sys
 
 def getQuestions():
-  with open("./questions.txt", "r") as i:
+  with open("questions.txt", "r") as i:
     content=i.readlines()
 
   questions=[x.strip() for x in content]
