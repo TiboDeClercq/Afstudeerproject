@@ -83,7 +83,7 @@ def get_report_formats():
 		ids = get_id(xml, "report_format")
 		names = get_report_name(xml)
 		map = {}
-		for i in 0,4,6:
+		for i in (0,4,6):
 			map[ids[i]] = names[i]
 		return map
 
@@ -116,9 +116,8 @@ def download_report(report_id, report_format_id):
 		print("directory exists")
 	with Gmp(connection, transform=transform) as gmp:
 		# Login -> change to default admin password
-		gmp.authenticate(user, password)   
-
-		base64 = get_data(gmp.get_report(report_id=report_id, report_format_id=report_format_id, details=1))
+		gmp.authenticate(user, password)
+		base64 = get_data(gmp.get_report(report_id=report_id, report_format_id=report_format_id, details=True, filter="apply_overrides=0 levels=hml"))
 
 		f = open("reportdownload/" + report_id + '.csv', 'wb')
 		f.write(b64decode(base64))
